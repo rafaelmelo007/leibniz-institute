@@ -1,0 +1,27 @@
+<div class="container-fluid" style="padding: 10px; min-height: 350px">
+  <h3>
+    <i class="fa fa-users"></i> Authors @if(count){
+    <span>({{ count }})</span>
+    }
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="addAuthor()"
+      style="float: right"
+    >
+      New Author
+    </button>
+  </h3>
+
+  <app-loading *ngIf="loading"></app-loading>
+  <app-grid-table
+    [dataSource]="dataSource"
+    [actions]="actions"
+    [actionsLabel]="'Actions'"
+    [columns]="columns"
+    (loadMore)="loadMore()"
+  >
+  </app-grid-table>
+
+  <app-edit-author></app-edit-author>
+</div>

@@ -1,0 +1,53 @@
+/* You can add global styles to this file, and also import other style files */
+.txbold {
+  font-weight: bold;
+  color: black; /* or any other color you prefer */
+}
+
+.tx-success {
+  color: green !important;
+}
+
+.tx-info {
+  color: blue !important;
+}
+
+.tx-warning {
+  color: orange !important;
+}
+
+.tx-danger {
+  color: red !important;
+}
+
+/* Disable mouse wheel scrolling */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.modal-content {
+  width: initial !important;
+}
+
+.modal-dialog-centered {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important; /* This is important for centering horizontally in flex */
+  min-height: calc(100% - var(--bs-modal-margin) * 2) !important;
+}
+
+a {
+  cursor: pointer !important;
+}
+
+.tab-content {
+  overflow-y: auto;
+  max-height: 550px;
+}

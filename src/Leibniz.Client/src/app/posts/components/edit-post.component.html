@@ -1,0 +1,137 @@
+<app-dialog-window
+  *ngIf="showEdit"
+  primaryButtonLabel="Save Changes"
+  [title]="postId > 0 ? 'Edit Post' : 'Add Post'"
+  (closeDialog)="showEdit = false"
+  [width]="1024"
+  (submitDialog)="savePost()"
+>
+  <ng-container>
+    <app-tabs [options]="tabs" />
+    <div
+      class="tab-content"
+      [style.display]="selectedTab == 'DETAIL' ? 'block' : 'none'"
+    >
+      <form [formGroup]="editForm">
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="bookId" class="form-label mt-4">PostId</label>
+              <input
+                class="form-control"
+                formControlName="postId"
+                type="text"
+                placeholder="PostId"
+              />
+              <app-field-validation-errors
+                [control]="editForm.get('postId')"
+              ></app-field-validation-errors>
+            </div>
+
+            <div class="form-group">
+              <label for="title" class="form-label mt-4">Title</label>
+              <input
+                class="form-control"
+                formControlName="title"
+                type="text"
+                placeholder="Title"
+              />
+              <app-field-validation-errors
+                [control]="editForm.get('title')"
+              ></app-field-validation-errors>
+            </div>
+
+            <div class="form-group">
+              <label for="content" class="form-label mt-4">Content</label>
+              <textarea
+                class="form-control"
+                formControlName="content"
+                type="text"
+                placeholder="Content"
+                rows="5"
+              ></textarea>
+              <app-field-validation-errors
+                [control]="editForm.get('content')"
+              ></app-field-validation-errors>
+            </div>
+
+            <div class="form-group">
+              <label for="author" class="form-label mt-4">Author</label>
+              <input
+                class="form-control"
+                formControlName="author"
+                type="text"
+                placeholder="Author"
+              />
+              <app-field-validation-errors
+                [control]="editForm.get('author')"
+              ></app-field-validation-errors>
+            </div>
+          </div>
+          <div class="col">
+            <div class="row">
+              <div class="col-8">
+                <div class="form-group">
+                  <label for="totalOfPages" class="form-label mt-4"
+                    >BookId</label
+                  >
+                  <input
+                    class="form-control"
+                    formControlName="bookId"
+                    type="number"
+                    placeholder="bookId"
+                  />
+                  <app-field-validation-errors
+                    [control]="editForm.get('bookId')"
+                  ></app-field-validation-errors>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="page" class="form-label mt-4">Page</label>
+                  <input
+                    class="form-control"
+                    formControlName="page"
+                    type="number"
+                    placeholder="Page"
+                  />
+                  <app-field-validation-errors
+                    [control]="editForm.get('page')"
+                  ></app-field-validation-errors>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label for="edition" class="form-label mt-4">Reference</label>
+                  <textarea
+                    class="form-control"
+                    formControlName="reference"
+                    type="text"
+                    placeholder="Reference"
+                    rows="13"
+                  ></textarea>
+
+                  <app-field-validation-errors
+                    [control]="editForm.get('reference')"
+                  ></app-field-validation-errors>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div
+      class="tab-content"
+      [style.display]="selectedTab == 'REFERENCES' ? 'block' : 'none'"
+    >
+      <app-edit-references
+        [style.height]="'100%'"
+        [type]="'post'"
+        [id]="postId"
+      ></app-edit-references>
+    </div>
+  </ng-container>
+</app-dialog-window>

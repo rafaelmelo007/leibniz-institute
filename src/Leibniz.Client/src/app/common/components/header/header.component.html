@@ -1,0 +1,66 @@
+<nav class="navbar navbar-expand navbar-dark bg-primary">
+  <div class="collapse navbar-collapse">
+    <h4 class="navbar-brand"><i class="fa fa-bank"></i> Leibniz</h4>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/pages/posts" routerLinkActive="active">
+          <i class="fa fa-comment"></i> Posts
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/pages/books" routerLinkActive="active">
+          <i class="fa fa-book"></i> Books
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          routerLink="pages/authors"
+          routerLinkActive="active"
+        >
+          <i class="fa fa-users"></i> Authors
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          routerLink="/pages/topics"
+          routerLinkActive="active"
+        >
+          <i class="fa fa-tags"></i> Topics
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          routerLink="pages/periods"
+          routerLinkActive="active"
+        >
+          <i class="fa fa-clock-o"></i> Periods
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/pages/areas" routerLinkActive="active">
+          <i class="fa fa-map-o"></i> Areas
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          routerLink="/pages/theses"
+          routerLinkActive="active"
+        >
+          <i class="fa fa-graduation-cap"></i> Theses
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/pages/links" routerLinkActive="active">
+          <i class="fa fa-link"></i> Links
+        </a>
+      </li>
+      <li class="nav-item dropdown-container">
+        <app-dropdown [label]="me?.email" [options]="menuList"></app-dropdown>
+      </li>
+    </ul>
+  </div>
+</nav>

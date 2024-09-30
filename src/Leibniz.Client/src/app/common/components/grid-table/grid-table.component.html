@@ -1,0 +1,111 @@
+<div class="row">
+  <div class="col-12" style="margin-top: 10px">
+    <input
+      *ngIf="showSearch"
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="filterData()"
+      (focus)="searching = true"
+      (blur)="searching = false"
+      (keyup.enter)="deepSearch()"
+      placeholder="Search..."
+      class="form-control mb-3"
+    />
+
+    <!-- Dropdown Filters -->
+    <div class="mb-3" *ngIf="groupByColumn">
+      <span>{{ groupByColumn.header }}</span>
+      <select
+        class="form-control"
+        [(ngModel)]="groupByColumn.filterValue"
+        (change)="filterData()"
+      >
+        <option value="">All</option>
+        <option
+          *ngFor="let option of getUniqueValues(groupByColumn.field)"
+          [value]="option"
+        >
+          {{ option }}
+        </option>
+      </select>
+    </div>
+
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th
+            *ngFor="let column of columns"
+            [ngStyle]="{
+              width: column.width,
+              textAlign: column.textAlign,
+              cursor: 'pointer'
+            }"
+            (click)="sortData(column.field)"
+            scope="col"
+          >
+            {{ column.header }}
+            <span *ngIf="sortColumn === column.field">
+              {{ sortDirection === "asc" ? "▲" : "▼" }}
+            </span>
+          </th>
+          <th *ngIf="actions" scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of filteredData">
+          <td
+            *ngFor="let column of columns"
+            [ngStyle]="{ textAlign: column.textAlign }"
+          >
+            <ng-container *ngIf="column.useBadge">
+              <span [ngClass]="getBadgeClass(item[column.field], column)">
+                {{ getFormattedValue(item[column.field], column.field) }}
+              </span>
+            </ng-container>
+
+            <ng-container *ngIf="column.useHyperlink">
+              <a href="javascript:;" (click)="clickLink(item, column)">
+                {{ getFormattedValue(item[column.field], column.field) }}
+              </a>
+            </ng-container>
+
+            <ng-container *ngIf="column.useImage">
+              <img
+                [src]="getFormattedValue(item[column.field], column.field)"
+                [style.maxHeight]="column.maxImageHeight + 'px'"
+                [style.maxWidth]="column.maxImageWidth + 'px'"
+              />
+            </ng-container>
+
+            <ng-container
+              *ngIf="
+                !column.useBadge && !column.useHyperlink && !column.useImage
+              "
+            >
+              <span>{{
+                getFormattedValue(item[column.field], column.field)
+              }}</span>
+            </ng-container>
+          </td>
+          <td *ngIf="actions">
+            <app-dropdown
+              [options]="actions"
+              [label]="actionsLabel"
+              [data]="item"
+            ></app-dropdown>
+          </td>
+        </tr>
+
+        <tr #lastRow>
+          @if(loading) {
+          <td colspan="20">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </td>
+          }
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

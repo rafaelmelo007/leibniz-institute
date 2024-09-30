@@ -1,0 +1,64 @@
+<div class="container mt-4">
+  <!-- Table for listing items -->
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Type</th>
+        <th scope="col">Name</th>
+        <th scope="col" style="width: 140px">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items; track item">
+        <td>{{ item.type }}</td>
+        <td>{{ item.label }}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" (click)="removeItem(item)">
+            <i class="fa fa-remove"></i> Remove
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <select id="item-type" [(ngModel)]="selectedType" class="form-select">
+            <option value="">- Type -</option>
+            <option value="post">Post</option>
+            <option value="link">Link</option>
+            <option value="area">Area</option>
+            <option value="author">Author</option>
+            <option value="book">Book</option>
+            <option value="period">Period</option>
+            <option value="thesis">Thesis</option>
+            <option value="topic">Topic</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </td>
+        <td>
+          <input
+            type="text"
+            id="item-name"
+            [(ngModel)]="itemName"
+            class="form-control"
+            placeholder="Enter item name"
+            (keyup)="searchItems()"
+          />
+          <select
+            *ngIf="itemName.length >= 3"
+            [(ngModel)]="selectedId"
+            class="form-control"
+            multiple
+          >
+            @for(searchResult of searchResults; track searchResult) {
+            <option [value]="searchResult.id">{{ searchResult.label }}</option>
+            }
+          </select>
+        </td>
+        <td>
+          <button class="btn btn-primary btn-sm" (click)="addItem()">
+            <i class="fa fa-plus"></i> Add
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

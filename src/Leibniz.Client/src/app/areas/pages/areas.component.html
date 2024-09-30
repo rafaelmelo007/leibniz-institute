@@ -1,0 +1,26 @@
+<div class="container-fluid" style="padding: 10px; min-height: 350px">
+  <h3>
+    <i class="fa fa-map-o"></i> Areas @if(count){
+    <span>({{ count }})</span>
+    }
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="addArea()"
+      style="float: right"
+    >
+      New Area
+    </button>
+  </h3>
+
+  <app-grid-table
+    [dataSource]="dataSource"
+    [actions]="actions"
+    [actionsLabel]="'Actions'"
+    [columns]="columns"
+    (loadMore)="loadMore()"
+  >
+  </app-grid-table>
+
+  <app-edit-area></app-edit-area>
+</div>

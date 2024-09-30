@@ -1,0 +1,48 @@
+<div
+  class="modal card-modal"
+  tabindex="-1"
+  role="dialog"
+  style="
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    display: block;
+    background-color: rgba(200, 200, 200, 0.7);
+  "
+>
+  <div class="modal-dialog form-modal card-modal-dialog modal-dialog-centered">
+    <div class="modal-content card-modal-content">
+      <div class="modal-header card-modal-header">
+        <h5 class="modal-title">
+          {{ title }}
+          <a
+            href="javascript:;"
+            class="close"
+            (click)="closeWindow()"
+            style="position: absolute; right: 15px; text-decoration: none"
+          >
+            <span aria-hidden="true">&times;</span>
+          </a>
+        </h5>
+      </div>
+      <div class="modal-body">
+        <div
+          class="row"
+          [style.height]="height > 0 ? height + 'px' : null"
+          [style.width]="width > 0 ? width + 'px' : null"
+          [style.overflowY]="'auto'"
+        >
+          <ng-content></ng-content>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="executeAction()">
+          {{ primaryButtonLabel }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="closeWindow()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,139 @@
+<div class="container page-main-container">
+  <div class="card page-main-body">
+    <div class="card-body">
+      <span class="register-title">Register</span>
+      <p class="register-subtitle">
+        Please, fill in your details to create an account
+      </p>
+      <form [formGroup]="registerForm" (ngSubmit)="register()">
+        <div class="form-group">
+          <input
+            class="form-control"
+            formControlName="fullName"
+            type="text"
+            placeholder="Full Name"
+          />
+          <app-field-validation-errors
+            [control]="registerForm.get('fullName')"
+          ></app-field-validation-errors>
+        </div>
+
+        <div class="form-group">
+          <input
+            class="form-control"
+            formControlName="cpf"
+            type="text"
+            placeholder="CPF"
+          />
+          <app-field-validation-errors
+            [control]="registerForm.get('cpf')"
+          ></app-field-validation-errors>
+        </div>
+
+        <div class="form-group">
+          <input
+            class="form-control"
+            formControlName="city"
+            type="text"
+            placeholder="City"
+          />
+          <app-field-validation-errors
+            [control]="registerForm.get('city')"
+          ></app-field-validation-errors>
+        </div>
+
+        <div class="form-group">
+          <input
+            class="form-control"
+            formControlName="state"
+            type="text"
+            placeholder="State"
+          />
+          <app-field-validation-errors
+            [control]="registerForm.get('state')"
+          ></app-field-validation-errors>
+        </div>
+
+        <div class="form-group">
+          <input
+            class="form-control"
+            formControlName="phone"
+            type="text"
+            placeholder="Phone"
+          />
+          <app-field-validation-errors
+            [control]="registerForm.get('phone')"
+          ></app-field-validation-errors>
+        </div>
+
+        <div class="form-group">
+          <input
+            class="form-control"
+            formControlName="website"
+            type="text"
+            placeholder="Website"
+          />
+          <app-field-validation-errors
+            [control]="registerForm.get('website')"
+          ></app-field-validation-errors>
+        </div>
+
+        <div class="form-group">
+          <input
+            class="form-control"
+            formControlName="email"
+            type="email"
+            placeholder="Email"
+          />
+          <app-field-validation-errors
+            [control]="registerForm.get('email')"
+          ></app-field-validation-errors>
+        </div>
+
+        <div class="form-group">
+          <input
+            class="form-control"
+            formControlName="password"
+            type="password"
+            placeholder="Password"
+          />
+          <app-field-validation-errors
+            [control]="registerForm.get('password')"
+          ></app-field-validation-errors>
+        </div>
+
+        <div class="form-group form-check">
+          <input
+            class="form-check-input"
+            formControlName="acceptedTermsAndConditions"
+            type="checkbox"
+            id="termsCheckbox"
+          />
+          <label class="form-check-label" for="termsCheckbox">
+            I accept the Terms and Conditions
+          </label>
+          <app-field-validation-errors
+            [control]="registerForm.get('acceptedTermsAndConditions')"
+          ></app-field-validation-errors>
+        </div>
+
+        <div class="form-group">
+          <button
+            type="submit"
+            name="btnRegister"
+            class="btn btn-register bg-primary btn-block"
+          >
+            Register
+          </button>
+          <button
+            type="button"
+            class="btn btn-register bg-secondary btn-block"
+            (click)="router.navigate(['/pages/account/login'])"
+          >
+            Back
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

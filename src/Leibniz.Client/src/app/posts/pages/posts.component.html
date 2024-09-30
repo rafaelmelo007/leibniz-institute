@@ -1,0 +1,28 @@
+<div class="container-fluid" style="padding: 10px; min-height: 350px">
+  <h3>
+    <i class="fa fa-comment"></i> Posts @if(count){
+    <span>({{ count }})</span>
+    }
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="addPost()"
+      style="float: right"
+    >
+      New Post
+    </button>
+  </h3>
+
+  <app-loading *ngIf="loading"></app-loading>
+  <app-grid-table
+    [dataSource]="dataSource"
+    [actions]="actions"
+    [actionsLabel]="'Actions'"
+    [columns]="columns"
+    (loadMore)="loadMore()"
+    (runDeepSearch)="loadDeepSearch($event)"
+  >
+  </app-grid-table>
+
+  <app-edit-post></app-edit-post>
+</div>

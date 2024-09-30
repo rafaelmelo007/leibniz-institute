@@ -1,0 +1,56 @@
+<div class="container page-main-container">
+  <div class="card page-main-body">
+    <div class="card-body">
+      <span class="login-title">Login</span>
+      <p class="login-subtitle">Please, inform your credentials</p>
+      <form [formGroup]="loginForm" (ngSubmit)="signIn()">
+        <div class="form-group">
+          <input
+            class="login-input form-control"
+            formControlName="email"
+            type="text"
+            placeholder="E-mail"
+          />
+          <app-field-validation-errors
+            [control]="loginForm.get('email')"
+          ></app-field-validation-errors>
+        </div>
+
+        <div class="form-group">
+          <input
+            class="login-input form-control"
+            formControlName="password"
+            type="password"
+            placeholder="Password"
+          />
+          <app-field-validation-errors
+            [control]="loginForm.get('password')"
+          ></app-field-validation-errors>
+        </div>
+
+        <div class="form-group">
+          <button
+            type="submit"
+            name="btnLogin"
+            class="btn btn-login bg-primary btn-block"
+          >
+            Sign In
+          </button>
+        </div>
+      </form>
+
+      <div class="forgot-password">
+        <a href="javascript:;" (click)="forgotPassword()">Forgot your password?</a>
+      </div>
+
+      <div class="login-or-container">
+        <p class="login-or">OR</p>
+      </div>
+
+      <div class="register-link">
+        <span class="register-text">I don't have an account?</span>
+        <a href="javascript:;" class="register" (click)="register()">Register</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<app-dialog-window
+  *ngIf="showEdit"
+  primaryButtonLabel="Save Changes"
+  title="Edit Period"
+  (closeDialog)="showEdit = false"
+  [width]="1024"
+  (submitDialog)="savePeriod()"
+>
+  <ng-container>
+    <app-tabs [options]="tabs" />
+    <div
+      class="tab-content"
+      [style.display]="selectedTab == 'DETAIL' ? 'block' : 'none'"
+    >
+      <form [formGroup]="editForm">
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="periodId" class="form-label mt-4">PeriodId</label>
+              <input
+                class="form-control"
+                formControlName="periodId"
+                type="text"
+                placeholder="PeriodId"
+              />
+              <app-field-validation-errors
+                [control]="editForm.get('periodId')"
+              ></app-field-validation-errors>
+            </div>
+            <div class="form-group">
+              <label for="name" class="form-label mt-4">Name</label>
+              <input
+                class="form-control"
+                formControlName="name"
+                type="text"
+                placeholder="Name"
+              />
+              <app-field-validation-errors
+                [control]="editForm.get('name')"
+              ></app-field-validation-errors>
+            </div>
+            <div class="form-group">
+              <label for="content" class="form-label mt-4">Content</label>
+              <textarea
+                class="form-control"
+                formControlName="content"
+                type="text"
+                placeholder="Content"
+                rows="5"
+              ></textarea>
+              <app-field-validation-errors
+                [control]="editForm.get('content')"
+              ></app-field-validation-errors>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div
+      class="tab-content"
+      [style.display]="selectedTab == 'REFERENCES' ? 'block' : 'none'"
+    >
+      <app-edit-references
+        [style.height]="'100%'"
+        [type]="'period'"
+        [id]="periodId"
+      ></app-edit-references>
+    </div>
+  </ng-container>
+</app-dialog-window>

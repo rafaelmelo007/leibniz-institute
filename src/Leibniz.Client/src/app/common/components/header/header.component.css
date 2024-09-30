@@ -1,0 +1,21 @@
+/* Navbar title styling */
+.navbar-brand {
+  color: white;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+/* Dropdown container styling for right alignment */
+.dropdown-container {
+  float: right;
+  position: absolute;
+  right: 10px;
+}
+
+.dropdown-container.d-none.d-md-block.d-lg-block {
+  display: none !important;
+}
+
+.active {
+  
+}

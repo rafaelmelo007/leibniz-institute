@@ -1,0 +1,27 @@
+<div class="container-fluid" style="padding: 10px; min-height: 350px">
+  <h3>
+    <i class="fa fa-tags"></i> Topics @if(count){
+    <span>({{ count }})</span>
+    }
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="addTopic()"
+      style="float: right"
+    >
+      New Topic
+    </button>
+  </h3>
+
+  <app-loading *ngIf="loading"></app-loading>
+  <app-grid-table
+    [dataSource]="dataSource"
+    [actions]="actions"
+    [actionsLabel]="'Actions'"
+    [columns]="columns"
+    (loadMore)="loadMore()"
+  >
+  </app-grid-table>
+
+  <app-edit-topic></app-edit-topic>
+</div>

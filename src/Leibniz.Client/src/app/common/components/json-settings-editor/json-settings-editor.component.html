@@ -1,0 +1,14 @@
+<div [formGroup]="settingsForm" *ngIf="settingsForm">
+  <div
+    *ngFor="let controlName of settingsForm.controls | keyvalue"
+    class="form-group"
+  >
+    <label [for]="controlName.key">{{ controlName.key }}</label>
+    <input
+      [id]="controlName.key"
+      [formControlName]="controlName.key"
+      type="text"
+      class="form-control"
+    />
+  </div>
+</div>

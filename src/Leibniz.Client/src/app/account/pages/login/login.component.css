@@ -1,0 +1,103 @@
+/* Center the card in the middle of the page */
+.container.page-main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Card styling with shadow */
+.page-main-body {
+  width: 530px;
+  border-radius: 0.5rem;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 40px;
+}
+
+/* Title styling */
+.login-title {
+  font-size: 26px;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+}
+
+/* Subtitle styling */
+.login-subtitle {
+  text-align: center;
+  color: #777a7d;
+  font-size: 22px;
+  font-weight: 100;
+}
+
+/* Input styling */
+.login-input {
+  border: none;
+  box-shadow: none;
+  border-bottom: 1px solid #dcdcdc;
+  border-radius: 0;
+  padding: 10px 0;
+  width: 98%;
+  margin: 0 auto;
+}
+
+/* Form group margin reset */
+.form-group {
+  margin: 0;
+}
+
+/* Button styling */
+.btn-login {
+  color: #fff;
+  padding: 10px 15px;
+  margin-top: 10px; /* Add top margin for spacing */
+  display: block;
+  width: 100%; /* Make the button full-width */
+}
+
+/* OR separator styling */
+.login-or-container {
+  display: flex;
+  justify-content: center; /* Center align the OR text */
+  margin: 20px 0;
+}
+
+.login-or {
+  text-align: center;
+  color: #b9b9b9;
+  font-size: 13px;
+}
+
+/* Center the container that holds the Register link */
+.register-link {
+  display: flex;
+  flex-direction: column; /* Stack the elements vertically */
+  align-items: center; /* Center the content horizontally */
+  margin-top: 20px; /* Add top margin for spacing */
+}
+
+.register-text {
+  color: #333;
+  margin-bottom: 5px; /* Space between text and link */
+}
+
+/* Style for the Register link */
+.register {
+  color: #444444;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* Center the container that holds the Forgot Password link */
+.forgot-password {
+  display: flex;
+  justify-content: center; /* Center align the link */
+  margin-top: 20px; /* Add top margin for spacing */
+}
+
+.forgot-password a {
+  color: #333;
+  text-decoration: underline;
+}

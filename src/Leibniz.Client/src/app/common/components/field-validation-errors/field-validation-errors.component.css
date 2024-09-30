@@ -1,0 +1,16 @@
+/* Error message styling */
+.error {
+    color: #d9534f; /* Red color for errors */
+    font-size: 0.875rem; /* Smaller font size */
+    margin-top: 0.25rem; /* Spacing above the error message */
+    margin-bottom: 0.5rem; /* Spacing below the error message */
+  }
+  
+  /* Additional styles to ensure visibility */
+  .field-validation-errors {
+    display: block; /* Ensure it's rendered as a block element */
+    color: #d9534f; /* Error color */
+    font-size: 0.875rem; /* Font size */
+    margin-top: 0.25rem; /* Top margin */
+  }
+  
