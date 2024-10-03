@@ -12,6 +12,7 @@ import { PeriodsService } from './periods.service';
 import { Period } from '../domain/period';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
+import { ChangedEntity } from '../../common/domain/changed-entity';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,12 @@ export class PeriodsStore {
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
+
+  private changesSubject = new BehaviorSubject<ChangedEntity<Period> | null>(
+    null
+  );
+  changes$: Observable<ChangedEntity<Period> | null> =
+    this.changesSubject.asObservable();
 
   loadPeriods(index: number, limit: number): void {
     this.loadingSubject.next(true);
@@ -62,6 +69,7 @@ export class PeriodsStore {
       .addPeriod(period)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'added', data: period });
         this.messagesService.success(
           `Period ${period.name} was added successfully.`,
           'Period added'
@@ -74,6 +82,7 @@ export class PeriodsStore {
       .updatePeriod(period)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'updated', data: period });
         this.messagesService.success(
           `Period ${period.name} was updated successfully.`,
           'Period updated'
@@ -86,6 +95,7 @@ export class PeriodsStore {
       .deletePeriod(periodId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'deleted', id: periodId });
         this.messagesService.success(
           `Period was deleted successfully.`,
           'Period deleted'

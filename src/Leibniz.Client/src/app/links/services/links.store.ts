@@ -12,6 +12,7 @@ import { LinksService } from './links.service';
 import { Link } from '../domain/link';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
+import { ChangedEntity } from '../../common/domain/changed-entity';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +29,12 @@ export class LinksStore {
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
+
+  private changesSubject = new BehaviorSubject<ChangedEntity<Link> | null>(
+    null
+  );
+  changes$: Observable<ChangedEntity<Link> | null> =
+    this.changesSubject.asObservable();
 
   loadLinks(index: number, limit: number): void {
     this.loadingSubject.next(true);
@@ -61,6 +68,7 @@ export class LinksStore {
       .addLink(link)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'added', data: link });
         this.messagesService.success(
           `Link ${link.name} was added successfully.`,
           'Link added'
@@ -73,6 +81,7 @@ export class LinksStore {
       .updateLink(link)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'updated', data: link });
         this.messagesService.success(
           `Link ${link.name} was updated successfully.`,
           'Link updated'
@@ -85,6 +94,7 @@ export class LinksStore {
       .deleteLink(linkId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'deleted', id: linkId });
         this.messagesService.success(
           `Link was deleted successfully.`,
           'Link deleted'

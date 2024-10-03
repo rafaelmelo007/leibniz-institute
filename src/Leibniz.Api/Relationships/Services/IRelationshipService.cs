@@ -5,5 +5,5 @@ public interface IRelationshipService
 {
     void AddRelationshipByNames(EntityType sourceA, string nameA, EntityType sourceB, string nameB);
     string? GetRelationshipName(EntityType source, long id);
-    int SaveRelationships(EntityType type, long id, Dictionary<EntityType, long> items);
+    int SaveRelationships(EntityType type, long id, List<KeyValuePair<EntityType, long>> items);
 }

@@ -12,6 +12,7 @@ import { AreasService } from './areas.service';
 import { Area } from '../domain/area';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
+import { ChangedEntity } from '../../common/domain/changed-entity';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +29,12 @@ export class AreasStore {
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
+
+  private changesSubject = new BehaviorSubject<ChangedEntity<Area> | null>(
+    null
+  );
+  changes$: Observable<ChangedEntity<Area> | null> =
+    this.changesSubject.asObservable();
 
   loadAreas(index: number, limit: number): void {
     this.loadingSubject.next(true);
@@ -61,6 +68,7 @@ export class AreasStore {
       .addArea(area)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'added', data: area });
         this.messagesService.success(
           `Area ${area.name} was added successfully.`,
           'Area added'
@@ -73,6 +81,7 @@ export class AreasStore {
       .updateArea(area)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'updated', data: area });
         this.messagesService.success(
           `Area ${area.name} was updated successfully.`,
           'Area updated'
@@ -85,6 +94,7 @@ export class AreasStore {
       .deleteArea(areaId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'deleted', id: areaId });
         this.messagesService.success(
           `Area was deleted successfully.`,
           'Area deleted'

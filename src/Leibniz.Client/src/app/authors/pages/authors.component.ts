@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { LoadingComponent } from '../../common/components/loading/loading.component';
 import {
   Column,
@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { Author } from '../domain/author';
 import { AuthorsStore } from '../services/authors.store';
 import { EditAuthorComponent } from '../components/edit-author.component';
-import { tap } from 'rxjs';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-authors',
@@ -22,10 +22,11 @@ import { tap } from 'rxjs';
   templateUrl: './authors.component.html',
   styleUrl: './authors.component.css',
 })
-export class AuthorsPage {
+export class AuthorsPage implements OnDestroy {
   @ViewChild(EditAuthorComponent) editAuthor?: EditAuthorComponent;
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: Author[];
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   columns: Column[] = [
     {
@@ -67,17 +68,52 @@ export class AuthorsPage {
   loading?: boolean;
 
   constructor(private authorsStore: AuthorsStore) {
-    this.authorsStore.authors$
-      .pipe(
-        tap((authors) => {
-          this.loading = !authors;
-          if (authors) {
-            this.dataSource = [...(this.dataSource || []), ...authors.data];
-            this.count = authors.count;
+    this.subscribeAuthors();
+    this.subscribeAuthorChanges();
+  }
+
+  subscribeAuthors(): void {
+    const loading$ = this.authorsStore.loading$;
+    loading$.pipe(takeUntil(this.destroyed$)).subscribe((loading) => {
+      this.grid?.setLoading(loading);
+    });
+
+    const authors$ = this.authorsStore.authors$;
+    authors$.pipe(takeUntil(this.destroyed$)).subscribe((authors) => {
+      if (!authors || authors.index == 0) {
+        this.dataSource = [];
+      }
+      if (!authors) {
+        return;
+      }
+      this.dataSource = [...this.dataSource!, ...authors.data];
+      this.count = authors.count;
+    });
+  }
+
+  subscribeAuthorChanges(): void {
+    const changes$ = this.authorsStore.changes$;
+    changes$.pipe(takeUntil(this.destroyed$)).subscribe((entry) => {
+      if (entry?.changeType == 'deleted') {
+        this.dataSource = this.dataSource?.filter(
+          (x) => x.authorId != entry.id
+        );
+        this.count = (this.count ?? 0) - 1;
+      }
+      if (entry?.changeType == 'added') {
+        this.dataSource = [];
+        this.loadMore();
+      }
+      if (entry?.changeType == 'updated') {
+        this.dataSource = this.dataSource?.map((x) => {
+          if (x.authorId == entry.data?.authorId) {
+            x.name = entry.data.name;
+            x.content = entry.data.content;
           }
-        })
-      )
-      .subscribe();
+          return x;
+        });
+      }
+    });
   }
 
   loadMore(): void {
@@ -86,5 +122,10 @@ export class AuthorsPage {
 
   addAuthor(): void {
     this.editAuthor?.editAuthor(0);
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

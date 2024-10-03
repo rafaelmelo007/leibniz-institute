@@ -25,11 +25,11 @@ export interface Column {
   action?: (...args: any[]) => any;
   badgeConditions?: Record<string, string>;
   useBadge?: boolean;
-  textAlign?: 'left' | 'center' | 'right'; // Add textAlign property
+  textAlign?: 'left' | 'center' | 'right';
   sortColumn?: boolean;
   sortDirection?: 'asc' | 'desc';
-  useGroupByFilter?: boolean; // New flag for group by filter
-  filterValue?: string; // Selected filter value
+  useGroupByFilter?: boolean;
+  filterValue?: string;
   useImage?: boolean;
   maxImageWidth?: number;
   maxImageHeight?: number;
@@ -115,7 +115,7 @@ export class GridTableComponent implements OnInit, OnChanges, AfterViewInit {
           sortedCol.sortDirection == 'desc' ? 'asc' : 'desc'
         );
       }
-    }, 600); // Wait for 5 seconds before triggering the click
+    }, 600);
   }
 
   filterData() {
@@ -150,15 +150,12 @@ export class GridTableComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   evaluateCondition(condition: string, value: any): boolean {
-    // Replace 'value' with actual value in the condition
     const sanitizedCondition = condition.replace(
       'value',
       JSON.stringify(value)
     );
 
-    // Use a safer method to evaluate the condition
     try {
-      // Create a new Function to evaluate the sanitized condition
       return new Function('return ' + sanitizedCondition)();
     } catch (e) {
       console.error('Error evaluating condition:', e);
@@ -167,15 +164,14 @@ export class GridTableComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   getFormattedValue(value: any, field: string): string {
-    // Check if the value is a number and format it
     if (typeof value === 'number' && field.indexOf('price') !== -1) {
       return this.decimalPipe.transform(value, '1.2-2') || '';
     }
 
-    return value;
+    if (typeof value == 'string') return value.replace(/\n/g, '<br />');
+    return value?.toString();
   }
 
-  // Method to get badge class based on conditions
   getBadgeClass(value: any, column: Column): string {
     if (!column.badgeConditions) return '';
 
@@ -183,7 +179,6 @@ export class GridTableComponent implements OnInit, OnChanges, AfterViewInit {
       column.badgeConditions
     )) {
       try {
-        // Use eval to evaluate conditions
         const result = this.evaluateCondition(condition, value);
         if (result) {
           return badgeClass;
@@ -195,7 +190,6 @@ export class GridTableComponent implements OnInit, OnChanges, AfterViewInit {
     return '';
   }
 
-  // Method to get router link based on template
   clickLink(row: any, column: Column): void {
     if (column.useHyperlink && column.action) {
       column.action(row);

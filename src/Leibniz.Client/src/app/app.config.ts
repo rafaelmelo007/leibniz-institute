@@ -20,7 +20,12 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideAnimations(),
     provideHttpClient(withInterceptors([tokenInterceptor]), withFetch()),
-    provideToastr(),
+    provideToastr({
+      positionClass: 'toast-bottom-right',
+      closeButton: true,
+      timeOut: 3000,
+      progressBar: true,
+    }),
     DecimalPipe,
   ],
 };

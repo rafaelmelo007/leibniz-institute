@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { catchError, map, takeUntil } from 'rxjs/operators';
 import { AccountsService } from './account.service';
 import { UserToken } from '../domain/user-token';
 import { Router } from '@angular/router';
@@ -12,7 +12,9 @@ import { AuthService } from './auth.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AccountStore {
+export class AccountStore implements OnDestroy {
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
   constructor(
     private router: Router,
     private errorHandlerService: ErrorHandlerService,
@@ -25,7 +27,7 @@ export class AccountStore {
     const userToken = authService.getToken();
     if (userToken) {
       this.userSubject.next(userToken);
-      this.user$.subscribe(() => {
+      this.user$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
         this.accountService
           .me()
           .pipe(catchError((err) => this.errorHandlerService.onError(err)))
@@ -77,5 +79,10 @@ export class AccountStore {
         this.userSubject.next(res);
         this.router.navigate(['/pages/posts']);
       });
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

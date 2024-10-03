@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import {
   Column,
   GridTableComponent,
@@ -8,6 +8,7 @@ import { PostsStore } from '../services/posts.store';
 import { LoadingComponent } from '../../common/components/loading/loading.component';
 import { CommonModule } from '@angular/common';
 import { EditPostComponent } from '../components/edit-post.component';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-posts',
@@ -21,10 +22,12 @@ import { EditPostComponent } from '../components/edit-post.component';
   templateUrl: './posts.component.html',
   styleUrl: './posts.component.css',
 })
-export class PostsPage {
+export class PostsPage implements OnDestroy {
   @ViewChild(EditPostComponent) editPost?: EditPostComponent;
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: Post[];
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
   query = '';
 
   columns: Column[] = [
@@ -77,8 +80,18 @@ export class PostsPage {
   loading?: boolean;
 
   constructor(private postsStore: PostsStore) {
+    this.subscribePosts();
+    this.subscribePostChanges();
+  }
+
+  subscribePosts(): void {
+    const loading$ = this.postsStore.loading$;
+    loading$.pipe(takeUntil(this.destroyed$)).subscribe((loading) => {
+      this.grid?.setLoading(loading);
+    });
+
     const posts$ = this.postsStore.posts$;
-    posts$.subscribe((posts) => {
+    posts$.pipe(takeUntil(this.destroyed$)).subscribe((posts) => {
       this.loading = !posts;
 
       if (!posts || posts.index == 0) {
@@ -89,6 +102,32 @@ export class PostsPage {
       }
       this.dataSource = [...this.dataSource!, ...posts.data];
       this.count = posts.count;
+    });
+  }
+
+  subscribePostChanges(): void {
+    const changes$ = this.postsStore.changes$;
+    changes$.pipe(takeUntil(this.destroyed$)).subscribe((entry) => {
+      if (entry?.changeType == 'deleted') {
+        this.dataSource = this.dataSource?.filter((x) => x.postId != entry.id);
+        this.count = (this.count ?? 0) - 1;
+      }
+      if (entry?.changeType == 'added') {
+        this.dataSource = [];
+        this.loadMore();
+      }
+      if (entry?.changeType == 'updated') {
+        this.dataSource = this.dataSource?.map((x) => {
+          if (x.postId == entry.data?.postId) {
+            x.title = entry.data.title;
+            x.content = entry.data.content;
+            x.author = entry.data.author;
+            x.reference = entry.data.reference;
+            x.page = entry.data.page;
+          }
+          return x;
+        });
+      }
     });
   }
 
@@ -104,5 +143,10 @@ export class PostsPage {
 
   addPost(): void {
     this.editPost?.editPost(0);
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

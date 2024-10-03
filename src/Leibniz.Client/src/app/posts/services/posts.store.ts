@@ -12,6 +12,7 @@ import { Post } from '../domain/post';
 import { ResultSet } from '../../common/domain/result-set';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
+import { ChangedEntity } from '../../common/domain/changed-entity';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +29,12 @@ export class PostsStore {
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
+
+  private changesSubject = new BehaviorSubject<ChangedEntity<Post> | null>(
+    null
+  );
+  changes$: Observable<ChangedEntity<Post> | null> =
+    this.changesSubject.asObservable();
 
   loadPosts(index: number, limit: number, query: string = ''): void {
     this.loadingSubject.next(true);
@@ -61,6 +68,7 @@ export class PostsStore {
       .addPost(post)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'added', data: post });
         this.messagesService.success(
           `Post ${post.title} [${post.author}] was added successfully.`,
           'Post added'
@@ -73,6 +81,7 @@ export class PostsStore {
       .updatePost(post)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'updated', data: post });
         this.messagesService.success(
           `Post ${post.title} [${post.author}] was updated successfully.`,
           'Post updated'
@@ -85,6 +94,7 @@ export class PostsStore {
       .deletePost(postId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'deleted', id: postId });
         this.messagesService.success(
           `Post was deleted successfully.`,
           'Post deleted'

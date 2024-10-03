@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { LoadingComponent } from '../../common/components/loading/loading.component';
 import {
   Column,
@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { Topic } from '../domain/topic';
 import { TopicsStore } from '../services/topics.store';
 import { EditTopicComponent } from '../components/edit-topic.component';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-topics',
@@ -21,10 +22,11 @@ import { EditTopicComponent } from '../components/edit-topic.component';
   templateUrl: './topics.component.html',
   styleUrl: './topics.component.css',
 })
-export class TopicsPage {
+export class TopicsPage implements OnDestroy {
   @ViewChild(EditTopicComponent) editTopic?: EditTopicComponent;
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: Topic[];
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   columns: Column[] = [
     {
@@ -62,12 +64,21 @@ export class TopicsPage {
   ];
 
   count?: number;
-
   loading?: boolean;
 
   constructor(private topicsStore: TopicsStore) {
+    this.subscribeTopics();
+    this.subscribeTopicChanges();
+  }
+
+  subscribeTopics(): void {
+    const loading$ = this.topicsStore.loading$;
+    loading$.pipe(takeUntil(this.destroyed$)).subscribe((loading) => {
+      this.grid?.setLoading(loading);
+    });
+
     const topics$ = this.topicsStore.topics$;
-    topics$.subscribe((topics) => {
+    topics$.pipe(takeUntil(this.destroyed$)).subscribe((topics) => {
       this.loading = !topics;
 
       if (!topics || topics.index == 0) {
@@ -81,11 +92,39 @@ export class TopicsPage {
     });
   }
 
+  subscribeTopicChanges(): void {
+    const changes$ = this.topicsStore.changes$;
+    changes$.pipe(takeUntil(this.destroyed$)).subscribe((entry) => {
+      if (entry?.changeType == 'deleted') {
+        this.dataSource = this.dataSource?.filter((x) => x.topicId != entry.id);
+        this.count = (this.count ?? 0) - 1;
+      }
+      if (entry?.changeType == 'added') {
+        this.dataSource = [];
+        this.loadMore();
+      }
+      if (entry?.changeType == 'updated') {
+        this.dataSource = this.dataSource?.map((x) => {
+          if (x.topicId == entry.data?.topicId) {
+            x.name = entry.data.name;
+            x.content = entry.data.content;
+          }
+          return x;
+        });
+      }
+    });
+  }
+
   loadMore(): void {
     this.topicsStore.loadTopics(this.dataSource?.length ?? 0, 25);
   }
 
   addTopic(): void {
     this.editTopic?.editTopic(0);
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

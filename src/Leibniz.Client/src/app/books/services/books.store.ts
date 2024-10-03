@@ -15,7 +15,7 @@ import { BookListItem } from '../domain/book-list-item';
 import { AuthService } from '../../account/services/auth.service';
 import { appSettings } from '../../environments/environment';
 import { MessagesService } from '../../common/services/messages.service';
-import { ChangeEntry } from '../../common/domain/change-entry';
+import { ChangedEntity } from '../../common/domain/changed-entity';
 
 @Injectable({
   providedIn: 'root',
@@ -34,12 +34,14 @@ export class BooksStore {
   books$: Observable<ResultSet<BookListItem> | null> =
     this.booksSubject.asObservable();
 
-  private changesSubject = new BehaviorSubject<ChangeEntry<Book> | null>(null);
-  changes$: Observable<ChangeEntry<Book> | null> =
-    this.changesSubject.asObservable();
-
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
+
+  private changesSubject = new BehaviorSubject<ChangedEntity<Book> | null>(
+    null
+  );
+  changes$: Observable<ChangedEntity<Book> | null> =
+    this.changesSubject.asObservable();
 
   loadBooks(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
@@ -81,11 +83,7 @@ export class BooksStore {
       .addBook(book)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({
-          entity: book,
-          entityId: book.bookId,
-          type: 'added',
-        });
+        this.changesSubject.next({ changeType: 'added', data: book });
         this.messagesService.success(
           `Book ${book.title} [${book.author}] was added successfully.`,
           'Book added'
@@ -98,11 +96,7 @@ export class BooksStore {
       .updateBook(book)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({
-          entity: book,
-          entityId: book.bookId,
-          type: 'updated',
-        });
+        this.changesSubject.next({ changeType: 'updated', data: book });
         this.messagesService.success(
           `Book ${book.title} [${book.author}] was updated successfully.`,
           'Book updated'
@@ -115,11 +109,7 @@ export class BooksStore {
       .deleteBook(bookId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({
-          entity: null,
-          entityId: bookId,
-          type: 'deleted',
-        });
+        this.changesSubject.next({ changeType: 'deleted', id: bookId });
         this.messagesService.success(
           `Book was deleted successfully.`,
           'Book deleted'

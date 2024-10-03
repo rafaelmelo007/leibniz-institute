@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Book } from '../domain/book';
 import {
   Column,
@@ -9,6 +9,7 @@ import { LoadingComponent } from '../../common/components/loading/loading.compon
 import { CommonModule } from '@angular/common';
 import { EditBookComponent } from '../components/edit-book.component';
 import { BookListItem } from '../domain/book-list-item';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-books',
@@ -22,10 +23,11 @@ import { BookListItem } from '../domain/book-list-item';
   templateUrl: './books.component.html',
   styleUrl: './books.component.css',
 })
-export class BooksPage {
+export class BooksPage implements OnDestroy {
   @ViewChild(EditBookComponent) editBook?: EditBookComponent;
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: BookListItem[];
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   columns: Column[] = [
     {
@@ -99,8 +101,18 @@ export class BooksPage {
   loading?: boolean;
 
   constructor(private booksStore: BooksStore) {
+    this.subscribeBooks();
+    this.subscribeBookChanges();
+  }
+
+  subscribeBooks(): void {
+    const loading$ = this.booksStore.loading$;
+    loading$.pipe(takeUntil(this.destroyed$)).subscribe((loading) => {
+      this.grid?.setLoading(loading);
+    });
+
     const books$ = this.booksStore.books$;
-    books$.subscribe((books) => {
+    books$.pipe(takeUntil(this.destroyed$)).subscribe((books) => {
       this.loading = !books;
 
       if (!books || books.index == 0) {
@@ -115,9 +127,11 @@ export class BooksPage {
       this.dataSource = [...this.dataSource!, ...books.data];
       this.count = books.count;
     });
+  }
 
+  subscribeBookChanges(): void {
     const changes$ = this.booksStore.changes$;
-    changes$.subscribe(() => {
+    changes$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
       if (this.dataSource?.length == 0) return;
 
       this.dataSource = [];
@@ -131,5 +145,10 @@ export class BooksPage {
 
   addBook(): void {
     this.editBook?.editBook(0);
+  }
+  
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

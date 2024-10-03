@@ -12,6 +12,7 @@ import { Thesis } from '../domain/thesis';
 import { ThesesService } from './theses.service';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
+import { ChangedEntity } from '../../common/domain/changed-entity';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,12 @@ export class ThesesStore {
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
+
+  private changesSubject = new BehaviorSubject<ChangedEntity<Thesis> | null>(
+    null
+  );
+  changes$: Observable<ChangedEntity<Thesis> | null> =
+    this.changesSubject.asObservable();
 
   loadTheses(index: number, limit: number): void {
     this.loadingSubject.next(true);
@@ -62,6 +69,7 @@ export class ThesesStore {
       .addThesis(thesis)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'added', data: thesis });
         this.messagesService.success(
           `Thesis ${thesis.name} was added successfully.`,
           'Thesis added'
@@ -74,6 +82,7 @@ export class ThesesStore {
       .updateThesis(thesis)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'updated', data: thesis });
         this.messagesService.success(
           `Thesis ${thesis.name} was updated successfully.`,
           'Thesis updated'
@@ -86,6 +95,7 @@ export class ThesesStore {
       .deleteThesis(thesisId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'deleted', id: thesisId });
         this.messagesService.success(
           `Thesis was deleted successfully.`,
           'Thesis deleted'

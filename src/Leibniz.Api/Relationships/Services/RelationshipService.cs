@@ -73,7 +73,7 @@ public class RelationshipService : IRelationshipService
         throw new NotSupportedException();
     }
 
-    public int SaveRelationships(EntityType type, long id, Dictionary<EntityType, long> items)
+    public int SaveRelationships(EntityType type, long id, List<KeyValuePair<EntityType, long>> items)
     {
         var existing = _database.Relationships.Where(x => (x.EntityTypeA == type && x.EntityIdA == id) || (x.EntityTypeB == type && x.EntityIdB == id)).ToList();
         var selected = new List<Relationship>();

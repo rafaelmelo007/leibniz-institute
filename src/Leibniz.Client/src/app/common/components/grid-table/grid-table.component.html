@@ -82,9 +82,11 @@
                 !column.useBadge && !column.useHyperlink && !column.useImage
               "
             >
-              <span>{{
-                getFormattedValue(item[column.field], column.field)
-              }}</span>
+              <span
+                [innerHTML]="
+                  getFormattedValue(item[column.field], column.field)
+                "
+              ></span>
             </ng-container>
           </td>
           <td *ngIf="actions">

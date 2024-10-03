@@ -12,6 +12,7 @@ import { ResultSet } from '../../common/domain/result-set';
 import { Author } from '../domain/author';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
+import { ChangedEntity } from '../../common/domain/changed-entity';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,12 @@ export class AuthorsStore {
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
+
+  private changesSubject = new BehaviorSubject<ChangedEntity<Author> | null>(
+    null
+  );
+  changes$: Observable<ChangedEntity<Author> | null> =
+    this.changesSubject.asObservable();
 
   loadAuthors(index: number, limit: number): void {
     this.loadingSubject.next(true);
@@ -62,6 +69,7 @@ export class AuthorsStore {
       .addAuthor(author)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'added', data: author });
         this.messagesService.success(
           `Author ${author.name} was added successfully.`,
           'Author added'
@@ -74,6 +82,7 @@ export class AuthorsStore {
       .updateAuthor(author)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'updated', data: author });
         this.messagesService.success(
           `Author ${author.name} was updated successfully.`,
           'Author updated'
@@ -86,6 +95,7 @@ export class AuthorsStore {
       .deleteAuthor(authorId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'deleted', id: authorId });
         this.messagesService.success(
           `Author was deleted successfully.`,
           'Author deleted'

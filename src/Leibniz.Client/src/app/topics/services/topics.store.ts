@@ -12,6 +12,7 @@ import { TopicsService } from './topics.service';
 import { Topic } from '../domain/topic';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
+import { ChangedEntity } from '../../common/domain/changed-entity';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,12 @@ export class TopicsStore {
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
+
+  private changesSubject = new BehaviorSubject<ChangedEntity<Topic> | null>(
+    null
+  );
+  changes$: Observable<ChangedEntity<Topic> | null> =
+    this.changesSubject.asObservable();
 
   loadTopics(index: number, limit: number): void {
     this.loadingSubject.next(true);
@@ -62,6 +69,7 @@ export class TopicsStore {
       .addTopic(topic)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'added', data: topic });
         this.messagesService.success(
           `Topic ${topic.name} was added successfully.`,
           'Topic added'
@@ -74,6 +82,7 @@ export class TopicsStore {
       .updateTopic(topic)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'updated', data: topic });
         this.messagesService.success(
           `Topic ${topic.name} was updated successfully.`,
           'Topic updated'
@@ -86,6 +95,7 @@ export class TopicsStore {
       .deleteTopic(topicId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
+        this.changesSubject.next({ changeType: 'deleted', id: topicId });
         this.messagesService.success(
           `Topic was deleted successfully.`,
           'Topic deleted'

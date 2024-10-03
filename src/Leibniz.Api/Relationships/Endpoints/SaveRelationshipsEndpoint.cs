@@ -27,7 +27,8 @@ public class SaveRelationshipsEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var affected = relationshipService.SaveRelationships(request.Type, request.Id, request.Items.ToDictionary(x => x.TypeId, x => x.Id));
+        var relatedItems = request.Items.Select(x => new KeyValuePair<EntityType, long>(x.TypeId, x.Id)).ToList();
+        var affected = relationshipService.SaveRelationships(request.Type, request.Id, relatedItems);
 
         return TypedResults.Ok(new SaveRelationshipsResponse(affected));
     }

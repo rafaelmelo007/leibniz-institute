@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { LoadingComponent } from '../../common/components/loading/loading.component';
 import {
   Column,
@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { Link } from '../domain/link';
 import { LinksStore } from '../services/links.store';
 import { EditLinkComponent } from '../components/edit-link.component';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-links',
@@ -21,10 +22,11 @@ import { EditLinkComponent } from '../components/edit-link.component';
   templateUrl: './links.component.html',
   styleUrl: './links.component.css',
 })
-export class LinksPage {
+export class LinksPage implements OnDestroy {
   @ViewChild(EditLinkComponent) editLink?: EditLinkComponent;
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: Link[];
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   columns: Column[] = [
     {
@@ -75,8 +77,18 @@ export class LinksPage {
   loading?: boolean;
 
   constructor(private linksStore: LinksStore) {
+    this.subscribeLinks();
+    this.subscribeLinkChanges();
+  }
+
+  subscribeLinks(): void {
+    const loading$ = this.linksStore.loading$;
+    loading$.pipe(takeUntil(this.destroyed$)).subscribe((loading) => {
+      this.grid?.setLoading(loading);
+    });
+
     const links$ = this.linksStore.links$;
-    links$.subscribe((links) => {
+    links$.pipe(takeUntil(this.destroyed$)).subscribe((links) => {
       this.loading = !links;
 
       if (!links || links.index == 0) {
@@ -90,11 +102,40 @@ export class LinksPage {
     });
   }
 
+  subscribeLinkChanges(): void {
+    const changes$ = this.linksStore.changes$;
+    changes$.pipe(takeUntil(this.destroyed$)).subscribe((entry) => {
+      if (entry?.changeType == 'deleted') {
+        this.dataSource = this.dataSource?.filter((x) => x.linkId != entry.id);
+        this.count = (this.count ?? 0) - 1;
+      }
+      if (entry?.changeType == 'added') {
+        this.dataSource = [];
+        this.loadMore();
+      }
+      if (entry?.changeType == 'updated') {
+        this.dataSource = this.dataSource?.map((x) => {
+          if (x.linkId == entry.data?.linkId) {
+            x.name = entry.data.name;
+            x.content = entry.data.content;
+            x.url = entry.data.url;
+          }
+          return x;
+        });
+      }
+    });
+  }
+
   loadMore(): void {
     this.linksStore.loadLinks(this.dataSource?.length ?? 0, 50);
   }
 
   addLink(): void {
     this.editLink?.editLink(0);
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }
