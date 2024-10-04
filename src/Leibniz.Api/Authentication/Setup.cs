@@ -13,6 +13,8 @@ public static class Setup
             .MapEndpoint<SignInEndpoint>()
             .MapEndpoint<SignOutEndpoint>()
             .MapEndpoint<MeEndpoint>()
-            .MapEndpoint<RegisterEndpoint>();
+            .MapEndpoint<RegisterEndpoint>()
+            .MapEndpoint<ForgotPasswordSendMailEndpoint>()
+            .MapEndpoint<ForgotPasswordResetEndpoint>();
     }
 }

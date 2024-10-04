@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { DropdownComponent } from '../../components/dropdown/dropdown.component';
 import { RouterLink, RouterModule } from '@angular/router';
 import { AccountStore } from '../../../account/services/account.store';
@@ -13,7 +13,7 @@ import { MenuOption } from '../../domain/menu-option';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   menuList?: MenuOption[] = [
     {
       label: 'View Profile',
@@ -30,9 +30,7 @@ export class HeaderComponent implements OnInit {
 
   me?: Me | null;
 
-  constructor(private accountStore: AccountStore) {}
-
-  ngOnInit(): void {
+  constructor(private accountStore: AccountStore) {
     this.accountStore.me$
       .pipe(
         tap((res) => {

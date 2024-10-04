@@ -8,6 +8,8 @@ import { Me } from '../domain/me';
 import { User } from '../domain/user';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { AuthService } from './auth.service';
+import { MessagesService } from '../../common/services/messages.service';
+import { ResetPasswordRequest } from '../domain/reset-password-request';
 
 @Injectable({
   providedIn: 'root',
@@ -19,29 +21,16 @@ export class AccountStore implements OnDestroy {
     private router: Router,
     private errorHandlerService: ErrorHandlerService,
     private accountService: AccountsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private messagesService: MessagesService
   ) {
     this.isLoggedIn$ = this.user$.pipe(map((user) => !!user));
     this.isLoggedOut$ = this.isLoggedIn$.pipe(map((loggedIn) => !loggedIn));
 
-    const userToken = authService.getToken();
-    if (userToken) {
-      this.userSubject.next(userToken);
-      this.user$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
-        this.accountService
-          .me()
-          .pipe(catchError((err) => this.errorHandlerService.onError(err)))
-          .subscribe(
-            (data) => {
-              this.authService.setQueryStringToken(data.queryStringToken);
-              this.userInfoSubject.next(data);
-            },
-            (err) => {
-              return this.errorHandlerService.onError(err);
-            }
-          );
-      });
-    }
+    const errors$ = this.errorHandlerService.errors$;
+    errors$.subscribe((err) => {
+      this.messagesService.warn(err[0].message, err[0].title);
+    });
   }
 
   private userSubject = new BehaviorSubject<UserToken | null>(null);
@@ -52,7 +41,27 @@ export class AccountStore implements OnDestroy {
   isLoggedIn$: Observable<boolean>;
   isLoggedOut$: Observable<boolean>;
 
-  signIn(email?: string, password?: string): void {
+  tryRetrieveUser(): void {
+    const userToken = this.authService.getToken();
+    if (!userToken) return;
+    this.userSubject.next(userToken);
+    this.user$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+      this.accountService
+        .me()
+        .pipe(catchError((err) => this.errorHandlerService.onError(err)))
+        .subscribe(
+          (data) => {
+            this.authService.setQueryStringToken(data.queryStringToken);
+            this.userInfoSubject.next(data);
+          },
+          (err) => {
+            return this.errorHandlerService.onError(err);
+          }
+        );
+    });
+  }
+
+  signIn(email: string, password: string): void {
     this.accountService
       .signIn({ email, password })
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
@@ -60,6 +69,35 @@ export class AccountStore implements OnDestroy {
         this.authService.setToken(res);
         this.userSubject.next(res);
         this.router.navigate(['/pages/posts']);
+      });
+  }
+
+  forgotPassword(email: string): void {
+    this.accountService
+      .forgotPassword(email)
+      .pipe(catchError((err) => this.errorHandlerService.onError(err)))
+      .subscribe((success) => {
+        if (!success) return;
+        
+        this.router.navigate(['/pages/account/login']);
+        this.messagesService.success(
+          `E-mail sent to ${email} with instructions to reset the password.`,
+          'Email sent'
+        );
+      });
+  }
+
+  resetPassword(request: ResetPasswordRequest): void {
+    this.accountService
+      .resetPassword(request)
+      .pipe(catchError((err) => this.errorHandlerService.onError(err)))
+      .subscribe((success) => {
+        if (success) {
+          this.messagesService.success(
+            `User password was reset.`,
+            'Password sent'
+          );
+        }
       });
   }
 

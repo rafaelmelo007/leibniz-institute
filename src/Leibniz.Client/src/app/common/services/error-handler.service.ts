@@ -24,8 +24,10 @@ export class ErrorHandlerService {
   ) {}
 
   onError(err: any) {
-    const title = err.statusText || err.error?.title || 'Unknown Error';
-    const message = err.message || err.error?.detail || 'An error occurred';
+    const title = err.error?.length
+      ? 'ValidationError'
+      : err.statusText ?? err.error?.title;
+    const message = err.error?.[0]?.message ?? err.message ?? err.error?.detail;
     console.error(
       JSON.stringify(err),
       'token',

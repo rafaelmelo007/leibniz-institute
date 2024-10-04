@@ -7,6 +7,7 @@ import { appSettings } from '../../environments/environment';
 import { Me } from '../domain/me';
 import { User } from '../domain/user';
 import { CookieService } from 'ngx-cookie-service';
+import { ResetPasswordRequest } from '../domain/reset-password-request';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,26 @@ export class AccountsService {
     const result = this.http
       .post<UserToken>(`${appSettings.baseUrl}/auth/sign-in`, credentials)
       .pipe(map((res) => res));
+    return result;
+  }
+
+  forgotPassword(email: string): Observable<boolean> {
+    const result = this.http
+      .post<{ success: boolean }>(
+        `${appSettings.baseUrl}/auth/forgot-password`,
+        { email }
+      )
+      .pipe(map((res) => res.success));
+    return result;
+  }
+
+  resetPassword(request: ResetPasswordRequest): Observable<boolean> {
+    const result = this.http
+      .put<{ success: boolean }>(
+        `${appSettings.baseUrl}/auth/forgot-password`,
+        request
+      )
+      .pipe(map((res) => res.success));
     return result;
   }
 

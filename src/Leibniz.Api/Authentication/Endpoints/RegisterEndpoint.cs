@@ -1,6 +1,5 @@
 ﻿using Leibniz.Api.Common.Constants;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
 
 namespace Leibniz.Api.Authentication.Endpoints;
 public class RegisterEndpoint : IEndpoint
@@ -12,26 +11,30 @@ public class RegisterEndpoint : IEndpoint
         .WithSummary("Register a new user in the system");
 
     // Request / Response
-    public record RegisterRequest(string FullName, string Cpf, string City, string State, string Phone, string Website, string Email, string Password, bool AcceptedTermsAndConditions);
+    public record RegisterRequest(string FullName, string Cpf, string City, string State,
+        string Phone, string Website, string Email, string Password, bool AcceptedTermsAndConditions);
 
     // Handler
     public static async Task<IResult> Handle(
         [FromServices] IValidator<RegisterRequest> validator,
         [FromBody] RegisterRequest request,
+        [FromServices] NotificationHandler notifications,
         [FromServices] AcademyDbContext database,
         CancellationToken cancellationToken)
     {
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            return validationResult.Errors.ToProblems();
+            notifications.AddValidationErrors(validationResult.Errors);
+            return notifications.ToBadRequest();
         }
 
         var anyUser = await database.Users.AnyAsync();
         var user = database.Users.FirstOrDefault(x => x.Email == request.Email);
         if (user is not null)
         {
-            return $"User '{request.Email}' already exists".ToProblems();
+            notifications.AddNotification($"User '{request.Email}' already exists");
+            return notifications.ToBadRequest();
         }
 
         var (passwordHash, salt) = PasswordHasher.HashPassword(request.Password);
@@ -98,7 +101,8 @@ public class RegisterEndpoint : IEndpoint
                 .EmailAddress()
                 .NotEmpty();
             RuleFor(x => x.Password)
-                .NotEmpty();
+                .NotEmpty()
+                .MinimumLength(5);
             RuleFor(x => x.AcceptedTermsAndConditions)
                 .NotEmpty()
                 .NotEqual(false);

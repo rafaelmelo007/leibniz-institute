@@ -34,6 +34,7 @@ public class AcademyDbContext : DbContext
     public DbSet<Area> Areas { get; set; }
     public DbSet<Relationship> Relationships { get; set; }
     public DbSet<Image> Images { get; set; }
+    public DbSet<ForgotPassword> ForgotPasswords { get; set; }
 
     public override int SaveChanges()
     {

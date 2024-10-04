@@ -17,24 +17,28 @@ public class SignInEndpoint : IEndpoint
         [FromServices] IValidator<LoginRequest> validator,
         [FromServices] AcademyDbContext database,
         [FromServices] IDateTimeService dateTimeService,
+        [FromServices] NotificationHandler notifications,
         [FromBody] LoginRequest request,
         CancellationToken cancellationToken)
     {
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            return validationResult.Errors.ToProblems();
+            notifications.AddValidationErrors(validationResult.Errors);
+            return notifications.ToBadRequest();
         }
 
         var user = database.Users.FirstOrDefault(x => x.Email == request.Email);
         if (user is null)
         {
-            return "E-mail or password are invalid.".ToProblems();
+            notifications.AddNotification("E-mail or password are invalid.");
+            return notifications.ToBadRequest();
         }
 
         if (!PasswordHasher.VerifyPassword(request.Password, user.PasswordHash, user.Salt))
         {
-            return "E-mail or password are invalid.".ToProblems();
+            notifications.AddNotification("E-mail or password are invalid.");
+            return notifications.ToBadRequest();
         }
 
         var claimsPrincipal = new ClaimsPrincipal(
@@ -78,7 +82,8 @@ public class SignInEndpoint : IEndpoint
                 .EmailAddress()
                 .NotEmpty();
             RuleFor(x => x.Password)
-                .NotEmpty();
+                .NotEmpty()
+                .MinimumLength(5);
         }
     }
 }

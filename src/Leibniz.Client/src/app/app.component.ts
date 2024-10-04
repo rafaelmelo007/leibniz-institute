@@ -3,6 +3,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './common/components/header/header.component';
 import { LoadingComponent } from './common/components/loading/loading.component';
 import { MessagesService } from './common/services/messages.service';
+import { AccountStore } from './account/services/account.store';
 
 @Component({
   selector: 'app-root',
@@ -15,20 +16,27 @@ import { MessagesService } from './common/services/messages.service';
 export class AppComponent {
   showHeader = true;
 
-  constructor(private router: Router) {
-    this.router.events.subscribe(() => {
+  constructor(private router: Router, private accountStore: AccountStore) {
+    this.router.events.subscribe((ev: any) => {
       const currentUrl = this.router.url;
+      const type = ev.constructor.name;
+      if (type != 'NavigationEnd' || currentUrl == '/') return;
+
       this.showHeader = this.shouldShowHeader(currentUrl);
+      if (this.showHeader) {
+        this.accountStore.tryRetrieveUser();
+      }
     });
   }
 
   shouldShowHeader(url: string): boolean {
-    // Add paths where you don't want to show the header
     const noHeaderRoutes = [
       '/pages/account/login',
       '/pages/account/register',
       '/pages/account/forgot-password',
+      '/pages/account/reset-password',
     ];
+
     return !noHeaderRoutes.some((route) => url.startsWith(route));
   }
 }

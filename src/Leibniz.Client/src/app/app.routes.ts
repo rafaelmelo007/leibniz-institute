@@ -10,12 +10,14 @@ import { ThesesPage } from './theses/pages/theses.component';
 import { PeriodsPage } from './periods/pages/periods.component';
 import { AreasPage } from './areas/pages/areas.component';
 import { LinksPage } from './links/pages/links.component';
+import { ResetPasswordPage } from './account/pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
   /* Feature: Account */
   { path: 'pages/account/login', component: LoginPage },
   { path: 'pages/account/register', component: RegisterPage },
   { path: 'pages/account/forgot-password', component: ForgotPasswordPage },
+  { path: 'pages/account/reset-password', component: ResetPasswordPage },
 
   /* Feature: Posts */
   { path: 'pages/posts', component: PostsPage },
