@@ -10,7 +10,10 @@ public static class Setup
         root.MapGroup("/images")
             .WithTags("Images")
             .RequireAuthorization()
-            .MapEndpoint<GetImageEndpoint>();
+            .MapEndpoint<GetImageEndpoint>()
+            .MapEndpoint<GetImageByRefEndpoint>()
+            .MapEndpoint<UploadImageByRefEndpoint>()
+            .MapEndpoint<RemoveImageByRefEndpoint>();
     }
 }
 

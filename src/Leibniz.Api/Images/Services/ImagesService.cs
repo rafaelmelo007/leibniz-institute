@@ -47,6 +47,37 @@ public class ImagesService : IImagesService
         _database.SaveChanges();
     }
 
+    public async Task<bool> SaveImageAsync(string fileName, Stream stream, CancellationToken cancellationToken)
+    {
+        var rootPath = _configuration.RootFilePath;
+        if (rootPath is null) throw new ApplicationException("RootFilePath not configured.");
+
+        var filePath = Path.Combine(rootPath, fileName);
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+
+        using var fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write);
+        await stream.CopyToAsync(fileStream, cancellationToken);
+
+        return true;
+    }
+
+
+    public async Task<bool> RemoveImageAsync(string? fileName, CancellationToken cancellationToken)
+    {
+        var rootPath = _configuration.RootFilePath;
+        if (rootPath is null) throw new ApplicationException("RootFilePath not configured.");
+
+        var filePath = Path.Combine(rootPath, fileName);
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+        return true;
+    }
+
     public async Task<string?> GetImageFilePathAsync(string fileName,
         int? Width = default, int? Height = default,
         CancellationToken cancellationToken = default)
@@ -103,7 +134,6 @@ public class ImagesService : IImagesService
 
         return cachedFilePath;
     }
-
 
     #endregion
 }

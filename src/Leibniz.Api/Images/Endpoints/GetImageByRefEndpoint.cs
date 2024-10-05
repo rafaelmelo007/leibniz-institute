@@ -1,14 +1,14 @@
 ﻿namespace Leibniz.Api.Images.Endpoints;
-public class GetImageEndpoint : IEndpoint
+public class GetImageByRefEndpoint : IEndpoint
 {
     // End-point Map
-    public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-image", Handle)
+    public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-image-by-ref", Handle)
         .Produces<IResult>()
         .AllowAnonymous()
         .WithSummary("Retrieve a image");
 
     // Request / Response
-    public record GetImageRequest(string ImageFileName, int? Width = default, int Height = default);
+    public record GetImageByRefRequest(EntityType Type, long Id, Guid QueryStringToken);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -17,7 +17,7 @@ public class GetImageEndpoint : IEndpoint
         [FromServices] NotificationHandler notifications,
         [FromServices] AcademyDbContext database,
         [FromServices] IDateTimeService dateTimeService,
-        [AsParameters] GetImageRequest request,
+        [AsParameters] GetImageByRefRequest request,
         CancellationToken cancellationToken)
     {
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -27,18 +27,21 @@ public class GetImageEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var parts = request.ImageFileName.Split('~');
-        var fileName = parts.ElementAt(0);
-        Guid.TryParse(parts.ElementAt(1), out var guid);
+        var image = database.Images.FirstOrDefault(x =>
+            (x.EntityType == request.Type && x.EntityId == request.Id));
+
+        if (image is null || string.IsNullOrWhiteSpace(image.ImageFileName))
+        {
+            return TypedResults.NotFound();
+        }
 
         var allowSinceTime = dateTimeService.NowUtc.AddHours(-4);
-
-        if (!database.Users.Any(x => x.QueryStringToken == guid && x.UpdateDateUtc >= allowSinceTime))
+        if (!database.Users.Any(x => x.QueryStringToken == request.QueryStringToken && x.UpdateDateUtc >= allowSinceTime))
         {
             return TypedResults.Forbid();
         }
 
-        var imageFilePath = await imagesService.GetImageFilePathAsync(fileName, request.Width, request.Height, cancellationToken);
+        var imageFilePath = await imagesService.GetImageFilePathAsync(image.ImageFileName, default, default, cancellationToken);
         if (imageFilePath is null)
         {
             return TypedResults.NotFound();
@@ -48,14 +51,12 @@ public class GetImageEndpoint : IEndpoint
     }
 
     // Validations
-    public class Validator : AbstractValidator<GetImageRequest>
+    public class Validator : AbstractValidator<GetImageByRefRequest>
     {
         public Validator()
         {
-            RuleFor(x => x.ImageFileName)
-                .NotEmpty();
+            RuleFor(x => x.Id)
+                .GreaterThanOrEqualTo(0);
         }
     }
 }
-
-

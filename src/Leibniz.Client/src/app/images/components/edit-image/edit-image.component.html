@@ -1,0 +1,33 @@
+<div class="container mt-4">
+  <form>
+    @if(imageUrl) {
+    <div class="row">
+      <div class="col">
+        <img [src]="imageUrl" style="max-width: 500px; max-height: 350px" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button class="btn btn-danger btn-sm" (click)="removeImage()">
+          <i class="fa fa-remove"></i> Remove Image
+        </button>
+      </div>
+    </div>
+    }
+
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label for="file" class="form-label mt-4">Image File</label>
+          <input
+            class="form-control"
+            formControlName="file"
+            type="file"
+            placeholder="File"
+            (change)="uploadFile($event)"
+          />
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

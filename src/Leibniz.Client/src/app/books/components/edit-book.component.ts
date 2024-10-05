@@ -12,8 +12,9 @@ import { Book } from '../domain/book';
 import { BooksStore } from '../services/books.store';
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
 import { MenuOption } from '../../common/domain/menu-option';
-import { TabsComponent } from "../../common/components/tabs/tabs.component";
-import { EditReferencesComponent } from "../../relationships/components/edit-references/edit-references.component";
+import { TabsComponent } from '../../common/components/tabs/tabs.component';
+import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
+import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
 
 @Component({
   selector: 'app-edit-book',
@@ -24,14 +25,15 @@ import { EditReferencesComponent } from "../../relationships/components/edit-ref
     ReactiveFormsModule,
     FieldValidationErrorsComponent,
     TabsComponent,
-    EditReferencesComponent
-],
+    EditReferencesComponent,
+    EditImageComponent,
+  ],
   templateUrl: './edit-book.component.html',
   styleUrl: './edit-book.component.css',
 })
 export class EditBookComponent {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
-  
+
   bookId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
@@ -70,6 +72,14 @@ export class EditBookComponent {
       selected: true,
       action: () => {
         this.selectedTab = 'REFERENCES';
+      },
+    },
+    {
+      label: 'Image',
+      icon: 'fa fa-image',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'IMAGE';
       },
     },
   ];
