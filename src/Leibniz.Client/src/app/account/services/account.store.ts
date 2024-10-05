@@ -78,7 +78,7 @@ export class AccountStore implements OnDestroy {
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe((success) => {
         if (!success) return;
-        
+
         this.router.navigate(['/pages/account/login']);
         this.messagesService.success(
           `E-mail sent to ${email} with instructions to reset the password.`,
@@ -97,6 +97,7 @@ export class AccountStore implements OnDestroy {
             `User password was reset.`,
             'Password sent'
           );
+          this.router.navigate(['/pages/account/login']);
         }
       });
   }

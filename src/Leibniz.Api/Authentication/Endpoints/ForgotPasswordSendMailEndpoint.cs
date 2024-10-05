@@ -16,6 +16,8 @@ public class ForgotPasswordSendMailEndpoint : IEndpoint
         [FromServices] AcademyDbContext database,
         [FromServices] IDateTimeService dateTimeService,
         [FromServices] NotificationHandler notifications,
+        [FromServices] IEmailService emailService,
+        HttpContext httpContext,
         [FromBody] ForgotPasswordRequest request,
         CancellationToken cancellationToken)
     {
@@ -40,15 +42,33 @@ public class ForgotPasswordSendMailEndpoint : IEndpoint
         await database.ForgotPasswords.AddAsync(forgotPassword, cancellationToken);
         await database.SaveChangesAsync(cancellationToken);
 
-        await SendEmailToResetPasswordAsync(forgotPassword.ChangePasswordToken, cancellationToken);
+        var referrerUrl = httpContext.Request.Headers["Referer"].ToString();
+
+        await SendEmailToResetPasswordAsync(user.Email, referrerUrl,
+            forgotPassword.ChangePasswordToken, emailService, cancellationToken);
 
         return TypedResults.Ok(new { success = true });
     }
 
-    private static Task<bool> SendEmailToResetPasswordAsync(Guid changePasswordToken, CancellationToken cancellationToken)
+    private static async Task<bool> SendEmailToResetPasswordAsync(
+        string email, string referrerUrl, Guid changePasswordToken,
+        IEmailService emailService, CancellationToken cancellationToken)
     {
-        // TODO: Create the routine to send the e-mail
-        return Task.FromResult(true);
+        string subject = "Reset Your Password";
+        string body = $@"
+            <html>
+            <body>
+                <h1>Password Reset Request</h1>
+                <p>You requested a password reset. Click the link below to reset your password:</p>
+                <a href='{referrerUrl}/pages/account/reset-password?changePasswordToken={changePasswordToken}'>Reset Password</a>
+                <p>This link will expire in 4 hours.</p>
+            </body>
+            </html>
+        ";
+
+        await emailService.SendEmailAsync(email, subject, body);
+
+        return true;
     }
 
     // Validations
