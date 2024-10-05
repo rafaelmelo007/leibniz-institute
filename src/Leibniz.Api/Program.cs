@@ -12,7 +12,6 @@ using Leibniz.Api.Import;
 using Leibniz.Api.Areas;
 using Leibniz.Api.Images;
 using Leibniz.Api.Relationships;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(probeForEnv: true, probeLevelsToSearch: 6));
@@ -29,6 +28,9 @@ builder.Services.AddScoped<NotificationHandler>();
 
 var emailConfiguration = builder.Configuration.GetSection(nameof(EmailConfiguration)).Get<EmailConfiguration>();
 builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection(nameof(EmailConfiguration)));
+
+var imageConfiguration = builder.Configuration.GetSection(nameof(Leibniz.Api.Images.ImageConfiguration)).Get<Leibniz.Api.Images.ImageConfiguration>();
+builder.Services.Configure<Leibniz.Api.Images.ImageConfiguration>(builder.Configuration.GetSection(nameof(Leibniz.Api.Images.ImageConfiguration)));
 
 builder.Services.AddPersistence(builder.Configuration, false);
 

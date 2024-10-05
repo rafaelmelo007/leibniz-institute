@@ -59,19 +59,19 @@
           >
             <ng-container *ngIf="column.useBadge">
               <span [ngClass]="getBadgeClass(item[column.field], column)">
-                {{ getFormattedValue(item[column.field], column.field) }}
+                {{ getFormattedValue(item[column.field], column) }}
               </span>
             </ng-container>
 
             <ng-container *ngIf="column.useHyperlink">
               <a href="javascript:;" (click)="clickLink(item, column)">
-                {{ getFormattedValue(item[column.field], column.field) }}
+                {{ getFormattedValue(item[column.field], column) }}
               </a>
             </ng-container>
 
             <ng-container *ngIf="column.useImage">
               <img
-                [src]="getFormattedValue(item[column.field], column.field)"
+                [src]="getFormattedValue(item[column.field], column)"
                 [style.maxHeight]="column.maxImageHeight + 'px'"
                 [style.maxWidth]="column.maxImageWidth + 'px'"
               />
@@ -83,9 +83,7 @@
               "
             >
               <span
-                [innerHTML]="
-                  getFormattedValue(item[column.field], column.field)
-                "
+                [innerHTML]="getFormattedValue(item[column.field], column)"
               ></span>
             </ng-container>
           </td>

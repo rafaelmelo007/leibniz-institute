@@ -163,9 +163,14 @@ export class GridTableComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  getFormattedValue(value: any, field: string): string {
+  getFormattedValue(value: any, column: Column): string {
+    const field = column.field;
     if (typeof value === 'number' && field.indexOf('price') !== -1) {
       return this.decimalPipe.transform(value, '1.2-2') || '';
+    }
+
+    if (column.useImage && !!value) {
+      return `${value}&width=${column.maxImageWidth}&height=${column.maxImageHeight}`;
     }
 
     if (typeof value == 'string') return value.replace(/\n/g, '<br />');

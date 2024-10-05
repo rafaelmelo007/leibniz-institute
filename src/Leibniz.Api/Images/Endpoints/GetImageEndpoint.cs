@@ -8,7 +8,7 @@ public class GetImageEndpoint : IEndpoint
         .WithSummary("Retrieve a image");
 
     // Request / Response
-    public record GetImageRequest(string ImageFileName);
+    public record GetImageRequest(string ImageFileName, int? Width = default, int Height = default);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -36,11 +36,12 @@ public class GetImageEndpoint : IEndpoint
             return TypedResults.Forbid();
         }
 
-        var image = await database.Images.FirstOrDefaultAsync(x => x.ImageFileName == fileName);
-        if (image is null) return TypedResults.NotFound();
-
-        var imageFilePath = imagesService.GetFilePath(image.ImageFileName);
-        return Results.File(imageFilePath, "application/octet-stream", image.ImageFileName);
+        var imageFilePath = await imagesService.GetImageFilePathAsync(fileName, request.Width, request.Height, cancellationToken);
+        if (imageFilePath is null)
+        {
+            return TypedResults.NotFound();
+        }
+        return Results.File(imageFilePath, "application/octet-stream", Path.GetFileName(imageFilePath));
     }
 
     // Validations
