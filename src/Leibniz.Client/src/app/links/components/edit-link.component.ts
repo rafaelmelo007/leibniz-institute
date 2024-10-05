@@ -14,6 +14,7 @@ import { EditTabType } from '../../relationships/components/domain/edit-tab-type
 import { EditReferencesComponent } from "../../relationships/components/edit-references/edit-references.component";
 import { MenuOption } from '../../common/domain/menu-option';
 import { TabsComponent } from "../../common/components/tabs/tabs.component";
+import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
 
 @Component({
   selector: 'app-edit-link',
@@ -24,7 +25,8 @@ import { TabsComponent } from "../../common/components/tabs/tabs.component";
     CommonModule,
     ReactiveFormsModule,
     EditReferencesComponent,
-    TabsComponent
+    TabsComponent,
+    EditImageComponent
 ],
   templateUrl: './edit-link.component.html',
   styleUrl: './edit-link.component.css',
@@ -58,6 +60,14 @@ export class EditLinkComponent {
       selected: true,
       action: () => {
         this.selectedTab = 'REFERENCES';
+      },
+    },
+    {
+      label: 'Image',
+      icon: 'fa fa-image',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'IMAGE';
       },
     },
   ];

@@ -9,6 +9,8 @@ import { Topic } from '../domain/topic';
 import { TopicsStore } from '../services/topics.store';
 import { EditTopicComponent } from '../components/edit-topic.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
+import { ImagesStore } from '../../images/services/images.store';
+import { AuthService } from '../../account/services/auth.service';
 
 @Component({
   selector: 'app-topics',
@@ -28,7 +30,19 @@ export class TopicsPage implements OnDestroy {
   dataSource?: Topic[];
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
+  maxImageWidth = 120;
+  maxImageHeight = 140;
+
   columns: Column[] = [
+    {
+      field: 'imageFileName',
+      header: '',
+      width: '130px',
+      textAlign: 'center',
+      useImage: true,
+      maxImageWidth: this.maxImageWidth,
+      maxImageHeight: this.maxImageHeight,
+    },
     {
       field: 'name',
       header: 'Name',
@@ -65,10 +79,18 @@ export class TopicsPage implements OnDestroy {
 
   count?: number;
   loading?: boolean;
+  queryStringToken: string | null;
 
-  constructor(private topicsStore: TopicsStore) {
+  constructor(
+    private topicsStore: TopicsStore,
+    private imagesStore: ImagesStore,
+    private authService: AuthService
+  ) {
     this.subscribeTopics();
     this.subscribeTopicChanges();
+    this.subscribeImageChanges();
+
+    this.queryStringToken = this.authService.getQueryStringToken();
   }
 
   subscribeTopics(): void {
@@ -112,6 +134,28 @@ export class TopicsPage implements OnDestroy {
           return x;
         });
       }
+    });
+  }
+
+  subscribeImageChanges(): void {
+    const imageExists$ = this.imagesStore.imageExists$;
+    imageExists$.pipe(takeUntil(this.destroyed$)).subscribe((res) => {
+      const exists = res.exists;
+
+      this.dataSource?.forEach((topic) => {
+        if (res.ref?.type != 'topic' || res.ref.id != topic.topicId) return;
+        if (!this.queryStringToken) return;
+
+        topic.imageFileName = exists
+          ? this.imagesStore.getImageUrl(
+              res.ref.type,
+              res.ref.id,
+              this.queryStringToken,
+              this.maxImageWidth,
+              this.maxImageHeight
+            )
+          : null;
+      });
     });
   }
 

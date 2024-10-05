@@ -13,6 +13,8 @@ import { Author } from '../domain/author';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
+import { appSettings } from '../../environments/environment';
+import { AuthService } from '../../account/services/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +22,7 @@ import { ChangedEntity } from '../../common/domain/changed-entity';
 export class AuthorsStore {
   constructor(
     private authorsService: AuthorsService,
+    private authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
     private messagesService: MessagesService
   ) {}
@@ -38,11 +41,19 @@ export class AuthorsStore {
     this.changesSubject.asObservable();
 
   loadAuthors(index: number, limit: number): void {
+    var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.authorsService
       .loadAuthors(index, limit)
       .pipe(
-        tap((authors) => this.authorsSubject.next(authors)),
+        tap((res) => {
+          res.data.forEach((author) => {
+            if (author.imageFileName == null) return;
+
+            author.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${author.imageFileName}~${queryStringToken}`;
+          });
+          return this.authorsSubject.next(res);
+        }),
         catchError((err) => {
           this.errorHandlerService.onError(err);
           return of(null);

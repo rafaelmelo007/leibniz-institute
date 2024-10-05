@@ -13,6 +13,8 @@ import { Topic } from '../domain/topic';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
+import { AuthService } from '../../account/services/auth.service';
+import { appSettings } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +22,7 @@ import { ChangedEntity } from '../../common/domain/changed-entity';
 export class TopicsStore {
   constructor(
     private topicsService: TopicsService,
+    private authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
     private messagesService: MessagesService
   ) {}
@@ -38,11 +41,19 @@ export class TopicsStore {
     this.changesSubject.asObservable();
 
   loadTopics(index: number, limit: number): void {
+    var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.topicsService
       .loadTopics(index, limit)
       .pipe(
-        tap((topics) => this.topicsSubject.next(topics)),
+        tap((res) => {
+          res.data.forEach((topic) => {
+            if (topic.imageFileName == null) return;
+
+            topic.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${topic.imageFileName}~${queryStringToken}`;
+          });
+          return this.topicsSubject.next(res);
+        }),
         catchError((err) => {
           this.errorHandlerService.onError(err);
           return of(null);

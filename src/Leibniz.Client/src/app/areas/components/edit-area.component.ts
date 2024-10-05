@@ -14,6 +14,7 @@ import { TabsComponent } from '../../common/components/tabs/tabs.component';
 import { MenuOption } from '../../common/domain/menu-option';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
+import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
 
 @Component({
   selector: 'app-edit-area',
@@ -25,7 +26,8 @@ import { EditTabType } from '../../relationships/components/domain/edit-tab-type
     ReactiveFormsModule,
     TabsComponent,
     EditReferencesComponent,
-  ],
+    EditImageComponent
+],
   templateUrl: './edit-area.component.html',
   styleUrl: './edit-area.component.css',
 })
@@ -57,6 +59,14 @@ export class EditAreaComponent {
       selected: true,
       action: () => {
         this.selectedTab = 'REFERENCES';
+      },
+    },
+    {
+      label: 'Image',
+      icon: 'fa fa-image',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'IMAGE';
       },
     },
   ];

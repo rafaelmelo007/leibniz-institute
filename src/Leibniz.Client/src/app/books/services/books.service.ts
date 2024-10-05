@@ -37,10 +37,13 @@ export class BooksService {
     return result;
   }
 
-  updateBook(book: Book): Observable<number> {
+  updateBook(book: Book): Observable<boolean> {
     const result = this.http
-      .put<number>(`${appSettings.baseUrl}/books/update-book`, book)
-      .pipe(map((res) => res));
+      .put<{ changed: boolean }>(
+        `${appSettings.baseUrl}/books/update-book`,
+        book
+      )
+      .pipe(map((res) => res.changed));
     return result;
   }
 

@@ -13,7 +13,8 @@ public static class Setup
             .MapEndpoint<GetImageEndpoint>()
             .MapEndpoint<GetImageByRefEndpoint>()
             .MapEndpoint<UploadImageByRefEndpoint>()
-            .MapEndpoint<RemoveImageByRefEndpoint>();
+            .MapEndpoint<RemoveImageByRefEndpoint>()
+            .MapEndpoint<ImageExistsByRefEndpoint>();
     }
 }
 

@@ -66,5 +66,15 @@
         [id]="areaId"
       ></app-edit-references>
     </div>
+    <div
+      class="tab-content"
+      [style.display]="selectedTab == 'IMAGE' ? 'block' : 'none'"
+    >
+      <app-edit-image
+        [style.height]="'100%'"
+        [type]="'area'"
+        [id]="areaId"
+      ></app-edit-image>
+    </div>
   </ng-container>
 </app-dialog-window>

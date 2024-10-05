@@ -13,6 +13,8 @@ import { ResultSet } from '../../common/domain/result-set';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
+import { AuthService } from '../../account/services/auth.service';
+import { appSettings } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +22,7 @@ import { ChangedEntity } from '../../common/domain/changed-entity';
 export class PostsStore {
   constructor(
     private postsService: PostsService,
+    private authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
     private messagesService: MessagesService
   ) {}
@@ -37,11 +40,19 @@ export class PostsStore {
     this.changesSubject.asObservable();
 
   loadPosts(index: number, limit: number, query: string = ''): void {
+    var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.postsService
       .loadPosts(index, limit, query)
       .pipe(
-        tap((posts) => this.postsSubject.next(posts)),
+        tap((res) => {
+          res.data.forEach((post) => {
+            if (post.imageFileName == null) return;
+
+            post.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${post.imageFileName}~${queryStringToken}`;
+          });
+          return this.postsSubject.next(res);
+        }),
         catchError((err) => {
           this.errorHandlerService.onError(err);
           return of(null);

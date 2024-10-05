@@ -1,4 +1,6 @@
-﻿namespace Leibniz.Api.Periods.Endpoints;
+﻿using static Leibniz.Api.Links.Endpoints.GetLinksEndpoint;
+
+namespace Leibniz.Api.Periods.Endpoints;
 public class GetPeriodsEndpoint : IEndpoint
 {
     // End-point Map
@@ -8,7 +10,8 @@ public class GetPeriodsEndpoint : IEndpoint
 
     // Request / Response
     public record GetPeriodsRequest(int Index, int Limit);
-    public record GetPeriodsResponse(List<Period> Data, int Index, int Limit, int Count);
+    public record GetPeriodsResponse(IEnumerable<PeriodRead> Data, int Index, int Limit, int Count);
+    public record PeriodRead(long PeriodId, string? Name, string? Content, string ImageFileName);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -27,7 +30,16 @@ public class GetPeriodsEndpoint : IEndpoint
 
         var count = await database.Periods.CountAsync();
         var rows = await database.Periods.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
-        return TypedResults.Ok(new GetPeriodsResponse(rows, request.Index, request.Limit, count));
+        var ids = rows.Select(x => x.PeriodId).ToList();
+        var images = database.Images.Where(x => x.EntityType == EntityType.Period && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
+        var periods = rows.Select(x => new PeriodRead
+        (
+            PeriodId: x.PeriodId,
+            Name: x.Name,
+            Content: x.Content,
+            ImageFileName: images.ContainsKey(x.PeriodId) ? images[x.PeriodId] : default
+        ));
+        return TypedResults.Ok(new GetPeriodsResponse(periods, request.Index, request.Limit, count));
     }
 
     // Validations

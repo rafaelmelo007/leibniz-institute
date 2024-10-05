@@ -9,6 +9,8 @@ import { ThesesStore } from '../services/theses.store';
 import { CommonModule } from '@angular/common';
 import { EditThesisComponent } from '../components/edit-thesis.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
+import { ImagesStore } from '../../images/services/images.store';
+import { AuthService } from '../../account/services/auth.service';
 
 @Component({
   selector: 'app-theses',
@@ -28,7 +30,19 @@ export class ThesesPage implements OnDestroy {
   dataSource?: Thesis[];
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
+  maxImageWidth = 120;
+  maxImageHeight = 140;
+
   columns: Column[] = [
+    {
+      field: 'imageFileName',
+      header: '',
+      width: '130px',
+      textAlign: 'center',
+      useImage: true,
+      maxImageWidth: this.maxImageWidth,
+      maxImageHeight: this.maxImageHeight,
+    },
     {
       field: 'name',
       header: 'Name',
@@ -65,10 +79,18 @@ export class ThesesPage implements OnDestroy {
 
   count?: number;
   loading?: boolean;
+  queryStringToken: string | null;
 
-  constructor(private thesesStore: ThesesStore) {
+  constructor(
+    private thesesStore: ThesesStore,
+    private imagesStore: ImagesStore,
+    private authService: AuthService
+  ) {
     this.subscribeTheses();
     this.subscribeThesisChanges();
+    this.subscribeImageChanges();
+
+    this.queryStringToken = this.authService.getQueryStringToken();
   }
 
   subscribeTheses(): void {
@@ -117,6 +139,28 @@ export class ThesesPage implements OnDestroy {
     });
   }
 
+  subscribeImageChanges(): void {
+    const imageExists$ = this.imagesStore.imageExists$;
+    imageExists$.pipe(takeUntil(this.destroyed$)).subscribe((res) => {
+      const exists = res.exists;
+
+      this.dataSource?.forEach((thesis) => {
+        if (res.ref?.type != 'thesis' || res.ref.id != thesis.thesisId) return;
+        if (!this.queryStringToken) return;
+
+        thesis.imageFileName = exists
+          ? this.imagesStore.getImageUrl(
+              res.ref.type,
+              res.ref.id,
+              this.queryStringToken,
+              this.maxImageWidth,
+              this.maxImageHeight
+            )
+          : null;
+      });
+    });
+  }
+
   loadMore(): void {
     this.thesesStore.loadTheses(this.dataSource?.length ?? 0, 25);
   }
@@ -124,7 +168,7 @@ export class ThesesPage implements OnDestroy {
   addThesis(): void {
     this.editThesis?.editThesis(0);
   }
-  
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

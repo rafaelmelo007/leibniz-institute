@@ -49,13 +49,13 @@ export class BooksStore {
     this.booksService
       .loadBooks(index, limit)
       .pipe(
-        tap((books) => {
-          books.data.forEach((book) => {
+        tap((res) => {
+          res.data.forEach((book) => {
             if (book.imageFileName == null) return;
 
             book.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${book.imageFileName}~${queryStringToken}`;
           });
-          return this.booksSubject.next(books);
+          return this.booksSubject.next(res);
         }),
         catchError((err) => {
           this.errorHandlerService.onError(err);
@@ -95,7 +95,9 @@ export class BooksStore {
     this.booksService
       .updateBook(book)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
-      .subscribe(() => {
+      .subscribe((changed) => {
+        if (!changed) return;
+
         this.changesSubject.next({ changeType: 'updated', data: book });
         this.messagesService.success(
           `Book ${book.title} [${book.author}] was updated successfully.`,

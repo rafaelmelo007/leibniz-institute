@@ -8,7 +8,8 @@ public class GetAuthorsEndpoint : IEndpoint
 
     // Request / Response
     public record GetAuthorsRequest(int Index, int Limit);
-    public record GetAuthorsResponse(List<Author> Data, int Index, int Limit, int Count);
+    public record GetAuthorsResponse(IEnumerable<AuthorRead> Data, int Index, int Limit, int Count);
+    public record AuthorRead(long AuthorId, string? Name, string? Content, string ImageFileName);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -27,7 +28,16 @@ public class GetAuthorsEndpoint : IEndpoint
 
         var count = await database.Authors.CountAsync();
         var rows = await database.Authors.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
-        return TypedResults.Ok(new GetAuthorsResponse(rows, request.Index, request.Limit, count));
+        var ids = rows.Select(x => x.AuthorId).ToList();
+        var images = database.Images.Where(x => x.EntityType == EntityType.Author && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
+        var authors = rows.Select(x => new AuthorRead
+        (
+            AuthorId: x.AuthorId,
+            Name: x.Name,
+            Content: x.Content,
+            ImageFileName: images.ContainsKey(x.AuthorId) ? images[x.AuthorId] : default
+        ));
+        return TypedResults.Ok(new GetAuthorsResponse(authors, request.Index, request.Limit, count));
     }
 
     // Validations

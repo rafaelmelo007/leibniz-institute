@@ -9,12 +9,36 @@ import { map, Observable } from 'rxjs';
 })
 export class ImagesService {
   constructor(private http: HttpClient) {}
-  getImageUrl(type: EntityType, id: number, queryStringToken: string): string {
+
+  imageExists(
+    type: EntityType,
+    id: number,
+    queryStringToken: string
+  ): Observable<boolean> {
+    const result = this.http
+      .get<{ exists: boolean }>(
+        `${appSettings.baseUrl}/images/image-exists-by-ref?Type=${this.toTypeId(
+          type
+        )}&Id=${id}&QueryStringToken=${queryStringToken}`
+      )
+      .pipe(map((res) => res.exists));
+    return result;
+  }
+
+  getImageUrl(
+    type: EntityType,
+    id: number,
+    queryStringToken: string,
+    maxWidth?: number,
+    maxHeight?: number
+  ): string {
     const url = `${
       appSettings.baseUrl
     }/images/get-image-by-ref?Type=${this.toTypeId(
       type
-    )}&Id=${id}&QueryStringToken=${queryStringToken}`;
+    )}&Id=${id}&QueryStringToken=${queryStringToken}&Width=${
+      maxWidth !== undefined ? maxWidth : ''
+    }&Height=${maxHeight !== undefined ? maxHeight : ''}`;
 
     return url;
   }

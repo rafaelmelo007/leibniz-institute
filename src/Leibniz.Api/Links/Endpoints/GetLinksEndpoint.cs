@@ -8,7 +8,8 @@ public class GetLinksEndpoint : IEndpoint
 
     // Request / Response
     public record GetLinksRequest(int Index, int Limit);
-    public record GetLinksResponse(List<Link> Data, int Index, int Limit, int Count);
+    public record GetLinksResponse(IEnumerable<LinkRead> Data, int Index, int Limit, int Count);
+    public record LinkRead(long LinkId, string? Name, string? Content, string? Url, string ImageFileName);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -27,7 +28,17 @@ public class GetLinksEndpoint : IEndpoint
 
         var count = await database.Links.CountAsync();
         var rows = await database.Links.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
-        return TypedResults.Ok(new GetLinksResponse(rows, request.Index, request.Limit, count));
+        var ids = rows.Select(x => x.LinkId).ToList();
+        var images = database.Images.Where(x => x.EntityType == EntityType.Link && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
+        var links = rows.Select(x => new LinkRead
+        (
+            LinkId: x.LinkId,
+            Name: x.Name,
+            Content: x.Content,
+            Url: x.Url,
+            ImageFileName: images.ContainsKey(x.LinkId) ? images[x.LinkId] : default
+        ));
+        return TypedResults.Ok(new GetLinksResponse(links, request.Index, request.Limit, count));
     }
 
     // Validations

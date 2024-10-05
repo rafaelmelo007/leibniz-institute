@@ -8,7 +8,8 @@ public class GetThesesEndpoint : IEndpoint
 
     // Request / Response
     public record GetThesesRequest(int Index, int Limit);
-    public record GetThesesResponse(List<Thesis> Data, int Index, int Limit, int Count);
+    public record GetThesesResponse(IEnumerable<ThesisRead> Data, int Index, int Limit, int Count);
+    public record ThesisRead(long ThesisId, string? Name, string? Content, string ImageFileName);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -27,7 +28,16 @@ public class GetThesesEndpoint : IEndpoint
 
         var count = await database.Theses.CountAsync();
         var rows = await database.Theses.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
-        return TypedResults.Ok(new GetThesesResponse(rows, request.Index, request.Limit, count));
+        var ids = rows.Select(x => x.ThesisId).ToList();
+        var images = database.Images.Where(x => x.EntityType == EntityType.Thesis && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
+        var theses = rows.Select(x => new ThesisRead
+        (
+            ThesisId: x.ThesisId,
+            Name: x.Name,
+            Content: x.Content,
+            ImageFileName: images.ContainsKey(x.ThesisId) ? images[x.ThesisId] : default
+        ));
+        return TypedResults.Ok(new GetThesesResponse(theses, request.Index, request.Limit, count));
     }
 
     // Validations

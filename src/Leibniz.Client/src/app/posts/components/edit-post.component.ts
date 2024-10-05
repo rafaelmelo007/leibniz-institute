@@ -14,6 +14,7 @@ import { TabsComponent } from '../../common/components/tabs/tabs.component';
 import { MenuOption } from '../../common/domain/menu-option';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
+import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
 
 @Component({
   selector: 'app-edit-post',
@@ -25,6 +26,7 @@ import { EditTabType } from '../../relationships/components/domain/edit-tab-type
     FieldValidationErrorsComponent,
     TabsComponent,
     EditReferencesComponent,
+    EditImageComponent,
   ],
   templateUrl: './edit-Post.component.html',
   styleUrl: './edit-Post.component.css',
@@ -61,6 +63,14 @@ export class EditPostComponent {
       selected: true,
       action: () => {
         this.selectedTab = 'REFERENCES';
+      },
+    },
+    {
+      label: 'Image',
+      icon: 'fa fa-image',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'IMAGE';
       },
     },
   ];

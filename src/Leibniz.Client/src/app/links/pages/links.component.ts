@@ -9,6 +9,8 @@ import { Link } from '../domain/link';
 import { LinksStore } from '../services/links.store';
 import { EditLinkComponent } from '../components/edit-link.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
+import { ImagesStore } from '../../images/services/images.store';
+import { AuthService } from '../../account/services/auth.service';
 
 @Component({
   selector: 'app-links',
@@ -28,7 +30,19 @@ export class LinksPage implements OnDestroy {
   dataSource?: Link[];
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
+  maxImageWidth = 120;
+  maxImageHeight = 140;
+
   columns: Column[] = [
+    {
+      field: 'imageFileName',
+      header: '',
+      width: '130px',
+      textAlign: 'center',
+      useImage: true,
+      maxImageWidth: this.maxImageWidth,
+      maxImageHeight: this.maxImageHeight,
+    },
     {
       field: 'name',
       header: 'Name',
@@ -73,12 +87,19 @@ export class LinksPage implements OnDestroy {
   ];
 
   count?: number;
-
   loading?: boolean;
+  queryStringToken: string | null;
 
-  constructor(private linksStore: LinksStore) {
+  constructor(
+    private linksStore: LinksStore,
+    private imagesStore: ImagesStore,
+    private authService: AuthService
+  ) {
     this.subscribeLinks();
     this.subscribeLinkChanges();
+    this.subscribeImageChanges();
+
+    this.queryStringToken = this.authService.getQueryStringToken();
   }
 
   subscribeLinks(): void {
@@ -123,6 +144,28 @@ export class LinksPage implements OnDestroy {
           return x;
         });
       }
+    });
+  }
+
+  subscribeImageChanges(): void {
+    const imageExists$ = this.imagesStore.imageExists$;
+    imageExists$.pipe(takeUntil(this.destroyed$)).subscribe((res) => {
+      const exists = res.exists;
+
+      this.dataSource?.forEach((link) => {
+        if (res.ref?.type != 'link' || res.ref.id != link.linkId) return;
+        if (!this.queryStringToken) return;
+
+        link.imageFileName = exists
+          ? this.imagesStore.getImageUrl(
+              res.ref.type,
+              res.ref.id,
+              this.queryStringToken,
+              this.maxImageWidth,
+              this.maxImageHeight
+            )
+          : null;
+      });
     });
   }
 

@@ -9,7 +9,8 @@ public class GetAreasEndpoint : IEndpoint
 
     // Request / Response
     public record GetAreasRequest(int Index, int Limit);
-    public record GetAreasResponse(List<Area> Data, int Index, int Limit, int Count);
+    public record GetAreasResponse(IEnumerable<AreaRead> Data, int Index, int Limit, int Count);
+    public record AreaRead(long AreaId, string? Name, string? Content, string ImageFileName);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -27,8 +28,17 @@ public class GetAreasEndpoint : IEndpoint
         }
 
         var count = await database.Areas.CountAsync();
-        var rows = await database.Areas.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
-        return TypedResults.Ok(new GetAreasResponse(rows, request.Index, request.Limit, count));
+        var rows = await database.Areas.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).ToListAsync();
+        var ids = rows.Select(x => x.AreaId).ToList();
+        var images = database.Images.Where(x => x.EntityType == EntityType.Area && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
+        var areas = rows.Select(x => new AreaRead
+        (
+            AreaId: x.AreaId,
+            Name: x.Name,
+            Content: x.Content,
+            ImageFileName: images.ContainsKey(x.AreaId) ? images[x.AreaId] : default
+        ));
+        return TypedResults.Ok(new GetAreasResponse(areas, request.Index, request.Limit, count));
     }
 
     // Validations

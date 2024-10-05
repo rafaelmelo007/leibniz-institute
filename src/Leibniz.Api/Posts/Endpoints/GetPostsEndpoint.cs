@@ -11,7 +11,8 @@ public class GetPostsEndpoint : IEndpoint
 
     // Request / Response
     public record GetPostsRequest(int Index, int Limit, string Query);
-    public record GetPostsResponse(List<Post> Data, int Index, int Limit, int Count);
+    public record GetPostsResponse(IEnumerable<PostRead> Data, int Index, int Limit, int Count);
+    public record PostRead(long PostId, string? Title, string? Content, string? Author, string ImageFileName);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -31,7 +32,17 @@ public class GetPostsEndpoint : IEndpoint
         Expression<Func<Post, bool>> where = x => string.IsNullOrEmpty(request.Query) || x.Title.Contains(request.Query) || x.Content.Contains(request.Query) || x.Author.Contains(request.Query);
         var count = await database.Posts.Where(where).CountAsync();
         var rows = await database.Posts.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
-        return TypedResults.Ok(new GetPostsResponse(rows, request.Index, request.Limit, count));
+        var ids = rows.Select(x => x.PostId).ToList();
+        var images = database.Images.Where(x => x.EntityType == EntityType.Post && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
+        var posts = rows.Select(x => new PostRead
+        (
+            PostId: x.PostId,
+            Title: x.Title,
+            Content: x.Content,
+            Author: x.Author,
+            ImageFileName: images.ContainsKey(x.PostId) ? images[x.PostId] : default
+        ));
+        return TypedResults.Ok(new GetPostsResponse(posts, request.Index, request.Limit, count));
     }
 
     // Validations

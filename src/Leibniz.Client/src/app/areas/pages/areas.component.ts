@@ -9,6 +9,8 @@ import { AreasStore } from '../services/areas.store';
 import { CommonModule } from '@angular/common';
 import { EditAreaComponent } from '../components/edit-area.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
+import { ImagesStore } from '../../images/services/images.store';
+import { AuthService } from '../../account/services/auth.service';
 
 @Component({
   selector: 'app-areas',
@@ -28,7 +30,19 @@ export class AreasPage implements OnDestroy {
   dataSource?: Area[];
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
+  maxImageWidth = 120;
+  maxImageHeight = 140;
+
   columns: Column[] = [
+    {
+      field: 'imageFileName',
+      header: '',
+      width: '130px',
+      textAlign: 'center',
+      useImage: true,
+      maxImageWidth: this.maxImageWidth,
+      maxImageHeight: this.maxImageHeight,
+    },
     {
       field: 'name',
       header: 'Name',
@@ -64,10 +78,17 @@ export class AreasPage implements OnDestroy {
   ];
 
   count?: number;
+  queryStringToken: string | null;
 
-  constructor(private areasStore: AreasStore) {
+  constructor(
+    private areasStore: AreasStore,
+    private imagesStore: ImagesStore,
+    private authService: AuthService
+  ) {
     this.subscribeAreas();
     this.subscribeAreaChanges();
+    this.subscribeImageChanges();
+    this.queryStringToken = this.authService.getQueryStringToken();
   }
 
   subscribeAreas(): void {
@@ -109,6 +130,28 @@ export class AreasPage implements OnDestroy {
           return x;
         });
       }
+    });
+  }
+
+  subscribeImageChanges(): void {
+    const imageExists$ = this.imagesStore.imageExists$;
+    imageExists$.pipe(takeUntil(this.destroyed$)).subscribe((res) => {
+      const exists = res.exists;
+
+      this.dataSource?.forEach((area) => {
+        if (res.ref?.type != 'area' || res.ref.id != area.areaId) return;
+        if (!this.queryStringToken) return;
+
+        area.imageFileName = exists
+          ? this.imagesStore.getImageUrl(
+              res.ref.type,
+              res.ref.id,
+              this.queryStringToken,
+              this.maxImageWidth,
+              this.maxImageHeight
+            )
+          : null;
+      });
     });
   }
 

@@ -9,6 +9,8 @@ import { Period } from '../domain/period';
 import { PeriodsStore } from '../services/periods.store';
 import { EditPeriodComponent } from '../components/edit-period.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
+import { ImagesStore } from '../../images/services/images.store';
+import { AuthService } from '../../account/services/auth.service';
 
 @Component({
   selector: 'app-periods',
@@ -28,7 +30,19 @@ export class PeriodsPage implements OnDestroy {
   dataSource?: Period[];
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
+  maxImageWidth = 120;
+  maxImageHeight = 140;
+
   columns: Column[] = [
+    {
+      field: 'imageFileName',
+      header: '',
+      width: '130px',
+      textAlign: 'center',
+      useImage: true,
+      maxImageWidth: this.maxImageWidth,
+      maxImageHeight: this.maxImageHeight,
+    },
     {
       field: 'name',
       header: 'Name',
@@ -65,10 +79,18 @@ export class PeriodsPage implements OnDestroy {
 
   count?: number;
   loading?: boolean;
+  queryStringToken: string | null;
 
-  constructor(private periodsStore: PeriodsStore) {
+  constructor(
+    private periodsStore: PeriodsStore,
+    private imagesStore: ImagesStore,
+    private authService: AuthService
+  ) {
     this.subscribePeriods();
     this.subscribePeriodChanges();
+    this.subscribeImageChanges();
+
+    this.queryStringToken = this.authService.getQueryStringToken();
   }
 
   subscribePeriods(): void {
@@ -114,6 +136,28 @@ export class PeriodsPage implements OnDestroy {
           return x;
         });
       }
+    });
+  }
+
+  subscribeImageChanges(): void {
+    const imageExists$ = this.imagesStore.imageExists$;
+    imageExists$.pipe(takeUntil(this.destroyed$)).subscribe((res) => {
+      const exists = res.exists;
+
+      this.dataSource?.forEach((period) => {
+        if (res.ref?.type != 'period' || res.ref.id != period.periodId) return;
+        if (!this.queryStringToken) return;
+
+        period.imageFileName = exists
+          ? this.imagesStore.getImageUrl(
+              res.ref.type,
+              res.ref.id,
+              this.queryStringToken,
+              this.maxImageWidth,
+              this.maxImageHeight
+            )
+          : null;
+      });
     });
   }
 

@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
 import { EditBookComponent } from '../components/edit-book.component';
 import { BookListItem } from '../domain/book-list-item';
 import { ReplaySubject, takeUntil } from 'rxjs';
+import { ImagesStore } from '../../images/services/images.store';
+import { AuthService } from '../../account/services/auth.service';
 
 @Component({
   selector: 'app-books',
@@ -27,7 +29,11 @@ export class BooksPage implements OnDestroy {
   @ViewChild(EditBookComponent) editBook?: EditBookComponent;
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: BookListItem[];
+  queryStringToken?: string | null;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
+  maxImageWidth = 120;
+  maxImageHeight = 140;
 
   columns: Column[] = [
     {
@@ -36,8 +42,8 @@ export class BooksPage implements OnDestroy {
       width: '130px',
       textAlign: 'center',
       useImage: true,
-      maxImageWidth: 120,
-      maxImageHeight: 140,
+      maxImageWidth: this.maxImageWidth,
+      maxImageHeight: this.maxImageHeight,
     },
     {
       field: 'title',
@@ -100,9 +106,15 @@ export class BooksPage implements OnDestroy {
 
   loading?: boolean;
 
-  constructor(private booksStore: BooksStore) {
+  constructor(
+    private booksStore: BooksStore,
+    private imagesStore: ImagesStore,
+    private authService: AuthService
+  ) {
     this.subscribeBooks();
     this.subscribeBookChanges();
+    this.subscribeImageChanges();
+    this.queryStringToken = this.authService.getQueryStringToken();
   }
 
   subscribeBooks(): void {
@@ -139,6 +151,28 @@ export class BooksPage implements OnDestroy {
     });
   }
 
+  subscribeImageChanges(): void {
+    const imageExists$ = this.imagesStore.imageExists$;
+    imageExists$.pipe(takeUntil(this.destroyed$)).subscribe((res) => {
+      const exists = res.exists;
+
+      this.dataSource?.forEach((book) => {
+        if (res.ref?.type != 'book' || res.ref.id != book.bookId) return;
+        if (!this.queryStringToken) return;
+
+        book.imageFileName = exists
+          ? this.imagesStore.getImageUrl(
+              res.ref.type,
+              res.ref.id,
+              this.queryStringToken,
+              this.maxImageWidth,
+              this.maxImageHeight
+            )
+          : null;
+      });
+    });
+  }
+
   loadMore(): void {
     this.booksStore.loadBooks(this.dataSource?.length ?? 0, 25);
   }
@@ -146,7 +180,7 @@ export class BooksPage implements OnDestroy {
   addBook(): void {
     this.editBook?.editBook(0);
   }
-  
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

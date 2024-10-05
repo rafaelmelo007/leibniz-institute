@@ -14,6 +14,7 @@ import { TabsComponent } from '../../common/components/tabs/tabs.component';
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
 import { MenuOption } from '../../common/domain/menu-option';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
+import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
 
 @Component({
   selector: 'app-edit-period',
@@ -25,7 +26,8 @@ import { EditReferencesComponent } from '../../relationships/components/edit-ref
     ReactiveFormsModule,
     TabsComponent,
     EditReferencesComponent,
-  ],
+    EditImageComponent
+],
   templateUrl: './edit-period.component.html',
   styleUrl: './edit-period.component.css',
 })
@@ -57,6 +59,14 @@ export class EditPeriodComponent {
       selected: true,
       action: () => {
         this.selectedTab = 'REFERENCES';
+      },
+    },
+    {
+      label: 'Image',
+      icon: 'fa fa-image',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'IMAGE';
       },
     },
   ];

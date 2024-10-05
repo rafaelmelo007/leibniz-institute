@@ -6,4 +6,5 @@ export interface Post {
   bookId: number | null;
   page: number | null;
   reference: string | null;
+  imageFileName?: string | null;
 }

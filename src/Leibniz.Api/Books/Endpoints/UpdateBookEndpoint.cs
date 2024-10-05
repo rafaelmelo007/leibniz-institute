@@ -12,7 +12,7 @@ public class UpdateBookEndpoint : IEndpoint
         short? TotalOfPages, decimal? Price, DateOnly? PurchasedDate,
         string? Translator, short? Year, string? Local,
         decimal? SizeX, decimal? SizeY, decimal? SizeZ);
-    public record UpdateBookResponse(long BookId);
+    public record UpdateBookResponse(bool Changed);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -54,9 +54,9 @@ public class UpdateBookEndpoint : IEndpoint
         entry.SizeY = request.SizeY;
         entry.SizeZ = request.SizeZ;
 
-        await database.SaveChangesAsync(cancellationToken);
+        var changed = await database.SaveChangesAsync(cancellationToken) > 0;
 
-        return TypedResults.Ok(new UpdateBookResponse(entry.BookId));
+        return TypedResults.Ok(new UpdateBookResponse(changed));
     }
 
     // Validations

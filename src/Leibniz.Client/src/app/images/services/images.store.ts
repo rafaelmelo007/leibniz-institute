@@ -3,7 +3,7 @@ import { ErrorHandlerService } from '../../common/services/error-handler.service
 import { MessagesService } from '../../common/services/messages.service';
 import { ImagesService } from './images.service';
 import { EntityType } from '../../relationships/components/domain/entity-type';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, Observable, of } from 'rxjs';
 import { ChangedEntity } from '../../common/domain/changed-entity';
 import { RefItem } from '../../common/domain/ref-item';
 
@@ -17,14 +17,43 @@ export class ImagesStore {
     private messagesService: MessagesService
   ) {}
 
-  private changesSubject = new BehaviorSubject<ChangedEntity<RefItem> | null>(
-    null
-  );
-  changes$: Observable<ChangedEntity<RefItem> | null> =
-    this.changesSubject.asObservable();
+  private imageExistsSubject = new BehaviorSubject<{
+    ref?: RefItem;
+    exists: boolean;
+  }>({ ref: undefined, exists: false });
+  imageExists$: Observable<{
+    ref?: RefItem;
+    exists: boolean;
+  }> = this.imageExistsSubject.asObservable();
 
-  getImageUrl(type: EntityType, id: number, queryStringToken: string): string {
-    return this.imagesService.getImageUrl(type, id, queryStringToken);
+  getImageUrl(
+    type: EntityType,
+    id: number,
+    queryStringToken: string,
+    maxWidth?: number,
+    maxHeight?: number
+  ): string {
+    return this.imagesService.getImageUrl(
+      type,
+      id,
+      queryStringToken,
+      maxWidth,
+      maxHeight
+    );
+  }
+
+  imageExists(type: EntityType, id: number, queryStringToken: string): void {
+    const result = this.imagesService
+      .imageExists(type, id, queryStringToken)
+      .pipe(
+        catchError((err) => {
+          this.errorHandlerService.onError(err);
+          return of(false);
+        })
+      )
+      .subscribe((exists) => {
+        this.imageExistsSubject.next({ ref: { type: type, id: id }, exists });
+      });
   }
 
   uploadImage(
@@ -40,10 +69,9 @@ export class ImagesStore {
           'The image was uploaded successfully',
           'Image added'
         );
-        this.changesSubject.next({
-          changeType: 'added',
-          data: { type, id },
-          id: id,
+        this.imageExistsSubject.next({
+          ref: { type: type, id: id },
+          exists: true,
         });
       });
   }
@@ -54,10 +82,9 @@ export class ImagesStore {
         'The image was removed successfully',
         'Image deleted'
       );
-      this.changesSubject.next({
-        changeType: 'deleted',
-        data: { type, id },
-        id: id,
+      this.imageExistsSubject.next({
+        ref: { type: type, id: id },
+        exists: false,
       });
     });
   }

@@ -8,7 +8,8 @@ public class GetTopicsEndpoint : IEndpoint
 
     // Request / Response
     public record GetTopicsRequest(int Index, int Limit);
-    public record GetTopicsResponse(List<Topic> Data, int Index, int Limit, int Count);
+    public record GetTopicsResponse(IEnumerable<TopicRead> Data, int Index, int Limit, int Count);
+    public record TopicRead(long TopicId, string? Name, string? Content, string ImageFileName);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -27,7 +28,16 @@ public class GetTopicsEndpoint : IEndpoint
 
         var count = await database.Topics.CountAsync();
         var rows = await database.Topics.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
-        return TypedResults.Ok(new GetTopicsResponse(rows, request.Index, request.Limit, count));
+        var ids = rows.Select(x => x.TopicId).ToList();
+        var images = database.Images.Where(x => x.EntityType == EntityType.Topic && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
+        var topics = rows.Select(x => new TopicRead
+        (
+            TopicId: x.TopicId,
+            Name: x.Name,
+            Content: x.Content,
+            ImageFileName: images.ContainsKey(x.TopicId) ? images[x.TopicId] : default
+        ));
+        return TypedResults.Ok(new GetTopicsResponse(topics, request.Index, request.Limit, count));
     }
 
     // Validations

@@ -14,6 +14,7 @@ import { MenuOption } from '../../common/domain/menu-option';
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
 import { TabsComponent } from "../../common/components/tabs/tabs.component";
 import { EditReferencesComponent } from "../../relationships/components/edit-references/edit-references.component";
+import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
 
 @Component({
   selector: 'app-edit-author',
@@ -24,7 +25,8 @@ import { EditReferencesComponent } from "../../relationships/components/edit-ref
     CommonModule,
     ReactiveFormsModule,
     TabsComponent,
-    EditReferencesComponent
+    EditReferencesComponent,
+    EditImageComponent
 ],
   templateUrl: './edit-author.component.html',
   styleUrl: './edit-author.component.css',
@@ -59,6 +61,14 @@ export class EditAuthorComponent {
         this.selectedTab = 'REFERENCES';
       },
     },
+    {
+      label: 'Image',
+      icon: 'fa fa-image',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'IMAGE';
+      },
+    }
   ];
 
   constructor(private authorsStore: AuthorsStore) {}

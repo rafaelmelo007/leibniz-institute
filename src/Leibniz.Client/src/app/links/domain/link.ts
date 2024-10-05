@@ -3,4 +3,5 @@ export interface Link {
   name: string;
   content: string;
   url: string;
+  imageFileName?: string | null;
 }

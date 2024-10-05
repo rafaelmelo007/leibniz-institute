@@ -23,32 +23,13 @@ export class EditImageComponent implements AfterViewInit {
   @Input() id?: number;
   imageUrl?: string;
   queryStringToken?: string | null;
+  exists = false;
 
   constructor(
     private imagesStore: ImagesStore,
     private authService: AuthService
   ) {
-    const changes$ = this.imagesStore.changes$;
-    changes$.subscribe((res) => {
-      if (
-        res?.changeType == 'deleted' &&
-        res.data?.type == this.type &&
-        res.data?.id == this.id
-      ) {
-        this.imageUrl = undefined;
-      } else if (
-        res?.changeType == 'added' &&
-        res.data?.type == this.type &&
-        res.data?.id == this.id
-      ) {
-        if (!this.type || !this.id || !this.queryStringToken) return;
-        this.imageUrl = this.imagesStore.getImageUrl(
-          this.type,
-          this.id,
-          this.queryStringToken
-        );
-      }
-    });
+    this.subscribeImageExists();
   }
 
   ngAfterViewInit(): void {
@@ -61,6 +42,15 @@ export class EditImageComponent implements AfterViewInit {
       this.id,
       this.queryStringToken
     );
+
+    this.imagesStore.imageExists(this.type, this.id, this.queryStringToken);
+  }
+
+  subscribeImageExists(): void {
+    const exists$ = this.imagesStore.imageExists$;
+    exists$.subscribe((res) => {
+      this.exists = res.exists;
+    });
   }
 
   uploadFile(event: any) {

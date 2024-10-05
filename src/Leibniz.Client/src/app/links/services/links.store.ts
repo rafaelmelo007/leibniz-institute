@@ -13,6 +13,8 @@ import { Link } from '../domain/link';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
+import { appSettings } from '../../environments/environment';
+import { AuthService } from '../../account/services/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +22,7 @@ import { ChangedEntity } from '../../common/domain/changed-entity';
 export class LinksStore {
   constructor(
     private linksService: LinksService,
+    private authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
     private messagesService: MessagesService
   ) {}
@@ -37,11 +40,19 @@ export class LinksStore {
     this.changesSubject.asObservable();
 
   loadLinks(index: number, limit: number): void {
+    var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.linksService
       .loadLinks(index, limit)
       .pipe(
-        tap((links) => this.linksSubject.next(links)),
+        tap((res) => {
+          res.data.forEach((link) => {
+            if (link.imageFileName == null) return;
+
+            link.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${link.imageFileName}~${queryStringToken}`;
+          });
+          return this.linksSubject.next(res);
+        }),
         catchError((err) => {
           this.errorHandlerService.onError(err);
           return of(null);
