@@ -15,6 +15,7 @@ import { MenuOption } from '../../common/domain/menu-option';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
 import { TabsComponent } from "../../common/components/tabs/tabs.component";
 import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
+import { MoveToComponent } from "../../common/components/move-to/move-to.component";
 
 @Component({
   selector: 'app-edit-topic',
@@ -26,7 +27,8 @@ import { EditImageComponent } from "../../images/components/edit-image/edit-imag
     FieldValidationErrorsComponent,
     EditReferencesComponent,
     TabsComponent,
-    EditImageComponent
+    EditImageComponent,
+    MoveToComponent
 ],
   templateUrl: './edit-topic.component.html',
   styleUrl: './edit-topic.component.css',
@@ -67,6 +69,14 @@ export class EditTopicComponent {
       selected: true,
       action: () => {
         this.selectedTab = 'IMAGE';
+      },
+    },
+    {
+      label: 'Move To',
+      icon: 'fa fa-arrows',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'MOVE_TO';
       },
     },
   ];

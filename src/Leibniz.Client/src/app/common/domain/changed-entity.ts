@@ -1,5 +1,8 @@
+import { ChangeType } from './change-type';
+import { RefItem } from './ref-item';
+
 export interface ChangedEntity<T> {
-  id?: number | null;
+  ref: RefItem;
   data?: T | null;
-  changeType: 'added' | 'updated' | 'deleted';
+  changeType: ChangeType;
 }

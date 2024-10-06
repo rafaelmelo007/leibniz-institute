@@ -127,7 +127,7 @@ export class LinksPage implements OnDestroy {
     const changes$ = this.linksStore.changes$;
     changes$.pipe(takeUntil(this.destroyed$)).subscribe((entry) => {
       if (entry?.changeType == 'deleted') {
-        this.dataSource = this.dataSource?.filter((x) => x.linkId != entry.id);
+        this.dataSource = this.dataSource?.filter((x) => x.linkId != entry.ref.id);
         this.count = (this.count ?? 0) - 1;
       }
       if (entry?.changeType == 'added') {

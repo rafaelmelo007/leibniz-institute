@@ -1,5 +1,4 @@
-﻿
-namespace Leibniz.Api.Relationships.Services;
+﻿namespace Leibniz.Api.Relationships.Services;
 public class RelationshipService : IRelationshipService
 {
     private readonly AcademyDbContext _database;
@@ -73,6 +72,21 @@ public class RelationshipService : IRelationshipService
         throw new NotSupportedException();
     }
 
+    public async Task<long> MoveToAsync(EntityType fromType, long id, EntityType toType, CancellationToken cancellationToken)
+    {
+        if (fromType == toType) return 0;
+
+        var entity = await RemoveEntityAsync(fromType, id, cancellationToken);
+        var newId = await SaveMovedEntityAsync(entity, toType, cancellationToken);
+
+        await ChangeRelationshipsAsync(fromType, id, toType, newId, cancellationToken);
+        await ChangeImagesAsync(fromType, id, toType, newId, cancellationToken);
+
+        await _database.SaveChangesAsync(cancellationToken);
+
+        return newId;
+    }
+
     public int SaveRelationships(EntityType type, long id, List<KeyValuePair<EntityType, long>> items)
     {
         var existing = _database.Relationships.Where(x => (x.EntityTypeA == type && x.EntityIdA == id) || (x.EntityTypeB == type && x.EntityIdB == id)).ToList();
@@ -107,6 +121,218 @@ public class RelationshipService : IRelationshipService
     }
 
     #region Helper Methods
+
+    private class EntityItem
+    {
+        public string? Name { get; set; }
+        public string? Content { get; set; }
+        public string? Author { get; set; }
+    };
+
+    private async Task<bool> ChangeImagesAsync(EntityType fromType, long fromId, EntityType toType, long toId, CancellationToken cancellationToken)
+    {
+        var images = await _database.Images.Where(x => x.EntityType == fromType && x.EntityId == fromId).ToListAsync(cancellationToken);
+        images.ForEach(x =>
+        {
+            x.EntityType = toType;
+            x.EntityId = toId;
+        });
+        return true;
+    }
+
+    private async Task<long> SaveMovedEntityAsync(EntityItem entity, EntityType toType, CancellationToken cancellationToken)
+    {
+        if (toType == EntityType.Author)
+        {
+            var row = new Author
+            {
+                Name = entity.Name,
+                Content = entity.Content,
+            };
+            await _database.Authors.AddAsync(row);
+            await _database.SaveChangesAsync(cancellationToken);
+            return row.AuthorId;
+        }
+
+        else if (toType == EntityType.Post)
+        {
+            var row = new Post
+            {
+                Title = entity.Name,
+                Content = entity.Content,
+                Author = entity.Author,
+            };
+            await _database.Posts.AddAsync(row);
+            await _database.SaveChangesAsync(cancellationToken);
+            return row.PostId;
+        }
+
+        else if (toType == EntityType.Area)
+        {
+            var row = new Area
+            {
+                Name = entity.Name,
+                Content = entity.Content,
+            };
+            await _database.Areas.AddAsync(row);
+            await _database.SaveChangesAsync(cancellationToken);
+            return row.AreaId;
+        }
+
+        else if (toType == EntityType.Book)
+        {
+            var row = new Book
+            {
+                Title = entity.Name,
+                Content = entity.Content,
+                Author = entity.Author,
+            };
+            await _database.Books.AddAsync(row);
+            await _database.SaveChangesAsync(cancellationToken);
+            return row.BookId;
+        }
+
+        else if (toType == EntityType.Link)
+        {
+            var row = new Link
+            {
+                Name = entity.Name,
+                Content = entity.Content,
+                Url = entity.Author,
+            };
+            await _database.Links.AddAsync(row);
+            await _database.SaveChangesAsync(cancellationToken);
+            return row.LinkId;
+        }
+
+        else if (toType == EntityType.Period)
+        {
+            var row = new Period
+            {
+                Name = entity.Name,
+                Content = entity.Content,
+            };
+            await _database.Periods.AddAsync(row);
+            await _database.SaveChangesAsync(cancellationToken);
+            return row.PeriodId;
+        }
+
+        else if (toType == EntityType.Thesis)
+        {
+            var row = new Thesis
+            {
+                Name = entity.Name,
+                Content = entity.Content,
+            };
+            await _database.Theses.AddAsync(row);
+            await _database.SaveChangesAsync(cancellationToken);
+            return row.ThesisId;
+        }
+
+        else if (toType == EntityType.Topic)
+        {
+            var row = new Topic
+            {
+                Name = entity.Name,
+                Content = entity.Content,
+            };
+            await _database.Topics.AddAsync(row);
+            await _database.SaveChangesAsync(cancellationToken);
+            return row.TopicId;
+        }
+        return -1;
+    }
+
+    private async Task<IEnumerable<Relationship>> ChangeRelationshipsAsync(EntityType fromType, long fromId, EntityType toType, long toId, CancellationToken cancellationToken)
+    {
+        var items = await _database.Relationships.Where(x => (x.EntityTypeA == fromType && x.EntityIdA == fromId) || (x.EntityTypeB == fromType && x.EntityIdB == fromId)).ToListAsync(cancellationToken);
+        items.ForEach(x =>
+        {
+            if (x.EntityTypeA == fromType && x.EntityIdA == fromId)
+            {
+                x.EntityTypeA = toType;
+                x.EntityIdA = toId;
+            }
+            else if (x.EntityTypeB == fromType && x.EntityIdB == fromId)
+            {
+                x.EntityTypeB = toType;
+                x.EntityIdB = toId;
+            }
+        });
+        return items;
+    }
+
+    private async Task<EntityItem> RemoveEntityAsync(EntityType fromType, long id, CancellationToken cancellationToken)
+    {
+        var entity = new EntityItem();
+        if (fromType == EntityType.Author)
+        {
+            var row = await _database.Authors.FirstOrDefaultAsync(x => x.AuthorId == id, cancellationToken);
+            entity.Name = row.Name;
+            entity.Content = row.Content;
+            _database.Authors.Remove(row);
+        }
+
+        else if (fromType == EntityType.Post)
+        {
+            var row = await _database.Posts.FirstOrDefaultAsync(x => x.PostId == id, cancellationToken);
+            entity.Name = row.Title;
+            entity.Content = row.Content;
+            entity.Author = row.Author;
+            _database.Posts.Remove(row);
+        }
+
+        else if (fromType == EntityType.Area)
+        {
+            var row = await _database.Areas.FirstOrDefaultAsync(x => x.AreaId == id, cancellationToken);
+            entity.Name = row.Name;
+            entity.Content = row.Content;
+            _database.Areas.Remove(row);
+        }
+
+        else if (fromType == EntityType.Book)
+        {
+            var row = await _database.Books.FirstOrDefaultAsync(x => x.BookId == id, cancellationToken);
+            entity.Name = row.Title;
+            entity.Content = row.Content;
+            entity.Author = row.Author;
+            _database.Books.Remove(row);
+        }
+
+        else if (fromType == EntityType.Link)
+        {
+            var row = await _database.Links.FirstOrDefaultAsync(x => x.LinkId == id, cancellationToken);
+            entity.Name = row.Name;
+            entity.Content = row.Content;
+            entity.Author = row.Url;
+            _database.Links.Remove(row);
+        }
+
+        else if (fromType == EntityType.Period)
+        {
+            var row = await _database.Periods.FirstOrDefaultAsync(x => x.PeriodId == id, cancellationToken);
+            entity.Name = row.Name;
+            entity.Content = row.Content;
+            _database.Periods.Remove(row);
+        }
+
+        else if (fromType == EntityType.Thesis)
+        {
+            var row = await _database.Theses.FirstOrDefaultAsync(x => x.ThesisId == id, cancellationToken);
+            entity.Name = row.Name;
+            entity.Content = row.Content;
+            _database.Theses.Remove(row);
+        }
+
+        else if (fromType == EntityType.Topic)
+        {
+            var row = await _database.Topics.FirstOrDefaultAsync(x => x.TopicId == id, cancellationToken);
+            entity.Name = row.Name;
+            entity.Content = row.Content;
+            _database.Topics.Remove(row);
+        }
+        return entity;
+    }
 
     private long GetIdByName(EntityType source, string name)
     {

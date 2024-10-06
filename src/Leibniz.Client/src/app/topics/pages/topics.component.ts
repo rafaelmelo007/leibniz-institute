@@ -118,7 +118,7 @@ export class TopicsPage implements OnDestroy {
     const changes$ = this.topicsStore.changes$;
     changes$.pipe(takeUntil(this.destroyed$)).subscribe((entry) => {
       if (entry?.changeType == 'deleted') {
-        this.dataSource = this.dataSource?.filter((x) => x.topicId != entry.id);
+        this.dataSource = this.dataSource?.filter((x) => x.topicId != entry.ref.id);
         this.count = (this.count ?? 0) - 1;
       }
       if (entry?.changeType == 'added') {

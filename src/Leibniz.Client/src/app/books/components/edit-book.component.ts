@@ -15,6 +15,7 @@ import { MenuOption } from '../../common/domain/menu-option';
 import { TabsComponent } from '../../common/components/tabs/tabs.component';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
 import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
+import { MoveToComponent } from "../../common/components/move-to/move-to.component";
 
 @Component({
   selector: 'app-edit-book',
@@ -27,7 +28,8 @@ import { EditImageComponent } from '../../images/components/edit-image/edit-imag
     TabsComponent,
     EditReferencesComponent,
     EditImageComponent,
-  ],
+    MoveToComponent
+],
   templateUrl: './edit-book.component.html',
   styleUrl: './edit-book.component.css',
 })
@@ -80,6 +82,14 @@ export class EditBookComponent {
       selected: true,
       action: () => {
         this.selectedTab = 'IMAGE';
+      },
+    },
+    {
+      label: 'Move To',
+      icon: 'fa fa-arrows',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'MOVE_TO';
       },
     },
   ];

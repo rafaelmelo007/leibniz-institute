@@ -15,6 +15,7 @@ import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
 import { appSettings } from '../../environments/environment';
 import { AuthService } from '../../account/services/auth.service';
+import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,8 +25,11 @@ export class AreasStore {
     private areasService: AreasService,
     private authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
-    private messagesService: MessagesService
-  ) {}
+    private messagesService: MessagesService,
+    private changeTrackerService: ChangeTrackerService
+  ) {
+    this.changes$ = this.changeTrackerService.asObservable<Area>();
+  }
 
   private areasSubject = new BehaviorSubject<ResultSet<Area> | null>(null);
   areas$: Observable<ResultSet<Area> | null> = this.areasSubject.asObservable();
@@ -33,11 +37,7 @@ export class AreasStore {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
-  private changesSubject = new BehaviorSubject<ChangedEntity<Area> | null>(
-    null
-  );
-  changes$: Observable<ChangedEntity<Area> | null> =
-    this.changesSubject.asObservable();
+  changes$: Observable<ChangedEntity<Area> | null>;
 
   loadAreas(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
@@ -78,8 +78,8 @@ export class AreasStore {
     this.areasService
       .addArea(area)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
-      .subscribe(() => {
-        this.changesSubject.next({ changeType: 'added', data: area });
+      .subscribe((areaId) => {
+        this.changeTrackerService.notify('area', areaId, 'added', area);
         this.messagesService.success(
           `Area ${area.name} was added successfully.`,
           'Area added'
@@ -92,7 +92,7 @@ export class AreasStore {
       .updateArea(area)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({ changeType: 'updated', data: area });
+        this.changeTrackerService.notify('area', area.areaId, 'updated', area);
         this.messagesService.success(
           `Area ${area.name} was updated successfully.`,
           'Area updated'
@@ -105,7 +105,7 @@ export class AreasStore {
       .deleteArea(areaId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({ changeType: 'deleted', id: areaId });
+        this.changeTrackerService.notify('area', areaId, 'deleted');
         this.messagesService.success(
           `Area was deleted successfully.`,
           'Area deleted'

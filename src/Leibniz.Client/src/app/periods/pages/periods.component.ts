@@ -119,7 +119,7 @@ export class PeriodsPage implements OnDestroy {
     changes$.pipe(takeUntil(this.destroyed$)).subscribe((entry) => {
       if (entry?.changeType == 'deleted') {
         this.dataSource = this.dataSource?.filter(
-          (x) => x.periodId != entry.id
+          (x) => x.periodId != entry.ref.id
         );
         this.count = (this.count ?? 0) - 1;
       }

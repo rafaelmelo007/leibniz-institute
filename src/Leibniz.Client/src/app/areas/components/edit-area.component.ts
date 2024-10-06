@@ -14,7 +14,8 @@ import { TabsComponent } from '../../common/components/tabs/tabs.component';
 import { MenuOption } from '../../common/domain/menu-option';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
-import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
+import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
+import { MoveToComponent } from '../../common/components/move-to/move-to.component';
 
 @Component({
   selector: 'app-edit-area',
@@ -26,14 +27,15 @@ import { EditImageComponent } from "../../images/components/edit-image/edit-imag
     ReactiveFormsModule,
     TabsComponent,
     EditReferencesComponent,
-    EditImageComponent
-],
+    EditImageComponent,
+    MoveToComponent,
+  ],
   templateUrl: './edit-area.component.html',
   styleUrl: './edit-area.component.css',
 })
 export class EditAreaComponent {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
-  
+
   areaId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
@@ -67,6 +69,14 @@ export class EditAreaComponent {
       selected: true,
       action: () => {
         this.selectedTab = 'IMAGE';
+      },
+    },
+    {
+      label: 'Move To',
+      icon: 'fa fa-arrows',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'MOVE_TO';
       },
     },
   ];

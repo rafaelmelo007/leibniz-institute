@@ -1,0 +1,43 @@
+<div class="container" style="margin-top: 20px">
+  <div class="row">
+    <div class="col">
+      <h5>From:</h5>
+      <select id="item-type" [(ngModel)]="fromType" class="form-select">
+        <option value="">- Type -</option>
+        <option value="post">Post</option>
+        <option value="link">Link</option>
+        <option value="area">Area</option>
+        <option value="author">Author</option>
+        <option value="book">Book</option>
+        <option value="period">Period</option>
+        <option value="thesis">Thesis</option>
+        <option value="topic">Topic</option>
+        <option value="unknown">Unknown</option>
+      </select>
+    </div>
+    <div class="col">
+      <h5>To:</h5>
+      <select id="item-type" [(ngModel)]="toType" class="form-select">
+        <option value="">- Type -</option>
+        <option value="post">Post</option>
+        <option value="link">Link</option>
+        <option value="area">Area</option>
+        <option value="author">Author</option>
+        <option value="book">Book</option>
+        <option value="period">Period</option>
+        <option value="thesis">Thesis</option>
+        <option value="topic">Topic</option>
+        <option value="unknown">Unknown</option>
+      </select>
+    </div>
+    <div class="col">
+      <button
+        class="btn btn-primary btn-sm"
+        (click)="moveTo()"
+        style="margin-top: 35px"
+      >
+        <i class="fa fa-save"></i> Move
+      </button>
+    </div>
+  </div>
+</div>

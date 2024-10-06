@@ -15,6 +15,7 @@ import { EditReferencesComponent } from "../../relationships/components/edit-ref
 import { MenuOption } from '../../common/domain/menu-option';
 import { TabsComponent } from "../../common/components/tabs/tabs.component";
 import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
+import { MoveToComponent } from "../../common/components/move-to/move-to.component";
 
 @Component({
   selector: 'app-edit-link',
@@ -26,7 +27,8 @@ import { EditImageComponent } from "../../images/components/edit-image/edit-imag
     ReactiveFormsModule,
     EditReferencesComponent,
     TabsComponent,
-    EditImageComponent
+    EditImageComponent,
+    MoveToComponent
 ],
   templateUrl: './edit-link.component.html',
   styleUrl: './edit-link.component.css',
@@ -68,6 +70,14 @@ export class EditLinkComponent {
       selected: true,
       action: () => {
         this.selectedTab = 'IMAGE';
+      },
+    },
+    {
+      label: 'Move To',
+      icon: 'fa fa-arrows',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'MOVE_TO';
       },
     },
   ];

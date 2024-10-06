@@ -57,24 +57,34 @@
       </form>
     </div>
     <div
-    class="tab-content"
-    [style.display]="selectedTab == 'REFERENCES' ? 'block' : 'none'"
-  >
-    <app-edit-references
-      [style.height]="'100%'"
-      [type]="'thesis'"
-      [id]="thesisId"
-    ></app-edit-references>
-  </div>
-  <div
-  class="tab-content"
-  [style.display]="selectedTab == 'IMAGE' ? 'block' : 'none'"
->
-  <app-edit-image
-    [style.height]="'100%'"
-    [type]="'thesis'"
-    [id]="thesisId"
-  ></app-edit-image>
-</div>
-</ng-container>
+      class="tab-content"
+      [style.display]="selectedTab == 'REFERENCES' ? 'block' : 'none'"
+    >
+      <app-edit-references
+        [style.height]="'100%'"
+        [type]="'thesis'"
+        [id]="thesisId"
+      ></app-edit-references>
+    </div>
+    <div
+      class="tab-content"
+      [style.display]="selectedTab == 'IMAGE' ? 'block' : 'none'"
+    >
+      <app-edit-image
+        [style.height]="'100%'"
+        [type]="'thesis'"
+        [id]="thesisId"
+      ></app-edit-image>
+    </div>
+    <div
+      class="tab-content"
+      [style.display]="selectedTab == 'MOVE_TO' ? 'block' : 'none'"
+    >
+      <app-move-to
+        [style.height]="'100%'"
+        [type]="'thesis'"
+        [id]="thesisId"
+      ></app-move-to>
+    </div>
+  </ng-container>
 </app-dialog-window>

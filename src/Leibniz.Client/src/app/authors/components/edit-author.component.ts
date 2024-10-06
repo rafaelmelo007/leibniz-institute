@@ -12,9 +12,10 @@ import { DialogWindowComponent } from '../../common/components/dialog-window/dia
 import { CommonModule } from '@angular/common';
 import { MenuOption } from '../../common/domain/menu-option';
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
-import { TabsComponent } from "../../common/components/tabs/tabs.component";
-import { EditReferencesComponent } from "../../relationships/components/edit-references/edit-references.component";
-import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
+import { TabsComponent } from '../../common/components/tabs/tabs.component';
+import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
+import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
+import { MoveToComponent } from "../../common/components/move-to/move-to.component";
 
 @Component({
   selector: 'app-edit-author',
@@ -26,14 +27,15 @@ import { EditImageComponent } from "../../images/components/edit-image/edit-imag
     ReactiveFormsModule,
     TabsComponent,
     EditReferencesComponent,
-    EditImageComponent
+    EditImageComponent,
+    MoveToComponent
 ],
   templateUrl: './edit-author.component.html',
   styleUrl: './edit-author.component.css',
 })
 export class EditAuthorComponent {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
-  
+
   authorId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
@@ -68,7 +70,15 @@ export class EditAuthorComponent {
       action: () => {
         this.selectedTab = 'IMAGE';
       },
-    }
+    },
+    {
+      label: 'Move To',
+      icon: 'fa fa-arrows',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'MOVE_TO';
+      },
+    },
   ];
 
   constructor(private authorsStore: AuthorsStore) {}

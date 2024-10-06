@@ -119,7 +119,7 @@ export class ThesesPage implements OnDestroy {
     changes$.pipe(takeUntil(this.destroyed$)).subscribe((entry) => {
       if (entry?.changeType == 'deleted') {
         this.dataSource = this.dataSource?.filter(
-          (x) => x.thesisId != entry.id
+          (x) => x.thesisId != entry.ref.id
         );
         this.count = (this.count ?? 0) - 1;
       }

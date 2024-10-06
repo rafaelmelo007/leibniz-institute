@@ -15,6 +15,7 @@ import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
 import { AuthService } from '../../account/services/auth.service';
 import { appSettings } from '../../environments/environment';
+import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,8 +25,11 @@ export class TopicsStore {
     private topicsService: TopicsService,
     private authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
-    private messagesService: MessagesService
-  ) {}
+    private messagesService: MessagesService,
+    private changeTrackerService: ChangeTrackerService
+  ) {
+    this.changes$ = this.changeTrackerService.asObservable<Topic>();
+  }
 
   private topicsSubject = new BehaviorSubject<ResultSet<Topic> | null>(null);
   topics$: Observable<ResultSet<Topic> | null> =
@@ -34,11 +38,7 @@ export class TopicsStore {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
-  private changesSubject = new BehaviorSubject<ChangedEntity<Topic> | null>(
-    null
-  );
-  changes$: Observable<ChangedEntity<Topic> | null> =
-    this.changesSubject.asObservable();
+  changes$: Observable<ChangedEntity<Topic> | null>;
 
   loadTopics(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
@@ -79,8 +79,8 @@ export class TopicsStore {
     this.topicsService
       .addTopic(topic)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
-      .subscribe(() => {
-        this.changesSubject.next({ changeType: 'added', data: topic });
+      .subscribe((topicId) => {
+        this.changeTrackerService.notify('topic', topicId, 'added', topic);
         this.messagesService.success(
           `Topic ${topic.name} was added successfully.`,
           'Topic added'
@@ -93,7 +93,12 @@ export class TopicsStore {
       .updateTopic(topic)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({ changeType: 'updated', data: topic });
+        this.changeTrackerService.notify(
+          'topic',
+          topic.topicId,
+          'updated',
+          topic
+        );
         this.messagesService.success(
           `Topic ${topic.name} was updated successfully.`,
           'Topic updated'
@@ -106,7 +111,7 @@ export class TopicsStore {
       .deleteTopic(topicId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({ changeType: 'deleted', id: topicId });
+        this.changeTrackerService.notify('topic', topicId, 'deleted');
         this.messagesService.success(
           `Topic was deleted successfully.`,
           'Topic deleted'

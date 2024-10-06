@@ -15,6 +15,7 @@ import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
 import { appSettings } from '../../environments/environment';
 import { AuthService } from '../../account/services/auth.service';
+import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,8 +25,11 @@ export class PeriodsStore {
     private periodsService: PeriodsService,
     private authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
-    private messagesService: MessagesService
-  ) {}
+    private messagesService: MessagesService,
+    private changeTrackerService: ChangeTrackerService
+  ) {
+    this.changes$ = this.changeTrackerService.asObservable<Period>();
+  }
 
   private periodsSubject = new BehaviorSubject<ResultSet<Period> | null>(null);
   periods$: Observable<ResultSet<Period> | null> =
@@ -34,11 +38,7 @@ export class PeriodsStore {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
-  private changesSubject = new BehaviorSubject<ChangedEntity<Period> | null>(
-    null
-  );
-  changes$: Observable<ChangedEntity<Period> | null> =
-    this.changesSubject.asObservable();
+  changes$: Observable<ChangedEntity<Period> | null>;
 
   loadPeriods(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
@@ -79,8 +79,8 @@ export class PeriodsStore {
     this.periodsService
       .addPeriod(period)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
-      .subscribe(() => {
-        this.changesSubject.next({ changeType: 'added', data: period });
+      .subscribe((periodId) => {
+        this.changeTrackerService.notify('period', periodId, 'added', period);
         this.messagesService.success(
           `Period ${period.name} was added successfully.`,
           'Period added'
@@ -93,7 +93,12 @@ export class PeriodsStore {
       .updatePeriod(period)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({ changeType: 'updated', data: period });
+        this.changeTrackerService.notify(
+          'period',
+          period.periodId,
+          'updated',
+          period
+        );
         this.messagesService.success(
           `Period ${period.name} was updated successfully.`,
           'Period updated'
@@ -106,7 +111,7 @@ export class PeriodsStore {
       .deletePeriod(periodId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({ changeType: 'deleted', id: periodId });
+        this.changeTrackerService.notify('period', periodId, 'deleted');
         this.messagesService.success(
           `Period was deleted successfully.`,
           'Period deleted'

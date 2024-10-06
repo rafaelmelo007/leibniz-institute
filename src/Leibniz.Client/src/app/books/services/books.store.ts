@@ -16,6 +16,7 @@ import { AuthService } from '../../account/services/auth.service';
 import { appSettings } from '../../environments/environment';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
+import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,8 +26,11 @@ export class BooksStore {
     private errorHandlerService: ErrorHandlerService,
     private booksService: BooksService,
     private authService: AuthService,
-    private messagesService: MessagesService
-  ) {}
+    private messagesService: MessagesService,
+    private changeTrackerService: ChangeTrackerService
+  ) {
+    this.changes$ = this.changeTrackerService.asObservable<Book>();
+  }
 
   private booksSubject = new BehaviorSubject<ResultSet<BookListItem> | null>(
     null
@@ -37,11 +41,7 @@ export class BooksStore {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
-  private changesSubject = new BehaviorSubject<ChangedEntity<Book> | null>(
-    null
-  );
-  changes$: Observable<ChangedEntity<Book> | null> =
-    this.changesSubject.asObservable();
+  changes$: Observable<ChangedEntity<Book> | null>;
 
   loadBooks(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
@@ -82,8 +82,8 @@ export class BooksStore {
     this.booksService
       .addBook(book)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
-      .subscribe(() => {
-        this.changesSubject.next({ changeType: 'added', data: book });
+      .subscribe((bookId) => {
+        this.changeTrackerService.notify('book', bookId, 'added', book);
         this.messagesService.success(
           `Book ${book.title} [${book.author}] was added successfully.`,
           'Book added'
@@ -98,7 +98,7 @@ export class BooksStore {
       .subscribe((changed) => {
         if (!changed) return;
 
-        this.changesSubject.next({ changeType: 'updated', data: book });
+        this.changeTrackerService.notify('book', book.bookId, 'updated', book);
         this.messagesService.success(
           `Book ${book.title} [${book.author}] was updated successfully.`,
           'Book updated'
@@ -111,7 +111,7 @@ export class BooksStore {
       .deleteBook(bookId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({ changeType: 'deleted', id: bookId });
+        this.changeTrackerService.notify('book', bookId, 'deleted');
         this.messagesService.success(
           `Book was deleted successfully.`,
           'Book deleted'

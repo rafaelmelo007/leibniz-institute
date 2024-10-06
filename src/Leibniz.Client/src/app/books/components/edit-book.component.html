@@ -210,5 +210,15 @@
         [id]="bookId"
       ></app-edit-image>
     </div>
+    <div
+      class="tab-content"
+      [style.display]="selectedTab == 'MOVE_TO' ? 'block' : 'none'"
+    >
+      <app-move-to
+        [style.height]="'100%'"
+        [type]="'book'"
+        [id]="bookId"
+      ></app-move-to>
+    </div>
   </ng-container>
 </app-dialog-window>

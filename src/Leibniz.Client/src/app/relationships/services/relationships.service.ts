@@ -1,16 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { appSettings } from '../../environments/environment';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ResultSet } from '../../common/domain/result-set';
 import { RelationshipListItem } from '../components/domain/relationship-list-item';
 import { EntityType } from '../components/domain/entity-type';
+import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RelationshipsService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private changeTrackerService: ChangeTrackerService
+  ) {}
 
   loadRelationships(
     type: EntityType,
@@ -71,6 +75,22 @@ export class RelationshipsService {
         items
       )
       .subscribe();
+  }
+
+  moveTo(fromType: EntityType, id: number, toType: EntityType): void {
+    this.http
+      .put<{ type: EntityType; id: number }>(
+        `${appSettings.baseUrl}/relationships/move-to`,
+        {
+          fromType: this.toTypeId(fromType),
+          id: id,
+          toType: this.toTypeId(toType),
+        }
+      )
+      .subscribe((res) => {
+        this.changeTrackerService.notify(fromType, id, 'deleted');
+        this.changeTrackerService.notify(res.type, res.id, 'added');
+      });
   }
 
   toTypeId(type: string) {

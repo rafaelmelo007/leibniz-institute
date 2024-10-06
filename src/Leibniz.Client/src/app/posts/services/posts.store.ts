@@ -15,6 +15,7 @@ import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
 import { AuthService } from '../../account/services/auth.service';
 import { appSettings } from '../../environments/environment';
+import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,8 +25,11 @@ export class PostsStore {
     private postsService: PostsService,
     private authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
-    private messagesService: MessagesService
-  ) {}
+    private messagesService: MessagesService,
+    private changeTrackerService: ChangeTrackerService
+  ) {
+    this.changes$ = this.changeTrackerService.asObservable<Post>();
+  }
 
   private postsSubject = new BehaviorSubject<ResultSet<Post> | null>(null);
   posts$: Observable<ResultSet<Post> | null> = this.postsSubject.asObservable();
@@ -33,11 +37,7 @@ export class PostsStore {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
-  private changesSubject = new BehaviorSubject<ChangedEntity<Post> | null>(
-    null
-  );
-  changes$: Observable<ChangedEntity<Post> | null> =
-    this.changesSubject.asObservable();
+  changes$: Observable<ChangedEntity<Post> | null>;
 
   loadPosts(index: number, limit: number, query: string = ''): void {
     var queryStringToken = this.authService.getQueryStringToken();
@@ -78,8 +78,8 @@ export class PostsStore {
     this.postsService
       .addPost(post)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
-      .subscribe(() => {
-        this.changesSubject.next({ changeType: 'added', data: post });
+      .subscribe((postId) => {
+        this.changeTrackerService.notify('post', postId, 'added', post);
         this.messagesService.success(
           `Post ${post.title} [${post.author}] was added successfully.`,
           'Post added'
@@ -92,7 +92,7 @@ export class PostsStore {
       .updatePost(post)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({ changeType: 'updated', data: post });
+        this.changeTrackerService.notify('post', post.postId, 'updated', post);
         this.messagesService.success(
           `Post ${post.title} [${post.author}] was updated successfully.`,
           'Post updated'
@@ -105,7 +105,7 @@ export class PostsStore {
       .deletePost(postId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({ changeType: 'deleted', id: postId });
+        this.changeTrackerService.notify('post', postId, 'deleted');
         this.messagesService.success(
           `Post was deleted successfully.`,
           'Post deleted'

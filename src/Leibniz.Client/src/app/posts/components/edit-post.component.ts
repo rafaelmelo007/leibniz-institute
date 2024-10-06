@@ -15,6 +15,7 @@ import { MenuOption } from '../../common/domain/menu-option';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
 import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
+import { MoveToComponent } from '../../common/components/move-to/move-to.component';
 
 @Component({
   selector: 'app-edit-post',
@@ -27,13 +28,14 @@ import { EditImageComponent } from '../../images/components/edit-image/edit-imag
     TabsComponent,
     EditReferencesComponent,
     EditImageComponent,
+    MoveToComponent,
   ],
   templateUrl: './edit-Post.component.html',
   styleUrl: './edit-Post.component.css',
 })
 export class EditPostComponent {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
-  
+
   postId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
@@ -71,6 +73,14 @@ export class EditPostComponent {
       selected: true,
       action: () => {
         this.selectedTab = 'IMAGE';
+      },
+    },
+    {
+      label: 'Move To',
+      icon: 'fa fa-arrows',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'MOVE_TO';
       },
     },
   ];

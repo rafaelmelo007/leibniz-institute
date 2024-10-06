@@ -15,6 +15,7 @@ import { MenuOption } from '../../common/domain/menu-option';
 import { TabsComponent } from '../../common/components/tabs/tabs.component';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
 import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
+import { MoveToComponent } from "../../common/components/move-to/move-to.component";
 
 @Component({
   selector: 'app-edit-thesis',
@@ -26,7 +27,8 @@ import { EditImageComponent } from "../../images/components/edit-image/edit-imag
     ReactiveFormsModule,
     TabsComponent,
     EditReferencesComponent,
-    EditImageComponent
+    EditImageComponent,
+    MoveToComponent
 ],
   templateUrl: './edit-thesis.component.html',
   styleUrl: './edit-thesis.component.css',
@@ -67,6 +69,14 @@ export class EditThesisComponent {
       selected: true,
       action: () => {
         this.selectedTab = 'IMAGE';
+      },
+    },
+    {
+      label: 'Move To',
+      icon: 'fa fa-arrows',
+      selected: true,
+      action: () => {
+        this.selectedTab = 'MOVE_TO';
       },
     },
   ];

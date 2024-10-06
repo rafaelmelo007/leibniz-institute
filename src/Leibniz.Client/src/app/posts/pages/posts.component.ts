@@ -130,7 +130,7 @@ export class PostsPage implements OnDestroy {
     const changes$ = this.postsStore.changes$;
     changes$.pipe(takeUntil(this.destroyed$)).subscribe((entry) => {
       if (entry?.changeType == 'deleted') {
-        this.dataSource = this.dataSource?.filter((x) => x.postId != entry.id);
+        this.dataSource = this.dataSource?.filter((x) => x.postId != entry.ref.id);
         this.count = (this.count ?? 0) - 1;
       }
       if (entry?.changeType == 'added') {

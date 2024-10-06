@@ -15,6 +15,7 @@ import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
 import { AuthService } from '../../account/services/auth.service';
 import { appSettings } from '../../environments/environment';
+import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,8 +25,11 @@ export class ThesesStore {
     private thesesService: ThesesService,
     private authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
-    private messagesService: MessagesService
-  ) {}
+    private messagesService: MessagesService,
+    private changeTrackerService: ChangeTrackerService
+  ) {
+    this.changes$ = this.changeTrackerService.asObservable<Thesis>();
+  }
 
   private thesesSubject = new BehaviorSubject<ResultSet<Thesis> | null>(null);
   theses$: Observable<ResultSet<Thesis> | null> =
@@ -34,11 +38,7 @@ export class ThesesStore {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
-  private changesSubject = new BehaviorSubject<ChangedEntity<Thesis> | null>(
-    null
-  );
-  changes$: Observable<ChangedEntity<Thesis> | null> =
-    this.changesSubject.asObservable();
+  changes$: Observable<ChangedEntity<Thesis> | null>;
 
   loadTheses(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
@@ -79,8 +79,8 @@ export class ThesesStore {
     this.thesesService
       .addThesis(thesis)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
-      .subscribe(() => {
-        this.changesSubject.next({ changeType: 'added', data: thesis });
+      .subscribe((thesisId) => {
+        this.changeTrackerService.notify('thesis', thesisId, 'added', thesis);
         this.messagesService.success(
           `Thesis ${thesis.name} was added successfully.`,
           'Thesis added'
@@ -93,7 +93,12 @@ export class ThesesStore {
       .updateThesis(thesis)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({ changeType: 'updated', data: thesis });
+        this.changeTrackerService.notify(
+          'thesis',
+          thesis.thesisId,
+          'updated',
+          thesis
+        );
         this.messagesService.success(
           `Thesis ${thesis.name} was updated successfully.`,
           'Thesis updated'
@@ -106,7 +111,7 @@ export class ThesesStore {
       .deleteThesis(thesisId)
       .pipe(catchError((err) => this.errorHandlerService.onError(err)))
       .subscribe(() => {
-        this.changesSubject.next({ changeType: 'deleted', id: thesisId });
+        this.changeTrackerService.notify('thesis', thesisId, 'deleted');
         this.messagesService.success(
           `Thesis was deleted successfully.`,
           'Thesis deleted'
