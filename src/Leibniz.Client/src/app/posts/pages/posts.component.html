@@ -14,15 +14,31 @@
   </h3>
 
   <app-loading *ngIf="loading"></app-loading>
-  <app-grid-table
-    [dataSource]="dataSource"
-    [actions]="actions"
-    [actionsLabel]="'Actions'"
-    [columns]="columns"
-    (loadMore)="loadMore()"
-    (runDeepSearch)="loadDeepSearch($event)"
-  >
-  </app-grid-table>
+  <div class="card-deck">
+    @for (item of dataSource; track $index) {
+    <div class="card mb-3">
+      <div class="card-header">
+        <a
+          href="javascript:;"
+          (click)="editPostLink(item.postId)"
+          style="text-decoration: none"
+          ><b>{{ item.title }}</b></a
+        >
+      </div>
+      <div class="card-body enhance-text" [innerHTML]="encodeValue(item.content)"></div>
+      <div class="card-footer">
+        @for (tag of item.refs; track $index) {
+        <app-entity-badge
+          [type]="tag.type"
+          [id]="tag.id"
+          [name]="tag.name"
+        ></app-entity-badge>
+        }
+      </div>
+    </div>
+    }
+    <app-infinite-scroll (loadMore)="loadMore()"></app-infinite-scroll>
+  </div>
 
   <app-edit-post></app-edit-post>
 </div>

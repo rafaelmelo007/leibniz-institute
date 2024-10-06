@@ -16,6 +16,7 @@ import { ChangedEntity } from '../../common/domain/changed-entity';
 import { AuthService } from '../../account/services/auth.service';
 import { appSettings } from '../../environments/environment';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
+import { EntityType } from '../../relationships/components/domain/entity-type';
 
 @Injectable({
   providedIn: 'root',
@@ -47,6 +48,11 @@ export class PostsStore {
       .pipe(
         tap((res) => {
           res.data.forEach((post) => {
+            post.refs?.forEach((element) => {
+              const type = <any>element.type;
+              element.type = this.toEntityType(type);
+            });
+            
             if (post.imageFileName == null) return;
 
             post.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${post.imageFileName}~${queryStringToken}`;
@@ -111,5 +117,29 @@ export class PostsStore {
           'Post deleted'
         );
       });
+  }
+
+  toEntityType(type: number): EntityType {
+    switch (type) {
+      case 1:
+        return 'post';
+      case 2:
+        return 'link';
+      case 3:
+        return 'area';
+      case 4:
+        return 'author';
+      case 5:
+        return 'book';
+      case 6:
+        return 'period';
+      case 7:
+        return 'thesis';
+      case 8:
+        return 'topic';
+      case 9:
+        return 'unknown';
+    }
+    return 'unknown';
   }
 }

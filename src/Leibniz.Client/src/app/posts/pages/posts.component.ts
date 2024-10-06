@@ -11,6 +11,8 @@ import { EditPostComponent } from '../components/edit-post.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
+import { InfiniteScrollComponent } from '../../common/components/infinite-scroll/infinite-scroll.component';
+import { EntityBadgeComponent } from '../../common/components/entity-badge/entity-badge.component';
 
 @Component({
   selector: 'app-posts',
@@ -20,6 +22,8 @@ import { AuthService } from '../../account/services/auth.service';
     GridTableComponent,
     CommonModule,
     EditPostComponent,
+    InfiniteScrollComponent,
+    EntityBadgeComponent,
   ],
   templateUrl: './posts.component.html',
   styleUrl: './posts.component.css',
@@ -62,6 +66,11 @@ export class PostsPage implements OnDestroy {
     {
       field: 'author',
       header: 'Author',
+      width: '220px',
+    },
+    {
+      field: 'refs',
+      header: 'Tags',
       width: '220px',
     },
   ];
@@ -130,7 +139,9 @@ export class PostsPage implements OnDestroy {
     const changes$ = this.postsStore.changes$;
     changes$.pipe(takeUntil(this.destroyed$)).subscribe((entry) => {
       if (entry?.changeType == 'deleted') {
-        this.dataSource = this.dataSource?.filter((x) => x.postId != entry.ref.id);
+        this.dataSource = this.dataSource?.filter(
+          (x) => x.postId != entry.ref.id
+        );
         this.count = (this.count ?? 0) - 1;
       }
       if (entry?.changeType == 'added') {
@@ -186,6 +197,14 @@ export class PostsPage implements OnDestroy {
 
   addPost(): void {
     this.editPost?.editPost(0);
+  }
+
+  editPostLink(postId: number): void {
+    this.editPost?.editPost(postId);
+  }
+
+  encodeValue(value: string): string {
+    return value.replace(/\n/g, '<br />');
   }
 
   ngOnDestroy(): void {

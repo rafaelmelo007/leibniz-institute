@@ -1,4 +1,5 @@
-﻿namespace Leibniz.Api.Relationships.Domain;
+﻿
+namespace Leibniz.Api.Relationships.Domain;
 public record Relationship : AuditableEntity
 {
     [Key]

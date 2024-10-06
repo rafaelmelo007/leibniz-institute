@@ -1,3 +1,5 @@
+import { RefItem } from "../../common/domain/ref-item";
+
 export interface Post {
   postId: number;
   title: string;
@@ -6,5 +8,6 @@ export interface Post {
   bookId: number | null;
   page: number | null;
   reference: string | null;
+  refs: RefItem[] | null;
   imageFileName?: string | null;
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Leibniz.Api.Relationships.Dtos;
+using System.Linq.Expressions;
 
 namespace Leibniz.Api.Posts.Endpoints;
 public class GetPostsEndpoint : IEndpoint
@@ -12,13 +13,14 @@ public class GetPostsEndpoint : IEndpoint
     // Request / Response
     public record GetPostsRequest(int Index, int Limit, string Query);
     public record GetPostsResponse(IEnumerable<PostRead> Data, int Index, int Limit, int Count);
-    public record PostRead(long PostId, string? Title, string? Content, string? Author, string ImageFileName);
+    public record PostRead(long PostId, string? Title, string? Content, string? Author, string ImageFileName, IEnumerable<RelatedEntity> Refs);
 
     // Handler
     public static async Task<IResult> Handle(
         [FromServices] AcademyDbContext database,
         [FromServices] Validator validator,
         [FromServices] NotificationHandler notifications,
+        [FromServices] IRelationshipService relationshipService,
         [AsParameters] GetPostsRequest request,
         CancellationToken cancellationToken)
     {
@@ -33,6 +35,7 @@ public class GetPostsEndpoint : IEndpoint
         var count = await database.Posts.Where(where).CountAsync();
         var rows = await database.Posts.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
         var ids = rows.Select(x => x.PostId).ToList();
+        var refs = await relationshipService.GetRelatedEntitiesAsync(EntityType.Post, ids, cancellationToken);
         var images = database.Images.Where(x => x.EntityType == EntityType.Post && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
         var posts = rows.Select(x => new PostRead
         (
@@ -40,7 +43,14 @@ public class GetPostsEndpoint : IEndpoint
             Title: x.Title,
             Content: x.Content,
             Author: x.Author,
-            ImageFileName: images.ContainsKey(x.PostId) ? images[x.PostId] : default
+            ImageFileName: images.ContainsKey(x.PostId) ? images[x.PostId] : default,
+            Refs: refs.Where(x2 => x2.AssignedIds.Contains(x.PostId))
+                    .Select(x2 => new RelatedEntity
+                    {
+                        Type = x2.Type,
+                        Id = x2.Id,
+                        Name = x2.Name
+                    }).ToList()
         ));
         return TypedResults.Ok(new GetPostsResponse(posts, request.Index, request.Limit, count));
     }

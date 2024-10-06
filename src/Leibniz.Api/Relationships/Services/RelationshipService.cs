@@ -1,7 +1,11 @@
-﻿namespace Leibniz.Api.Relationships.Services;
+﻿using Leibniz.Api.Relationships.Dtos;
+using Leibniz.Api.Relationships.Extensions;
+
+namespace Leibniz.Api.Relationships.Services;
 public class RelationshipService : IRelationshipService
 {
     private readonly AcademyDbContext _database;
+
     public RelationshipService(AcademyDbContext database)
     {
         _database = database;
@@ -118,6 +122,28 @@ public class RelationshipService : IRelationshipService
         }
         var affected = _database.SaveChanges();
         return affected;
+    }
+
+    public async Task<IEnumerable<RelatedEntity>> GetRelatedEntitiesAsync(EntityType type, List<long> ids, CancellationToken cancellationToken)
+    {
+        var refs = await _database.Relationships.Where(x =>
+            (x.EntityTypeA == type && ids.Contains(x.EntityIdA)) ||
+            (x.EntityTypeB == type && ids.Contains(x.EntityIdB)))
+            .ToListAsync(cancellationToken);
+        var items = refs.Select(x => x.ToRelatedEntity(type, ids)).ToList();
+        var result = items.GroupBy(x => new { x.Type, x.Id, x.Name }).Select(item =>
+        {
+            var name = GetRelationshipName(item.Key.Type, item.Key.Id);
+            var assignedIds = item.Select(x => x.AssignedId).ToList();
+            return new RelatedEntity
+            {
+                Type = item.Key.Type,
+                Id = item.Key.Id,
+                Name = name,
+                AssignedIds = assignedIds
+            };
+        });
+        return result;
     }
 
     #region Helper Methods

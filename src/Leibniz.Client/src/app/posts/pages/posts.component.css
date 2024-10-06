@@ -1,0 +1,7 @@
+.enhance-text {
+  font-family: "Georgia", serif;
+  font-size: 21px;
+  line-height: 1.58;
+  margin-bottom: 1.6em; /* Medium adds decent space after paragraphs */
+  color: #333;
+}
