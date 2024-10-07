@@ -146,6 +146,9 @@ export class TopicsPage implements OnDestroy {
         if (res.ref?.type != 'topic' || res.ref.id != topic.topicId) return;
         if (!this.queryStringToken) return;
 
+        if (exists && topic.imageFileName) return;
+        if (!exists && !topic.imageFileName) return;
+
         topic.imageFileName = exists
           ? this.imagesStore.getImageUrl(
               res.ref.type,

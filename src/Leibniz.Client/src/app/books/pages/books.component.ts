@@ -103,8 +103,8 @@ export class BooksPage implements OnDestroy {
   ];
 
   count?: number;
-
   loading?: boolean;
+  query?: string;
 
   constructor(
     private booksStore: BooksStore,
@@ -160,6 +160,9 @@ export class BooksPage implements OnDestroy {
         if (res.ref?.type != 'book' || res.ref.id != book.bookId) return;
         if (!this.queryStringToken) return;
 
+        if (exists && book.imageFileName) return;
+        if (!exists && !book.imageFileName) return;
+
         book.imageFileName = exists
           ? this.imagesStore.getImageUrl(
               res.ref.type,
@@ -174,7 +177,13 @@ export class BooksPage implements OnDestroy {
   }
 
   loadMore(): void {
-    this.booksStore.loadBooks(this.dataSource?.length ?? 0, 25);
+    this.booksStore.loadBooks(this.dataSource?.length ?? 0, 25, this.query);
+  }
+
+  loadDeepSearch(query: string): void {
+    this.query = query;
+    this.dataSource = [];
+    this.booksStore.loadBooks(this.dataSource?.length ?? 0, 25, this.query);
   }
 
   addBook(): void {

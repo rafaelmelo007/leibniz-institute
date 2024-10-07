@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EntityType } from '../../relationships/components/domain/entity-type';
-import { appSettings } from '../../environments/environment';
+import { appSettings } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
 
 @Injectable({

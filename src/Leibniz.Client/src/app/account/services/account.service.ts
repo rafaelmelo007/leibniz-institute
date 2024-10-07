@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
 import { LoginCredentials } from '../domain/login-credentials';
 import { UserToken } from '../domain/user-token';
-import { appSettings } from '../../environments/environment';
+import { appSettings } from '../../../environments/environment';
 import { Me } from '../domain/me';
 import { User } from '../domain/user';
 import { CookieService } from 'ngx-cookie-service';

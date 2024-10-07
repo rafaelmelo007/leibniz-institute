@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { appSettings } from '../../environments/environment';
+import { appSettings } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
 import { ResultSet } from '../../common/domain/result-set';
 import { Book } from '../domain/book';
@@ -12,10 +12,18 @@ import { BookListItem } from '../domain/book-list-item';
 export class BooksService {
   constructor(private http: HttpClient) {}
 
-  loadBooks(index: number, limit: number): Observable<ResultSet<BookListItem>> {
+  loadBooks(
+    index: number,
+    limit: number,
+    query?: string
+  ): Observable<ResultSet<BookListItem>> {
     const result = this.http
       .get<ResultSet<BookListItem>>(
-        `${appSettings.baseUrl}/books/get-books?Index=${index}&Limit=${limit}`
+        `${
+          appSettings.baseUrl
+        }/books/get-books?Index=${index}&Limit=${limit}&query=${
+          query != undefined ? query : ''
+        }`
       )
       .pipe(map((res) => res));
     return result;

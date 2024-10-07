@@ -19,7 +19,9 @@
     [actions]="actions"
     [actionsLabel]="'Actions'"
     [columns]="columns"
+    [searchTerm]="authorsStore.getQuery() ?? ''"
     (loadMore)="loadMore()"
+    (runDeepSearch)="loadDeepSearch($event)"
   >
   </app-grid-table>
 

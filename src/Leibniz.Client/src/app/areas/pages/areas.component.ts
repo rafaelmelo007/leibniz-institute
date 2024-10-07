@@ -142,6 +142,9 @@ export class AreasPage implements OnDestroy {
         if (res.ref?.type != 'area' || res.ref.id != area.areaId) return;
         if (!this.queryStringToken) return;
 
+        if (exists && area.imageFileName) return;
+        if (!exists && !area.imageFileName) return;
+
         area.imageFileName = exists
           ? this.imagesStore.getImageUrl(
               res.ref.type,

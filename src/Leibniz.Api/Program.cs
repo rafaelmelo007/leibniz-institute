@@ -98,7 +98,8 @@ if (app.Environment.IsDevelopment())
     {
         builder.AllowAnyOrigin()
                .AllowAnyMethod()
-               .AllowAnyHeader();
+               .AllowAnyHeader()
+               .WithExposedHeaders("Access-Control-Allow-Origin", "Accept");
     });
 }
 app.Run();

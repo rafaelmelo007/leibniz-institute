@@ -43,5 +43,5 @@ export const routes: Routes = [
   /* Feature: Links */
   { path: 'pages/links', component: LinksPage },
 
-  { path: '**', redirectTo: '/pages/posts' },
+  { path: '**', redirectTo: '/pages/account/login' },
 ];

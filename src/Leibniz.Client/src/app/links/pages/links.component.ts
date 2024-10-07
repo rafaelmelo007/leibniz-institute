@@ -156,6 +156,9 @@ export class LinksPage implements OnDestroy {
         if (res.ref?.type != 'link' || res.ref.id != link.linkId) return;
         if (!this.queryStringToken) return;
 
+        if (exists && link.imageFileName) return;
+        if (!exists && !link.imageFileName) return;
+
         link.imageFileName = exists
           ? this.imagesStore.getImageUrl(
               res.ref.type,

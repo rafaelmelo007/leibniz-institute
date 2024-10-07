@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -9,6 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { FieldValidationErrorsComponent } from '../../../common/components/field-validation-errors/field-validation-errors.component';
 import { AccountStore } from '../../services/account.store';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,9 @@ import { AccountStore } from '../../services/account.store';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginPage {
+export class LoginPage implements OnDestroy {
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
@@ -26,7 +29,15 @@ export class LoginPage {
     ]),
   });
 
-  constructor(private router: Router, private accountStore: AccountStore) {}
+  constructor(private router: Router, private accountStore: AccountStore) {
+    const me$ = accountStore.me$;
+    me$.pipe(takeUntil(this.destroyed$)).subscribe((res) => {
+      if (!res) return;
+
+      this.router.navigate(['/pages/posts']);
+    });
+    accountStore.tryRetrieveUser();
+  }
 
   signIn() {
     this.loginForm.markAllAsTouched();
@@ -42,5 +53,10 @@ export class LoginPage {
 
   forgotPassword() {
     this.router.navigate(['/pages/account/forgot-password']);
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

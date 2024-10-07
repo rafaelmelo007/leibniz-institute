@@ -148,6 +148,9 @@ export class ThesesPage implements OnDestroy {
         if (res.ref?.type != 'thesis' || res.ref.id != thesis.thesisId) return;
         if (!this.queryStringToken) return;
 
+        if (exists && thesis.imageFileName) return;
+        if (!exists && !thesis.imageFileName) return;
+
         thesis.imageFileName = exists
           ? this.imagesStore.getImageUrl(
               res.ref.type,

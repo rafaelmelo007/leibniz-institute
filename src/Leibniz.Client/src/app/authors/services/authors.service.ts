@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { appSettings } from '../../environments/environment';
+import { appSettings } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
 import { ResultSet } from '../../common/domain/result-set';
 import { Author } from '../domain/author';
@@ -11,10 +11,18 @@ import { Author } from '../domain/author';
 export class AuthorsService {
   constructor(private http: HttpClient) {}
 
-  loadAuthors(index: number, limit: number): Observable<ResultSet<Author>> {
+  loadAuthors(
+    index: number,
+    limit: number,
+    query?: string
+  ): Observable<ResultSet<Author>> {
     const result = this.http
       .get<ResultSet<Author>>(
-        `${appSettings.baseUrl}/authors/get-authors?Index=${index}&Limit=${limit}`
+        `${
+          appSettings.baseUrl
+        }/authors/get-authors?Index=${index}&Limit=${limit}&query=${
+          query !== undefined ? query : ''
+        }`
       )
       .pipe(map((res) => res));
     return result;

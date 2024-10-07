@@ -1,4 +1,6 @@
-﻿namespace Leibniz.Api.Books.Endpoints;
+﻿using System.Linq.Expressions;
+
+namespace Leibniz.Api.Books.Endpoints;
 public class GetBooksEndpoint : IEndpoint
 {
     // End-point Map
@@ -7,7 +9,7 @@ public class GetBooksEndpoint : IEndpoint
         .WithSummary("Retrieve a set of books from database");
 
     // Request / Response
-    public record GetBooksRequest(int Index, int Limit);
+    public record GetBooksRequest(int Index, int Limit, string Query);
     public record GetBooksResponse(IEnumerable<BookRead> Data, int Index, int Limit, int Count);
     public record BookRead(long BookId, string? Title, string? Author, string? Publisher, short? Edition, short? Year, short? TotalOfPages, string? Isbn, string? Local, string ImageFileName);
 
@@ -29,8 +31,9 @@ public class GetBooksEndpoint : IEndpoint
 
         var userId = currentUserService.UserId;
 
-        var count = await database.Books.CountAsync();
-        var rows = await database.Books.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        Expression<Func<Book, bool>> where = x => string.IsNullOrEmpty(request.Query) || x.Title.Contains(request.Query) || x.Content.Contains(request.Query) || x.Author.Contains(request.Query);
+        var count = await database.Books.Where(where).CountAsync();
+        var rows = await database.Books.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
         var ids = rows.Select(x => x.BookId).ToList();
         var images = database.Images.Where(x => x.EntityType == EntityType.Book && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
         return TypedResults.Ok(new GetBooksResponse(rows.Select(x => new BookRead

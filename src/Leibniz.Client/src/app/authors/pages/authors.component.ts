@@ -28,6 +28,7 @@ export class AuthorsPage implements OnDestroy {
   @ViewChild(EditAuthorComponent) editAuthor?: EditAuthorComponent;
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: Author[];
+  queryStringToken: string | null;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   maxImageWidth = 120;
@@ -79,10 +80,10 @@ export class AuthorsPage implements OnDestroy {
 
   count?: number;
   loading?: boolean;
-  queryStringToken: string | null;
+  query?: string;
 
   constructor(
-    private authorsStore: AuthorsStore,
+    public authorsStore: AuthorsStore,
     private imagesStore: ImagesStore,
     private authService: AuthService
   ) {
@@ -146,6 +147,9 @@ export class AuthorsPage implements OnDestroy {
         if (res.ref?.type != 'author' || res.ref.id != author.authorId) return;
         if (!this.queryStringToken) return;
 
+        if (exists && author.imageFileName) return;
+        if (!exists && !author.imageFileName) return;
+
         author.imageFileName = exists
           ? this.imagesStore.getImageUrl(
               res.ref.type,
@@ -160,6 +164,12 @@ export class AuthorsPage implements OnDestroy {
   }
 
   loadMore(): void {
+    this.authorsStore.loadAuthors(this.dataSource?.length ?? 0, 25);
+  }
+
+  loadDeepSearch(query: string): void {
+    this.authorsStore.setQuery(query);
+    this.dataSource = [];
     this.authorsStore.loadAuthors(this.dataSource?.length ?? 0, 25);
   }
 

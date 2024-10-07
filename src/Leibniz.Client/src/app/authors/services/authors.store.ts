@@ -13,7 +13,7 @@ import { Author } from '../domain/author';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
-import { appSettings } from '../../environments/environment';
+import { appSettings } from '../../../environments/environment';
 import { AuthService } from '../../account/services/auth.service';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 
@@ -38,13 +38,23 @@ export class AuthorsStore {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
+  private query?: string;
+
   changes$: Observable<ChangedEntity<Author> | null>;
+
+  getQuery(): string | undefined {
+    return this.query;
+  }
+
+  setQuery(query?: string): void {
+    this.query = query;
+  }
 
   loadAuthors(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.authorsService
-      .loadAuthors(index, limit)
+      .loadAuthors(index, limit, this.query)
       .pipe(
         tap((res) => {
           res.data.forEach((author) => {

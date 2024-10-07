@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { appSettings } from '../../environments/environment';
+import { appSettings } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
 import { Post } from '../domain/post';
 import { ResultSet } from '../../common/domain/result-set';

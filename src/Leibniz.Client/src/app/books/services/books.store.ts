@@ -13,7 +13,7 @@ import { ResultSet } from '../../common/domain/result-set';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { BookListItem } from '../domain/book-list-item';
 import { AuthService } from '../../account/services/auth.service';
-import { appSettings } from '../../environments/environment';
+import { appSettings } from '../../../environments/environment';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
@@ -43,11 +43,11 @@ export class BooksStore {
 
   changes$: Observable<ChangedEntity<Book> | null>;
 
-  loadBooks(index: number, limit: number): void {
+  loadBooks(index: number, limit: number, query?: string): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.booksService
-      .loadBooks(index, limit)
+      .loadBooks(index, limit, query)
       .pipe(
         tap((res) => {
           res.data.forEach((book) => {

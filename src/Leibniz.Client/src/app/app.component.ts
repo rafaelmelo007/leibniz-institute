@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './common/components/header/header.component';
 import { LoadingComponent } from './common/components/loading/loading.component';
 import { MessagesService } from './common/services/messages.service';
@@ -20,7 +20,8 @@ export class AppComponent {
     this.router.events.subscribe((ev: any) => {
       const currentUrl = this.router.url;
       const type = ev.constructor.name;
-      if (type != 'NavigationEnd' || currentUrl == '/') return;
+
+      if (!(ev instanceof NavigationEnd) || currentUrl == '/') return;
 
       this.showHeader = this.shouldShowHeader(currentUrl);
       if (this.showHeader) {

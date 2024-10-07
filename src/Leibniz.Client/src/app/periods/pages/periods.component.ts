@@ -160,6 +160,9 @@ export class PeriodsPage implements OnDestroy {
         if (res.ref?.type != 'period' || res.ref.id != period.periodId) return;
         if (!this.queryStringToken) return;
 
+        if (exists && period.imageFileName) return;
+        if (!exists && !period.imageFileName) return;
+
         period.imageFileName = exists
           ? this.imagesStore.getImageUrl(
               res.ref.type,

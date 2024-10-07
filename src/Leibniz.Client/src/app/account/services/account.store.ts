@@ -28,7 +28,7 @@ export class AccountStore implements OnDestroy {
     this.isLoggedOut$ = this.isLoggedIn$.pipe(map((loggedIn) => !loggedIn));
 
     const errors$ = this.errorHandlerService.errors$;
-    errors$.subscribe((err) => {
+    errors$.pipe(takeUntil(this.destroyed$)).subscribe((err) => {
       this.messagesService.warn(err[0].message, err[0].title);
     });
   }
@@ -45,7 +45,9 @@ export class AccountStore implements OnDestroy {
     const userToken = this.authService.getToken();
     if (!userToken) return;
     this.userSubject.next(userToken);
-    this.user$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+    this.user$.pipe(takeUntil(this.destroyed$)).subscribe((res) => {
+      if (!res) return;
+
       this.accountService
         .me()
         .pipe(catchError((err) => this.errorHandlerService.onError(err)))
@@ -104,6 +106,7 @@ export class AccountStore implements OnDestroy {
 
   logout() {
     this.userSubject.next(null);
+    this.userInfoSubject.next(null);
     this.authService.setToken(null);
     this.authService.setQueryStringToken(null);
     this.router.navigate(['/pages/account/login']);

@@ -172,6 +172,9 @@ export class PostsPage implements OnDestroy {
         if (res.ref?.type != 'post' || res.ref.id != post.postId) return;
         if (!this.queryStringToken) return;
 
+        if (exists && post.imageFileName) return;
+        if (!exists && !post.imageFileName) return;
+
         post.imageFileName = exists
           ? this.imagesStore.getImageUrl(
               res.ref.type,
@@ -186,12 +189,6 @@ export class PostsPage implements OnDestroy {
   }
 
   loadMore(): void {
-    this.postsStore.loadPosts(this.dataSource?.length ?? 0, 10, this.query);
-  }
-
-  loadDeepSearch(query: string): void {
-    this.query = query;
-    this.dataSource = [];
     this.postsStore.loadPosts(this.dataSource?.length ?? 0, 10, this.query);
   }
 
