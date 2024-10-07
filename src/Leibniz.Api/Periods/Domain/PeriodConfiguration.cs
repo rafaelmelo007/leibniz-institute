@@ -10,6 +10,8 @@ public class PeriodConfiguration : IEntityTypeConfiguration<Period>
 
         builder.HasIndex(f => new { f.Name });
 
+        builder.HasIndex(f => new { f.BeginYear, f.EndYear });
+
         builder.HasQueryFilter(x => !x.IsDeleted);
     }
 }

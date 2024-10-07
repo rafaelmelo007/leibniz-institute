@@ -1,6 +1,4 @@
-﻿using static Leibniz.Api.Links.Endpoints.GetLinksEndpoint;
-
-namespace Leibniz.Api.Periods.Endpoints;
+﻿namespace Leibniz.Api.Periods.Endpoints;
 public class GetPeriodsEndpoint : IEndpoint
 {
     // End-point Map
@@ -11,7 +9,7 @@ public class GetPeriodsEndpoint : IEndpoint
     // Request / Response
     public record GetPeriodsRequest(int Index, int Limit);
     public record GetPeriodsResponse(IEnumerable<PeriodRead> Data, int Index, int Limit, int Count);
-    public record PeriodRead(long PeriodId, string? Name, string? Content, string ImageFileName);
+    public record PeriodRead(long PeriodId, string? Name, string? Content, string ImageFileName, short? BeginYear, short? EndYear);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -37,6 +35,8 @@ public class GetPeriodsEndpoint : IEndpoint
             PeriodId: x.PeriodId,
             Name: x.Name,
             Content: x.Content,
+            BeginYear: x.BeginYear,
+            EndYear: x.EndYear,
             ImageFileName: images.ContainsKey(x.PeriodId) ? images[x.PeriodId] : default
         ));
         return TypedResults.Ok(new GetPeriodsResponse(periods, request.Index, request.Limit, count));

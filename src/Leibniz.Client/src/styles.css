@@ -1,7 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
 .txbold {
   font-weight: bold;
-  color: black; /* or any other color you prefer */
+  color: black;
 }
 
 .tx-success {
@@ -20,7 +19,6 @@
   color: red !important;
 }
 
-/* Disable mouse wheel scrolling */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -39,7 +37,7 @@ input[type="number"] {
 .modal-dialog-centered {
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important; /* This is important for centering horizontally in flex */
+  justify-content: center !important;
   min-height: calc(100% - var(--bs-modal-margin) * 2) !important;
 }
 
@@ -59,9 +57,9 @@ h4,
 h5,
 h6 {
   font-family: "Avenir Next", "Helvetica Neue", sans-serif;
-  font-weight: 600; /* Medium headings are bold and use a sans-serif font */
-  line-height: 1.2; /* Slightly tighter line height for headings */
-  color: #111; /* Darker text for headings */
-  margin-top: 1.5em; /* Add some space before headings */
-  margin-bottom: 0.5em; /* Smaller space after headings */
+  font-weight: 600;
+  line-height: 1.2;
+  color: #111;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
 }

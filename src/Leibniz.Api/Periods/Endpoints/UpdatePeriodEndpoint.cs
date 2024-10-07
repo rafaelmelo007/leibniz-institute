@@ -7,7 +7,9 @@ public class UpdatePeriodEndpoint : IEndpoint
         .WithSummary("Update an existing period in the database");
 
     // Request / Response
-    public record UpdatePeriodRequest(long PeriodId, string Name, string Content);
+    public record UpdatePeriodRequest(long PeriodId, string Name, string Content,
+        short? BeginYear, short? EndYear, short? BeginMonth, short? EndMonth,
+        short? BeginDay, short? EndDay);
     public record UpdatePeriodResponse(long PeriodId);
 
     // Handler
@@ -35,6 +37,12 @@ public class UpdatePeriodEndpoint : IEndpoint
         var entry = await database.Periods.SingleAsync(x => x.PeriodId == request.PeriodId, cancellationToken);
         entry.Name = request.Name;
         entry.Content = request.Content;
+        entry.BeginYear = request.BeginYear;
+        entry.EndYear = request.EndYear;
+        entry.BeginMonth = request.BeginMonth;
+        entry.EndMonth = request.EndMonth;
+        entry.BeginDay = request.BeginDay;
+        entry.EndDay = request.EndDay;
 
         await database.SaveChangesAsync(cancellationToken);
 

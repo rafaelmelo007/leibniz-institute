@@ -4,6 +4,7 @@ using Leibniz.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Leibniz.Api.Migrations
 {
     [DbContext(typeof(AcademyDbContext))]
-    partial class AcademyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241007105744_Added_Index")]
+    partial class Added_Index
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -428,15 +431,6 @@ namespace Leibniz.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("PeriodId"));
 
-                    b.Property<short?>("BeginDay")
-                        .HasColumnType("smallint");
-
-                    b.Property<short?>("BeginMonth")
-                        .HasColumnType("smallint");
-
-                    b.Property<short?>("BeginYear")
-                        .HasColumnType("smallint");
-
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
@@ -451,15 +445,6 @@ namespace Leibniz.Api.Migrations
 
                     b.Property<long?>("DeletedBy")
                         .HasColumnType("bigint");
-
-                    b.Property<short?>("EndDay")
-                        .HasColumnType("smallint");
-
-                    b.Property<short?>("EndMonth")
-                        .HasColumnType("smallint");
-
-                    b.Property<short?>("EndYear")
-                        .HasColumnType("smallint");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -477,8 +462,6 @@ namespace Leibniz.Api.Migrations
                     b.HasKey("PeriodId");
 
                     b.HasIndex("Name");
-
-                    b.HasIndex("BeginYear", "EndYear");
 
                     b.ToTable("Periods");
                 });

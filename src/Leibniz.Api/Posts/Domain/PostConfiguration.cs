@@ -10,6 +10,8 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
 
         builder.HasIndex(f => new { f.Title, f.Author });
 
+        builder.HasIndex(f => new { f.UpdateDateUtc, f.CreateDateUtc });
+
         builder.HasQueryFilter(x => !x.IsDeleted);
     }
 }

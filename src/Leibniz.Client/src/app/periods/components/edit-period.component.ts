@@ -14,8 +14,8 @@ import { TabsComponent } from '../../common/components/tabs/tabs.component';
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
 import { MenuOption } from '../../common/domain/menu-option';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
-import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
-import { MoveToComponent } from "../../common/components/move-to/move-to.component";
+import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
+import { MoveToComponent } from '../../common/components/move-to/move-to.component';
 
 @Component({
   selector: 'app-edit-period',
@@ -28,14 +28,14 @@ import { MoveToComponent } from "../../common/components/move-to/move-to.compone
     TabsComponent,
     EditReferencesComponent,
     EditImageComponent,
-    MoveToComponent
-],
+    MoveToComponent,
+  ],
   templateUrl: './edit-period.component.html',
   styleUrl: './edit-period.component.css',
 })
 export class EditPeriodComponent {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
-  
+
   periodId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
@@ -44,6 +44,12 @@ export class EditPeriodComponent {
     periodId: new FormControl(0, []),
     name: new FormControl('', [Validators.required]),
     content: new FormControl('', []),
+    beginYear: new FormControl(0, []),
+    beginMonth: new FormControl(0, []),
+    beginDay: new FormControl(0, []),
+    endYear: new FormControl(0, []),
+    endMonth: new FormControl(0, []),
+    endDay: new FormControl(0, []),
   });
 
   tabs: MenuOption[] = [

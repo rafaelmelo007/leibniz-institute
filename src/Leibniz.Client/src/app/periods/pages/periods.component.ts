@@ -46,11 +46,23 @@ export class PeriodsPage implements OnDestroy {
     {
       field: 'name',
       header: 'Name',
-      width: '600px',
+      width: '550px',
       useHyperlink: true,
       action: (data: Period) => {
         this.editPeriod?.editPeriod(data.periodId);
       },
+    },
+    {
+      field: 'beginYear',
+      header: 'Begin Year',
+      width: '130px',
+      textAlign: 'center',
+    },
+    {
+      field: 'endYear',
+      header: 'End Year',
+      width: '130px',
+      textAlign: 'center',
     },
   ];
 

@@ -7,7 +7,9 @@ public class AddPeriodEndpoint : IEndpoint
         .WithSummary("Add a new period into the database");
 
     // Request / Response
-    public record AddPeriodRequest(int Type, string Name, string Content);
+    public record AddPeriodRequest(int Type, string Name, string Content,
+        short? BeginYear, short? EndYear, short? BeginMonth, short? EndMonth,
+        short? BeginDay, short? EndDay);
     public record AddPeriodResponse(long PeriodId);
 
     // Handler
@@ -36,6 +38,12 @@ public class AddPeriodEndpoint : IEndpoint
         {
             Name = request.Name,
             Content = request.Content,
+            BeginYear = request.BeginYear,
+            EndYear = request.EndYear,
+            BeginMonth = request.BeginMonth,
+            EndMonth = request.EndMonth,
+            BeginDay = request.BeginDay,
+            EndDay = request.EndDay,
         };
         await database.Periods.AddAsync(entry, cancellationToken);
         await database.SaveChangesAsync(cancellationToken);
