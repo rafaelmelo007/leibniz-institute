@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { DialogWindowComponent } from '../../common/components/dialog-window/dialog-window.component';
 import { CommonModule } from '@angular/common';
 import { FieldValidationErrorsComponent } from '../../common/components/field-validation-errors/field-validation-errors.component';
@@ -16,6 +16,7 @@ import { EditReferencesComponent } from '../../relationships/components/edit-ref
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
 import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
 import { MoveToComponent } from '../../common/components/move-to/move-to.component';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-post',
@@ -33,12 +34,13 @@ import { MoveToComponent } from '../../common/components/move-to/move-to.compone
   templateUrl: './edit-Post.component.html',
   styleUrl: './edit-Post.component.css',
 })
-export class EditPostComponent {
+export class EditPostComponent implements OnDestroy {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
 
   postId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   editForm = new FormGroup({
     postId: new FormControl(0, []),
@@ -98,6 +100,9 @@ export class EditPostComponent {
         author: '',
         content: '',
       } as Post;
+      this.tabs = this.tabs.filter(
+        (x) => x.label !== 'Image' && x.label !== 'Move To'
+      );
       this.editForm.patchValue(post);
       return;
     }
@@ -115,10 +120,24 @@ export class EditPostComponent {
     const formValue = this.editForm.value as Post;
     if (formValue.postId) {
       this.postsStore.updatePost(formValue);
+      this.editReferences?.saveReferences();
+      this.showEdit = false;
     } else {
+      this.postsStore.changes$
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((res) => {
+          if (res?.changeType !== 'added' || res.ref.type !== 'post') return;
+
+          this.editReferences?.saveReferences(res?.ref.id);
+          this.ngOnDestroy();
+          this.showEdit = false;
+        });
       this.postsStore.addPost(formValue);
     }
-    this.editReferences?.saveReferences();
-    this.showEdit = false;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

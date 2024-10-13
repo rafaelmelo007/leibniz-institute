@@ -1,4 +1,6 @@
-﻿namespace Leibniz.Api.Theses.Endpoints;
+﻿using System.Linq.Expressions;
+
+namespace Leibniz.Api.Theses.Endpoints;
 public class GetThesesEndpoint : IEndpoint
 {
     // End-point Map
@@ -7,7 +9,7 @@ public class GetThesesEndpoint : IEndpoint
         .WithSummary("Retrieve a set of theses from database");
 
     // Request / Response
-    public record GetThesesRequest(int Index, int Limit);
+    public record GetThesesRequest(int Index, int Limit, string? Query);
     public record GetThesesResponse(IEnumerable<ThesisRead> Data, int Index, int Limit, int Count);
     public record ThesisRead(long ThesisId, string? Name, string? Content, string ImageFileName);
 
@@ -26,8 +28,10 @@ public class GetThesesEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var count = await database.Theses.CountAsync();
-        var rows = await database.Theses.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        Expression<Func<Thesis, bool>> where = x => string.IsNullOrEmpty(request.Query) || x.Name.Contains(request.Query) || x.Content.Contains(request.Query);
+        var count = await database.Theses.Where(where).CountAsync();
+        var rows = await database.Theses.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+
         var ids = rows.Select(x => x.ThesisId).ToList();
         var images = database.Images.Where(x => x.EntityType == EntityType.Thesis && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
         var theses = rows.Select(x => new ThesisRead

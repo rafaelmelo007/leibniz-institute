@@ -40,8 +40,11 @@ export class BooksService {
 
   addBook(book: Book): Observable<number> {
     const result = this.http
-      .post<number>(`${appSettings.baseUrl}/books/create-book`, book)
-      .pipe(map((res) => res));
+      .post<{ bookId: number }>(
+        `${appSettings.baseUrl}/books/create-book`,
+        book
+      )
+      .pipe(map((res) => res.bookId));
     return result;
   }
 

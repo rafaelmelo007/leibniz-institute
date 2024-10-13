@@ -40,11 +40,21 @@ export class PeriodsStore {
 
   changes$: Observable<ChangedEntity<Period> | null>;
 
+  private _query = '';
+
+  get query(): string {
+    return this._query;
+  }
+
+  set query(value: string) {
+    this._query = value;
+  }
+
   loadPeriods(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.periodsService
-      .loadPeriods(index, limit)
+      .loadPeriods(index, limit, this.query)
       .pipe(
         tap((res) => {
           res.data.forEach((period) => {

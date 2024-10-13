@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { DialogWindowComponent } from '../../common/components/dialog-window/dialog-window.component';
 import { CommonModule } from '@angular/common';
 import { FieldValidationErrorsComponent } from '../../common/components/field-validation-errors/field-validation-errors.component';
@@ -15,7 +15,8 @@ import { MenuOption } from '../../common/domain/menu-option';
 import { TabsComponent } from '../../common/components/tabs/tabs.component';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
 import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
-import { MoveToComponent } from "../../common/components/move-to/move-to.component";
+import { MoveToComponent } from '../../common/components/move-to/move-to.component';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-book',
@@ -28,17 +29,18 @@ import { MoveToComponent } from "../../common/components/move-to/move-to.compone
     TabsComponent,
     EditReferencesComponent,
     EditImageComponent,
-    MoveToComponent
-],
+    MoveToComponent,
+  ],
   templateUrl: './edit-book.component.html',
   styleUrl: './edit-book.component.css',
 })
-export class EditBookComponent {
+export class EditBookComponent implements OnDestroy {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
 
   bookId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   editForm = new FormGroup({
     bookId: new FormControl(0, []),
@@ -120,6 +122,9 @@ export class EditBookComponent {
         sizeY: null,
         sizeZ: null,
       } as Book;
+      this.tabs = this.tabs.filter(
+        (x) => x.label !== 'Image' && x.label !== 'Move To'
+      );
       this.editForm.patchValue(book);
       return;
     }
@@ -137,10 +142,24 @@ export class EditBookComponent {
     const formValue = this.editForm.value as Book;
     if (formValue.bookId) {
       this.booksStore.updateBook(formValue);
+      this.editReferences?.saveReferences();
+      this.showEdit = false;
     } else {
+      this.booksStore.changes$
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((res) => {
+          if (res?.changeType !== 'added' || res.ref.type !== 'book') return;
+
+          this.editReferences?.saveReferences(res?.ref.id);
+          this.ngOnDestroy();
+          this.showEdit = false;
+        });
       this.booksStore.addBook(formValue);
     }
-    this.editReferences?.saveReferences();
-    this.showEdit = false;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

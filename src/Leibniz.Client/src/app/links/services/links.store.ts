@@ -39,11 +39,21 @@ export class LinksStore {
 
   changes$: Observable<ChangedEntity<Link> | null>;
 
+  private _query = '';
+
+  get query(): string {
+    return this._query;
+  }
+
+  set query(value: string) {
+    this._query = value;
+  }
+
   loadLinks(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.linksService
-      .loadLinks(index, limit)
+      .loadLinks(index, limit, this.query)
       .pipe(
         tap((res) => {
           res.data.forEach((link) => {

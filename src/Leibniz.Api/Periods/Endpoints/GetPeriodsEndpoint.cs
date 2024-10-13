@@ -1,4 +1,6 @@
-﻿namespace Leibniz.Api.Periods.Endpoints;
+﻿using System.Linq.Expressions;
+
+namespace Leibniz.Api.Periods.Endpoints;
 public class GetPeriodsEndpoint : IEndpoint
 {
     // End-point Map
@@ -7,7 +9,7 @@ public class GetPeriodsEndpoint : IEndpoint
         .WithSummary("Retrieve a set of periods from database");
 
     // Request / Response
-    public record GetPeriodsRequest(int Index, int Limit);
+    public record GetPeriodsRequest(int Index, int Limit, string Query);
     public record GetPeriodsResponse(IEnumerable<PeriodRead> Data, int Index, int Limit, int Count);
     public record PeriodRead(long PeriodId, string? Name, string? Content, string ImageFileName, short? BeginYear, short? EndYear);
 
@@ -26,8 +28,10 @@ public class GetPeriodsEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var count = await database.Periods.CountAsync();
-        var rows = await database.Periods.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        Expression<Func<Period, bool>> where = x => string.IsNullOrEmpty(request.Query) || x.Name.Contains(request.Query) || x.Content.Contains(request.Query);
+        var count = await database.Periods.Where(where).CountAsync();
+        var rows = await database.Periods.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+
         var ids = rows.Select(x => x.PeriodId).ToList();
         var images = database.Images.Where(x => x.EntityType == EntityType.Period && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
         var periods = rows.Select(x => new PeriodRead

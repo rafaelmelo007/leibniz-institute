@@ -13,7 +13,7 @@ public class GetPostsEndpoint : IEndpoint
     // Request / Response
     public record GetPostsRequest(int Index, int Limit, string Query);
     public record GetPostsResponse(IEnumerable<PostRead> Data, int Index, int Limit, int Count);
-    public record PostRead(long PostId, string? Title, string? Content, string? Author, string ImageFileName, IEnumerable<RelatedEntity> Refs);
+    public record PostRead(long PostId, string? Title, string? Content, string? Author, string? BookName, int? Page, string ImageFileName, IEnumerable<RelatedEntity> Refs);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -43,6 +43,8 @@ public class GetPostsEndpoint : IEndpoint
             Title: x.Title,
             Content: x.Content,
             Author: x.Author,
+            BookName: x.BookId != null && x.BookId.Value > 0 ? relationshipService.GetRelationshipName(EntityType.Book, x.BookId.Value) : default,
+            Page: x.Page,
             ImageFileName: images.ContainsKey(x.PostId) ? images[x.PostId] : default,
             Refs: refs.Where(x2 => x2.AssignedIds.Contains(x.PostId))
                     .Select(x2 => new RelatedEntity

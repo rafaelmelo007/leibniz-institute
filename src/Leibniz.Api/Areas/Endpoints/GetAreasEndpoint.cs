@@ -1,4 +1,6 @@
-﻿namespace Leibniz.Api.Areas.Endpoints;
+﻿using System.Linq.Expressions;
+
+namespace Leibniz.Api.Areas.Endpoints;
 public class GetAreasEndpoint : IEndpoint
 {
     // End-point Map
@@ -8,7 +10,7 @@ public class GetAreasEndpoint : IEndpoint
         .WithSummary("Retrieve a set of areas from database");
 
     // Request / Response
-    public record GetAreasRequest(int Index, int Limit);
+    public record GetAreasRequest(int Index, int Limit, string? Query);
     public record GetAreasResponse(IEnumerable<AreaRead> Data, int Index, int Limit, int Count);
     public record AreaRead(long AreaId, string? Name, string? Content, string ImageFileName);
 
@@ -27,8 +29,10 @@ public class GetAreasEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var count = await database.Areas.CountAsync();
-        var rows = await database.Areas.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).ToListAsync();
+        Expression<Func<Area, bool>> where = x => string.IsNullOrEmpty(request.Query) || x.Name.Contains(request.Query) || x.Content.Contains(request.Query);
+        var count = await database.Areas.Where(where).CountAsync();
+        var rows = await database.Areas.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+
         var ids = rows.Select(x => x.AreaId).ToList();
         var images = database.Images.Where(x => x.EntityType == EntityType.Area && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
         var areas = rows.Select(x => new AreaRead

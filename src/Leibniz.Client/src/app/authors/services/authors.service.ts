@@ -39,8 +39,11 @@ export class AuthorsService {
 
   addAuthor(author: Author): Observable<number> {
     const result = this.http
-      .post<number>(`${appSettings.baseUrl}/authors/create-author`, author)
-      .pipe(map((res) => res));
+      .post<{ authorId: number }>(
+        `${appSettings.baseUrl}/authors/create-author`,
+        author
+      )
+      .pipe(map((res) => res.authorId));
     return result;
   }
 

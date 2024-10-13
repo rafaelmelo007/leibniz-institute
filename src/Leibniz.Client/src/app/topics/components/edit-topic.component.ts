@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { DialogWindowComponent } from '../../common/components/dialog-window/dialog-window.component';
 import { CommonModule } from '@angular/common';
 import {
@@ -13,9 +13,10 @@ import { TopicsStore } from '../services/topics.store';
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
 import { MenuOption } from '../../common/domain/menu-option';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
-import { TabsComponent } from "../../common/components/tabs/tabs.component";
-import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
-import { MoveToComponent } from "../../common/components/move-to/move-to.component";
+import { TabsComponent } from '../../common/components/tabs/tabs.component';
+import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
+import { MoveToComponent } from '../../common/components/move-to/move-to.component';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-topic',
@@ -28,17 +29,18 @@ import { MoveToComponent } from "../../common/components/move-to/move-to.compone
     EditReferencesComponent,
     TabsComponent,
     EditImageComponent,
-    MoveToComponent
-],
+    MoveToComponent,
+  ],
   templateUrl: './edit-topic.component.html',
   styleUrl: './edit-topic.component.css',
 })
-export class EditTopicComponent {
+export class EditTopicComponent implements OnDestroy {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
-  
+
   topicId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   editForm = new FormGroup({
     topicId: new FormControl(0, []),
@@ -93,6 +95,9 @@ export class EditTopicComponent {
         name: '',
         content: '',
       } as Topic;
+      this.tabs = this.tabs.filter(
+        (x) => x.label !== 'Image' && x.label !== 'Move To'
+      );
       this.editForm.patchValue(topic);
       return;
     }
@@ -110,10 +115,24 @@ export class EditTopicComponent {
     const formValue = this.editForm.value as Topic;
     if (formValue.topicId) {
       this.topicsStore.updateTopic(formValue);
+      this.editReferences?.saveReferences();
+      this.showEdit = false;
     } else {
+      this.topicsStore.changes$
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((res) => {
+          if (res?.changeType !== 'added' || res.ref.type !== 'topic') return;
+
+          this.editReferences?.saveReferences(res?.ref.id);
+          this.ngOnDestroy();
+          this.showEdit = false;
+        });
       this.topicsStore.addTopic(formValue);
     }
-    this.editReferences?.saveReferences();
-    this.showEdit = false;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

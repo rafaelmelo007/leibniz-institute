@@ -35,8 +35,11 @@ export class PostsService {
 
   addPost(post: Post): Observable<number> {
     const result = this.http
-      .post<number>(`${appSettings.baseUrl}/posts/create-post`, post)
-      .pipe(map((res) => res));
+      .post<{ postId: number }>(
+        `${appSettings.baseUrl}/posts/create-post`,
+        post
+      )
+      .pipe(map((res) => res.postId));
     return result;
   }
 

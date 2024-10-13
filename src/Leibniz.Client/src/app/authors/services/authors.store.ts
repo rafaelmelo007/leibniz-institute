@@ -38,16 +38,16 @@ export class AuthorsStore {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
-  private query?: string;
-
   changes$: Observable<ChangedEntity<Author> | null>;
 
-  getQuery(): string | undefined {
-    return this.query;
+  private _query = '';
+
+  get query(): string {
+    return this._query;
   }
 
-  setQuery(query?: string): void {
-    this.query = query;
+  set query(value: string) {
+    this._query = value;
   }
 
   loadAuthors(index: number, limit: number): void {

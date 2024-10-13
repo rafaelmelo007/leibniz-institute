@@ -39,11 +39,21 @@ export class AreasStore {
 
   changes$: Observable<ChangedEntity<Area> | null>;
 
+  private _query = '';
+
+  get query(): string {
+    return this._query;
+  }
+
+  set query(value: string) {
+    this._query = value;
+  }
+
   loadAreas(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.areasService
-      .loadAreas(index, limit)
+      .loadAreas(index, limit, this.query)
       .pipe(
         tap((res) => {
           res.data.forEach((area) => {

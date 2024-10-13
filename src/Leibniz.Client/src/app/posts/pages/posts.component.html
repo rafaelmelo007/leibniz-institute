@@ -1,4 +1,4 @@
-<div class="container-fluid" style="padding: 10px; min-height: 350px">
+<div class="container" style="padding: 10px; min-height: 350px">
   <h3>
     <i class="fa fa-comment"></i> Posts @if(count){
     <span>({{ count }})</span>
@@ -13,6 +13,18 @@
     </button>
   </h3>
 
+  <div class="row">
+    <div class="col">
+      <input
+        type="text"
+        [(ngModel)]="postsStore.query"
+        (keyup.enter)="loadDeepSearch()"
+        placeholder="Search..."
+        class="form-control mb-3"
+      />
+    </div>
+  </div>
+
   <app-loading *ngIf="loading"></app-loading>
   <div class="card-deck">
     @for (item of dataSource; track $index) {
@@ -24,8 +36,28 @@
           style="text-decoration: none"
           ><b>{{ item.title }}</b></a
         >
+        <button
+          class="btn btn-danger btn-sm"
+          style="float: right"
+          (click)="deletePost(item.postId)"
+        >
+          <i class="fa fa-trash"></i>
+        </button>
       </div>
-      <div class="card-body enhance-text" [innerHTML]="encodeValue(item.content)"></div>
+      <div class="card-body enhance-text">
+        <p [innerHTML]="encodeValue(item.content)"></p>
+        <b>{{ item.author }}</b
+        ><br /><span *ngIf="item.bookName" style="margin-top: 10px"
+          ><app-entity-badge
+            [type]="'book'"
+            [id]="item.bookId ?? 0"
+            [name]="
+              item.bookName +
+              (item.page && item.page > 0 ? ', p. ' + item.page : '')
+            "
+          ></app-entity-badge
+        ></span>
+      </div>
       <div class="card-footer">
         @for (tag of item.refs; track $index) {
         <app-entity-badge

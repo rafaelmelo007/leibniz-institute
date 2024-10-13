@@ -40,11 +40,21 @@ export class PostsStore {
 
   changes$: Observable<ChangedEntity<Post> | null>;
 
-  loadPosts(index: number, limit: number, query: string = ''): void {
+  private _query = '';
+
+  get query(): string {
+    return this._query;
+  }
+
+  set query(value: string) {
+    this._query = value;
+  }
+
+  loadPosts(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.postsService
-      .loadPosts(index, limit, query)
+      .loadPosts(index, limit, this.query)
       .pipe(
         tap((res) => {
           res.data.forEach((post) => {
@@ -52,7 +62,7 @@ export class PostsStore {
               const type = <any>element.type;
               element.type = this.toEntityType(type);
             });
-            
+
             if (post.imageFileName == null) return;
 
             post.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${post.imageFileName}~${queryStringToken}`;

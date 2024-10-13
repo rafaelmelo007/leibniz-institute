@@ -1,4 +1,4 @@
-import { RefItem } from "../../common/domain/ref-item";
+import { RefItem } from '../../common/domain/ref-item';
 
 export interface Post {
   postId: number;
@@ -6,6 +6,7 @@ export interface Post {
   content: string;
   author: string;
   bookId: number | null;
+  bookName?: string | null;
   page: number | null;
   reference: string | null;
   refs: RefItem[] | null;

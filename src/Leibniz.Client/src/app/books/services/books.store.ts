@@ -43,11 +43,21 @@ export class BooksStore {
 
   changes$: Observable<ChangedEntity<Book> | null>;
 
-  loadBooks(index: number, limit: number, query?: string): void {
+  private _query = '';
+
+  get query(): string {
+    return this._query;
+  }
+
+  set query(value: string) {
+    this._query = value;
+  }
+
+  loadBooks(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.booksService
-      .loadBooks(index, limit, query)
+      .loadBooks(index, limit, this.query)
       .pipe(
         tap((res) => {
           res.data.forEach((book) => {

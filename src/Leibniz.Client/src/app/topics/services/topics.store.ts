@@ -40,11 +40,21 @@ export class TopicsStore {
 
   changes$: Observable<ChangedEntity<Topic> | null>;
 
+  private _query = '';
+
+  get query(): string {
+    return this._query;
+  }
+
+  set query(value: string) {
+    this._query = value;
+  }
+
   loadTopics(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.topicsService
-      .loadTopics(index, limit)
+      .loadTopics(index, limit, this._query)
       .pipe(
         tap((res) => {
           res.data.forEach((topic) => {

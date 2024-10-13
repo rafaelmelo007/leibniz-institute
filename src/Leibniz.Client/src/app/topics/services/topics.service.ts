@@ -11,10 +11,18 @@ import { Topic } from '../domain/topic';
 export class TopicsService {
   constructor(private http: HttpClient) {}
 
-  loadTopics(index: number, limit: number): Observable<ResultSet<Topic>> {
+  loadTopics(
+    index: number,
+    limit: number,
+    query?: string
+  ): Observable<ResultSet<Topic>> {
     const result = this.http
       .get<ResultSet<Topic>>(
-        `${appSettings.baseUrl}/topics/get-topics?Index=${index}&Limit=${limit}`
+        `${
+          appSettings.baseUrl
+        }/topics/get-topics?Index=${index}&Limit=${limit}&Query=${
+          !query ? '' : query
+        }`
       )
       .pipe(map((res) => res));
     return result;
@@ -31,8 +39,11 @@ export class TopicsService {
 
   addTopic(topic: Topic): Observable<number> {
     const result = this.http
-      .post<number>(`${appSettings.baseUrl}/topics/create-topic`, topic)
-      .pipe(map((res) => res));
+      .post<{ topicId: number }>(
+        `${appSettings.baseUrl}/topics/create-topic`,
+        topic
+      )
+      .pipe(map((res) => res.topicId));
     return result;
   }
 

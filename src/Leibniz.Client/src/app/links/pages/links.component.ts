@@ -91,7 +91,7 @@ export class LinksPage implements OnDestroy {
   queryStringToken: string | null;
 
   constructor(
-    private linksStore: LinksStore,
+    public linksStore: LinksStore,
     private imagesStore: ImagesStore,
     private authService: AuthService
   ) {
@@ -127,7 +127,9 @@ export class LinksPage implements OnDestroy {
     const changes$ = this.linksStore.changes$;
     changes$.pipe(takeUntil(this.destroyed$)).subscribe((entry) => {
       if (entry?.changeType == 'deleted') {
-        this.dataSource = this.dataSource?.filter((x) => x.linkId != entry.ref.id);
+        this.dataSource = this.dataSource?.filter(
+          (x) => x.linkId != entry.ref.id
+        );
         this.count = (this.count ?? 0) - 1;
       }
       if (entry?.changeType == 'added') {
@@ -173,6 +175,12 @@ export class LinksPage implements OnDestroy {
   }
 
   loadMore(): void {
+    this.linksStore.loadLinks(this.dataSource?.length ?? 0, 50);
+  }
+
+  loadDeepSearch(query: string): void {
+    this.linksStore.query = query;
+    this.dataSource = [];
     this.linksStore.loadLinks(this.dataSource?.length ?? 0, 50);
   }
 

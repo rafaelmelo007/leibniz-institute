@@ -1,4 +1,6 @@
-﻿namespace Leibniz.Api.Links.Endpoints;
+﻿using System.Linq.Expressions;
+
+namespace Leibniz.Api.Links.Endpoints;
 public class GetLinksEndpoint : IEndpoint
 {
     // End-point Map
@@ -7,7 +9,7 @@ public class GetLinksEndpoint : IEndpoint
         .WithSummary("Retrieve a set of links from database");
 
     // Request / Response
-    public record GetLinksRequest(int Index, int Limit);
+    public record GetLinksRequest(int Index, int Limit, string Query);
     public record GetLinksResponse(IEnumerable<LinkRead> Data, int Index, int Limit, int Count);
     public record LinkRead(long LinkId, string? Name, string? Content, string? Url, string ImageFileName);
 
@@ -26,8 +28,10 @@ public class GetLinksEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var count = await database.Links.CountAsync();
-        var rows = await database.Links.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        Expression<Func<Link, bool>> where = x => string.IsNullOrEmpty(request.Query) || x.Name.Contains(request.Query) || x.Content.Contains(request.Query) || x.Url.Contains(request.Query);
+        var count = await database.Links.Where(where).CountAsync();
+        var rows = await database.Links.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+
         var ids = rows.Select(x => x.LinkId).ToList();
         var images = database.Images.Where(x => x.EntityType == EntityType.Link && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
         var links = rows.Select(x => new LinkRead

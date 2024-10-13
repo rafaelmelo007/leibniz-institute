@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Period } from '../domain/period';
 import { PeriodsStore } from '../services/periods.store';
 import {
@@ -16,6 +16,7 @@ import { MenuOption } from '../../common/domain/menu-option';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
 import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
 import { MoveToComponent } from '../../common/components/move-to/move-to.component';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-period',
@@ -33,12 +34,13 @@ import { MoveToComponent } from '../../common/components/move-to/move-to.compone
   templateUrl: './edit-period.component.html',
   styleUrl: './edit-period.component.css',
 })
-export class EditPeriodComponent {
+export class EditPeriodComponent implements OnDestroy {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
 
   periodId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   editForm = new FormGroup({
     periodId: new FormControl(0, []),
@@ -100,6 +102,9 @@ export class EditPeriodComponent {
         url: '',
         content: '',
       } as Period;
+      this.tabs = this.tabs.filter(
+        (x) => x.label !== 'Image' && x.label !== 'Move To'
+      );
       this.editForm.patchValue(period);
       return;
     }
@@ -117,10 +122,24 @@ export class EditPeriodComponent {
     const formValue = this.editForm.value as Period;
     if (formValue.periodId) {
       this.periodsStore.updatePeriod(formValue);
+      this.editReferences?.saveReferences();
+      this.showEdit = false;
     } else {
+      this.periodsStore.changes$
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((res) => {
+          if (res?.changeType !== 'added' || res.ref.type !== 'period') return;
+
+          this.editReferences?.saveReferences(res?.ref.id);
+          this.ngOnDestroy();
+          this.showEdit = false;
+        });
       this.periodsStore.addPeriod(formValue);
     }
-    this.editReferences?.saveReferences();
-    this.showEdit = false;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

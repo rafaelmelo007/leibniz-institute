@@ -11,10 +11,18 @@ import { Link } from '../domain/link';
 export class LinksService {
   constructor(private http: HttpClient) {}
 
-  loadLinks(index: number, limit: number): Observable<ResultSet<Link>> {
+  loadLinks(
+    index: number,
+    limit: number,
+    query?: string
+  ): Observable<ResultSet<Link>> {
     const result = this.http
       .get<ResultSet<Link>>(
-        `${appSettings.baseUrl}/links/get-links?Index=${index}&Limit=${limit}`
+        `${
+          appSettings.baseUrl
+        }/links/get-links?Index=${index}&Limit=${limit}&Query=${
+          !query ? '' : query
+        }`
       )
       .pipe(map((res) => res));
     return result;
@@ -31,8 +39,11 @@ export class LinksService {
 
   addLink(link: Link): Observable<number> {
     const result = this.http
-      .post<number>(`${appSettings.baseUrl}/links/create-link`, link)
-      .pipe(map((res) => res));
+      .post<{ linkId: number }>(
+        `${appSettings.baseUrl}/links/create-link`,
+        link
+      )
+      .pipe(map((res) => res.linkId));
     return result;
   }
 

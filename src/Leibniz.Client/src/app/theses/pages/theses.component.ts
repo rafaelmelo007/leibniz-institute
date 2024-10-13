@@ -82,7 +82,7 @@ export class ThesesPage implements OnDestroy {
   queryStringToken: string | null;
 
   constructor(
-    private thesesStore: ThesesStore,
+    public thesesStore: ThesesStore,
     private imagesStore: ImagesStore,
     private authService: AuthService
   ) {
@@ -165,6 +165,12 @@ export class ThesesPage implements OnDestroy {
   }
 
   loadMore(): void {
+    this.thesesStore.loadTheses(this.dataSource?.length ?? 0, 25);
+  }
+
+  loadDeepSearch(query: string): void {
+    this.dataSource = [];
+    this.thesesStore.query = query;
     this.thesesStore.loadTheses(this.dataSource?.length ?? 0, 25);
   }
 

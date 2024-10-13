@@ -1,4 +1,4 @@
-<div class="container-fluid" style="padding: 10px; min-height: 350px">
+<div class="container" style="padding: 10px; min-height: 350px">
   <h3>
     <i class="fa fa-users"></i> Authors @if(count){
     <span>({{ count }})</span>
@@ -19,7 +19,7 @@
     [actions]="actions"
     [actionsLabel]="'Actions'"
     [columns]="columns"
-    [searchTerm]="authorsStore.getQuery() ?? ''"
+    [searchTerm]="authorsStore.query"
     (loadMore)="loadMore()"
     (runDeepSearch)="loadDeepSearch($event)"
   >

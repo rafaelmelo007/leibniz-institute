@@ -104,10 +104,9 @@ export class BooksPage implements OnDestroy {
 
   count?: number;
   loading?: boolean;
-  query?: string;
 
   constructor(
-    private booksStore: BooksStore,
+    public booksStore: BooksStore,
     private imagesStore: ImagesStore,
     private authService: AuthService
   ) {
@@ -177,13 +176,13 @@ export class BooksPage implements OnDestroy {
   }
 
   loadMore(): void {
-    this.booksStore.loadBooks(this.dataSource?.length ?? 0, 25, this.query);
+    this.booksStore.loadBooks(this.dataSource?.length ?? 0, 25);
   }
 
   loadDeepSearch(query: string): void {
-    this.query = query;
     this.dataSource = [];
-    this.booksStore.loadBooks(this.dataSource?.length ?? 0, 25, this.query);
+    this.booksStore.query = query;
+    this.booksStore.loadBooks(this.dataSource?.length ?? 0, 25);
   }
 
   addBook(): void {

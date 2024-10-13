@@ -11,10 +11,18 @@ import { Thesis } from '../domain/thesis';
 export class ThesesService {
   constructor(private http: HttpClient) {}
 
-  loadTheses(index: number, limit: number): Observable<ResultSet<Thesis>> {
+  loadTheses(
+    index: number,
+    limit: number,
+    query?: string
+  ): Observable<ResultSet<Thesis>> {
     const result = this.http
       .get<ResultSet<Thesis>>(
-        `${appSettings.baseUrl}/theses/get-theses?Index=${index}&Limit=${limit}`
+        `${
+          appSettings.baseUrl
+        }/theses/get-theses?Index=${index}&Limit=${limit}&query=${
+          !query ? '' : query
+        }`
       )
       .pipe(map((res) => res));
     return result;
@@ -31,8 +39,11 @@ export class ThesesService {
 
   addThesis(thesis: Thesis): Observable<number> {
     const result = this.http
-      .post<number>(`${appSettings.baseUrl}/theses/create-thesis`, thesis)
-      .pipe(map((res) => res));
+      .post<{ thesisId: number }>(
+        `${appSettings.baseUrl}/theses/create-thesis`,
+        thesis
+      )
+      .pipe(map((res) => res.thesisId));
     return result;
   }
 

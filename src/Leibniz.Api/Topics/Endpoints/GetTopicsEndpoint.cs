@@ -1,4 +1,6 @@
-﻿namespace Leibniz.Api.Topics.Endpoints;
+﻿using System.Linq.Expressions;
+
+namespace Leibniz.Api.Topics.Endpoints;
 public class GetTopicsEndpoint : IEndpoint
 {
     // End-point Map
@@ -7,7 +9,7 @@ public class GetTopicsEndpoint : IEndpoint
         .WithSummary("Retrieve a set of topics from database");
 
     // Request / Response
-    public record GetTopicsRequest(int Index, int Limit);
+    public record GetTopicsRequest(int Index, int Limit, string Query);
     public record GetTopicsResponse(IEnumerable<TopicRead> Data, int Index, int Limit, int Count);
     public record TopicRead(long TopicId, string? Name, string? Content, string ImageFileName);
 
@@ -26,8 +28,10 @@ public class GetTopicsEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var count = await database.Topics.CountAsync();
-        var rows = await database.Topics.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        Expression<Func<Topic, bool>> where = x => string.IsNullOrEmpty(request.Query) || x.Name.Contains(request.Query) || x.Content.Contains(request.Query);
+        var count = await database.Topics.Where(where).CountAsync();
+        var rows = await database.Topics.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+
         var ids = rows.Select(x => x.TopicId).ToList();
         var images = database.Images.Where(x => x.EntityType == EntityType.Topic && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
         var topics = rows.Select(x => new TopicRead

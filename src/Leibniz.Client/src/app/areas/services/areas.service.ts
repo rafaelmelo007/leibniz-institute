@@ -11,10 +11,18 @@ import { Area } from '../domain/area';
 export class AreasService {
   constructor(private http: HttpClient) {}
 
-  loadAreas(index: number, limit: number): Observable<ResultSet<Area>> {
+  loadAreas(
+    index: number,
+    limit: number,
+    query?: string
+  ): Observable<ResultSet<Area>> {
     const result = this.http
       .get<ResultSet<Area>>(
-        `${appSettings.baseUrl}/areas/get-areas?Index=${index}&Limit=${limit}`
+        `${
+          appSettings.baseUrl
+        }/areas/get-areas?Index=${index}&Limit=${limit}&Query=${
+          !query ? '' : query
+        }`
       )
       .pipe(map((res) => res));
     return result;
@@ -31,8 +39,11 @@ export class AreasService {
 
   addArea(area: Area): Observable<number> {
     const result = this.http
-      .post<number>(`${appSettings.baseUrl}/areas/create-area`, area)
-      .pipe(map((res) => res));
+      .post<{ areaId: number }>(
+        `${appSettings.baseUrl}/areas/create-area`,
+        area
+      )
+      .pipe(map((res) => res.areaId));
     return result;
   }
 

@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Area } from '../domain/area';
 import {
   FormControl,
@@ -16,6 +16,7 @@ import { EditReferencesComponent } from '../../relationships/components/edit-ref
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
 import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
 import { MoveToComponent } from '../../common/components/move-to/move-to.component';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-area',
@@ -33,12 +34,13 @@ import { MoveToComponent } from '../../common/components/move-to/move-to.compone
   templateUrl: './edit-area.component.html',
   styleUrl: './edit-area.component.css',
 })
-export class EditAreaComponent {
+export class EditAreaComponent implements OnDestroy {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
 
   areaId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   editForm = new FormGroup({
     areaId: new FormControl(0, []),
@@ -58,7 +60,7 @@ export class EditAreaComponent {
     {
       label: 'References',
       icon: 'fa fa-link',
-      selected: true,
+      selected: false,
       action: () => {
         this.selectedTab = 'REFERENCES';
       },
@@ -66,7 +68,7 @@ export class EditAreaComponent {
     {
       label: 'Image',
       icon: 'fa fa-image',
-      selected: true,
+      selected: false,
       action: () => {
         this.selectedTab = 'IMAGE';
       },
@@ -74,7 +76,7 @@ export class EditAreaComponent {
     {
       label: 'Move To',
       icon: 'fa fa-arrows',
-      selected: true,
+      selected: false,
       action: () => {
         this.selectedTab = 'MOVE_TO';
       },
@@ -95,6 +97,9 @@ export class EditAreaComponent {
         content: '',
       } as Area;
       this.editForm.patchValue(area);
+      this.tabs = this.tabs.filter(
+        (x) => x.label !== 'Image' && x.label !== 'Move To'
+      );
       return;
     }
 
@@ -111,10 +116,24 @@ export class EditAreaComponent {
     const formValue = this.editForm.value as Area;
     if (formValue.areaId) {
       this.areasStore.updateArea(formValue);
+      this.editReferences?.saveReferences();
+      this.showEdit = false;
     } else {
+      this.areasStore.changes$
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((res) => {
+          if (res?.changeType !== 'added' || res.ref.type !== 'area') return;
+
+          this.editReferences?.saveReferences(res?.ref.id);
+          this.ngOnDestroy();
+          this.showEdit = false;
+        });
       this.areasStore.addArea(formValue);
     }
-    this.editReferences?.saveReferences();
-    this.showEdit = false;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

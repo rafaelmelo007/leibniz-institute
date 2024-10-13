@@ -11,10 +11,18 @@ import { Period } from '../domain/period';
 export class PeriodsService {
   constructor(private http: HttpClient) {}
 
-  loadPeriods(index: number, limit: number): Observable<ResultSet<Period>> {
+  loadPeriods(
+    index: number,
+    limit: number,
+    query?: string
+  ): Observable<ResultSet<Period>> {
     const result = this.http
       .get<ResultSet<Period>>(
-        `${appSettings.baseUrl}/periods/get-periods?Index=${index}&Limit=${limit}`
+        `${
+          appSettings.baseUrl
+        }/periods/get-periods?Index=${index}&Limit=${limit}&query=${
+          !query ? '' : query
+        }`
       )
       .pipe(map((res) => res));
     return result;
@@ -31,8 +39,11 @@ export class PeriodsService {
 
   addPeriod(period: Period): Observable<number> {
     const result = this.http
-      .post<number>(`${appSettings.baseUrl}/periods/create-period`, period)
-      .pipe(map((res) => res));
+      .post<{ periodId: number }>(
+        `${appSettings.baseUrl}/periods/create-period`,
+        period
+      )
+      .pipe(map((res) => res.periodId));
     return result;
   }
 

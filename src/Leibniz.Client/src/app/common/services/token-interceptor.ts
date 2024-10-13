@@ -2,10 +2,7 @@ import { HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../../account/services/auth.service';
 
-export function tokenInterceptor(
-  req: HttpRequest<any>,
-  next: HttpHandlerFn
-) {
+export function tokenInterceptor(req: HttpRequest<any>, next: HttpHandlerFn) {
   const userToken = inject(AuthService).getToken();
   const newReq = req.clone({
     headers: req.headers.set(

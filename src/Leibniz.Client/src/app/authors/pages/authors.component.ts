@@ -168,7 +168,7 @@ export class AuthorsPage implements OnDestroy {
   }
 
   loadDeepSearch(query: string): void {
-    this.authorsStore.setQuery(query);
+    this.authorsStore.query = query;
     this.dataSource = [];
     this.authorsStore.loadAuthors(this.dataSource?.length ?? 0, 25);
   }

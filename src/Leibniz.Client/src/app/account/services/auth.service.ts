@@ -32,7 +32,7 @@ export class AuthService {
   }
 
   setToken(userToken: UserToken | null): void {
-    if (typeof this.cookieService === 'undefined') {
+    if (this.cookieService === undefined) {
       return;
     }
     if (userToken == null) {
@@ -42,8 +42,10 @@ export class AuthService {
     }
     if (this.cookieService.check(USER_TOKEN)) {
       this.deleteCookie(USER_TOKEN);
-      this.token = null;
     }
+
+    this.token = null;
+    console.debug('write-token', userToken.accessToken);
     this.setCookie(USER_TOKEN, JSON.stringify(userToken));
   }
 
@@ -73,8 +75,8 @@ export class AuthService {
     }
     if (this.cookieService.check(QUERY_STRING_TOKEN)) {
       this.deleteCookie(QUERY_STRING_TOKEN);
-      this.queryStringToken = null;
     }
+    this.queryStringToken = null;
     this.setCookie(QUERY_STRING_TOKEN, queryStringToken);
   }
 

@@ -67,10 +67,10 @@ export class EditReferencesComponent implements OnInit {
       });
   }
 
-  saveReferences(): void {
+  saveReferences(id?: number): void {
     this.relationshipsService.saveRelationships(
       this.type!,
-      this.id!,
+      id ?? this.id!,
       this.items ?? []
     );
   }

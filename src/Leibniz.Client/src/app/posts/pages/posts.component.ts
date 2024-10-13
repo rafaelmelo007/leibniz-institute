@@ -13,6 +13,7 @@ import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
 import { InfiniteScrollComponent } from '../../common/components/infinite-scroll/infinite-scroll.component';
 import { EntityBadgeComponent } from '../../common/components/entity-badge/entity-badge.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-posts',
@@ -21,6 +22,7 @@ import { EntityBadgeComponent } from '../../common/components/entity-badge/entit
     LoadingComponent,
     GridTableComponent,
     CommonModule,
+    FormsModule,
     EditPostComponent,
     InfiniteScrollComponent,
     EntityBadgeComponent,
@@ -33,8 +35,6 @@ export class PostsPage implements OnDestroy {
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: Post[];
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
-
-  query = '';
 
   maxImageWidth = 120;
   maxImageHeight = 140;
@@ -87,13 +87,7 @@ export class PostsPage implements OnDestroy {
       label: 'Remove Post',
       icon: 'fa fa-remove',
       action: (data: Post) => {
-        if (
-          !confirm(
-            'You are about to delete this post. Do you want to continue?'
-          )
-        )
-          return;
-        this.postsStore.deletePost(data.postId);
+        this.deletePost(data.postId);
       },
     },
   ];
@@ -103,7 +97,7 @@ export class PostsPage implements OnDestroy {
   queryStringToken: string | null;
 
   constructor(
-    private postsStore: PostsStore,
+    public postsStore: PostsStore,
     private imagesStore: ImagesStore,
     private authService: AuthService
   ) {
@@ -189,11 +183,22 @@ export class PostsPage implements OnDestroy {
   }
 
   loadMore(): void {
-    this.postsStore.loadPosts(this.dataSource?.length ?? 0, 10, this.query);
+    this.postsStore.loadPosts(this.dataSource?.length ?? 0, 10);
+  }
+
+  loadDeepSearch(): void {
+    this.dataSource = [];
+    this.postsStore.loadPosts(this.dataSource?.length ?? 0, 50);
   }
 
   addPost(): void {
     this.editPost?.editPost(0);
+  }
+
+  deletePost(postId: number): void {
+    if (!confirm('You are about to delete this post. Do you want to continue?'))
+      return;
+    this.postsStore.deletePost(postId);
   }
 
   editPostLink(postId: number): void {

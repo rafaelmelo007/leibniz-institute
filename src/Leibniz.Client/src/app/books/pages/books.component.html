@@ -1,4 +1,4 @@
-<div class="container-fluid" style="padding: 10px; min-height: 350px">
+<div class="container" style="padding: 10px; min-height: 350px">
   <h3>
     <i class="fa fa-book"></i> Books @if(count){
     <span>({{ count }})</span>
@@ -19,6 +19,7 @@
     [actions]="actions"
     [actionsLabel]="'Actions'"
     [columns]="columns"
+    [searchTerm]="booksStore.query"
     (loadMore)="loadMore()"
     (runDeepSearch)="loadDeepSearch($event)"
   >

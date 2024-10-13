@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Link } from '../domain/link';
 import {
   FormControl,
@@ -11,11 +11,12 @@ import { FieldValidationErrorsComponent } from '../../common/components/field-va
 import { DialogWindowComponent } from '../../common/components/dialog-window/dialog-window.component';
 import { CommonModule } from '@angular/common';
 import { EditTabType } from '../../relationships/components/domain/edit-tab-type';
-import { EditReferencesComponent } from "../../relationships/components/edit-references/edit-references.component";
+import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
 import { MenuOption } from '../../common/domain/menu-option';
-import { TabsComponent } from "../../common/components/tabs/tabs.component";
-import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
-import { MoveToComponent } from "../../common/components/move-to/move-to.component";
+import { TabsComponent } from '../../common/components/tabs/tabs.component';
+import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
+import { MoveToComponent } from '../../common/components/move-to/move-to.component';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-link',
@@ -28,17 +29,18 @@ import { MoveToComponent } from "../../common/components/move-to/move-to.compone
     EditReferencesComponent,
     TabsComponent,
     EditImageComponent,
-    MoveToComponent
-],
+    MoveToComponent,
+  ],
   templateUrl: './edit-link.component.html',
   styleUrl: './edit-link.component.css',
 })
-export class EditLinkComponent {
+export class EditLinkComponent implements OnDestroy {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
-  
+
   linkId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   editForm = new FormGroup({
     linkId: new FormControl(0, []),
@@ -95,6 +97,9 @@ export class EditLinkComponent {
         url: '',
         content: '',
       } as Link;
+      this.tabs = this.tabs.filter(
+        (x) => x.label !== 'Image' && x.label !== 'Move To'
+      );
       this.editForm.patchValue(link);
       return;
     }
@@ -112,10 +117,24 @@ export class EditLinkComponent {
     const formValue = this.editForm.value as Link;
     if (formValue.linkId) {
       this.linksStore.updateLink(formValue);
+      this.editReferences?.saveReferences();
+      this.showEdit = false;
     } else {
+      this.linksStore.changes$
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((res) => {
+          if (res?.changeType !== 'added' || res.ref.type !== 'link') return;
+
+          this.editReferences?.saveReferences(res?.ref.id);
+          this.ngOnDestroy();
+          this.showEdit = false;
+        });
       this.linksStore.addLink(formValue);
     }
-    this.editReferences?.saveReferences();
-    this.showEdit = false;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

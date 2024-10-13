@@ -40,11 +40,21 @@ export class ThesesStore {
 
   changes$: Observable<ChangedEntity<Thesis> | null>;
 
-  loadTheses(index: number, limit: number): void {
+  private _query = '';
+
+  get query(): string {
+    return this._query;
+  }
+
+  set query(value: string) {
+    this._query = value;
+  }
+
+  loadTheses(index: number, limit: number, query?: string): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.thesesService
-      .loadTheses(index, limit)
+      .loadTheses(index, limit, query)
       .pipe(
         tap((res) => {
           res.data.forEach((thesis) => {

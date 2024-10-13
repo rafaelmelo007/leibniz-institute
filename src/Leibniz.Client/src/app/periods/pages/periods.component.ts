@@ -91,10 +91,11 @@ export class PeriodsPage implements OnDestroy {
 
   count?: number;
   loading?: boolean;
+  query?: string;
   queryStringToken: string | null;
 
   constructor(
-    private periodsStore: PeriodsStore,
+    public periodsStore: PeriodsStore,
     private imagesStore: ImagesStore,
     private authService: AuthService
   ) {
@@ -177,6 +178,12 @@ export class PeriodsPage implements OnDestroy {
   }
 
   loadMore(): void {
+    this.periodsStore.loadPeriods(this.dataSource?.length ?? 0, 25);
+  }
+
+  loadDeepSearch(query: string): void {
+    this.dataSource = [];
+    this.periodsStore.query = query;
     this.periodsStore.loadPeriods(this.dataSource?.length ?? 0, 25);
   }
 

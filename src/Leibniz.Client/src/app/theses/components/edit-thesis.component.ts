@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { FieldValidationErrorsComponent } from '../../common/components/field-validation-errors/field-validation-errors.component';
 import { DialogWindowComponent } from '../../common/components/dialog-window/dialog-window.component';
 import { CommonModule } from '@angular/common';
@@ -14,8 +14,9 @@ import { EditTabType } from '../../relationships/components/domain/edit-tab-type
 import { MenuOption } from '../../common/domain/menu-option';
 import { TabsComponent } from '../../common/components/tabs/tabs.component';
 import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
-import { EditImageComponent } from "../../images/components/edit-image/edit-image.component";
-import { MoveToComponent } from "../../common/components/move-to/move-to.component";
+import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
+import { MoveToComponent } from '../../common/components/move-to/move-to.component';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-thesis',
@@ -28,17 +29,18 @@ import { MoveToComponent } from "../../common/components/move-to/move-to.compone
     TabsComponent,
     EditReferencesComponent,
     EditImageComponent,
-    MoveToComponent
-],
+    MoveToComponent,
+  ],
   templateUrl: './edit-thesis.component.html',
   styleUrl: './edit-thesis.component.css',
 })
-export class EditThesisComponent {
+export class EditThesisComponent implements OnDestroy {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
-  
+
   thesisId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   editForm = new FormGroup({
     thesisId: new FormControl(0, []),
@@ -93,6 +95,9 @@ export class EditThesisComponent {
         name: '',
         content: '',
       } as Thesis;
+      this.tabs = this.tabs.filter(
+        (x) => x.label !== 'Image' && x.label !== 'Move To'
+      );
       this.editForm.patchValue(thesis);
       return;
     }
@@ -110,10 +115,24 @@ export class EditThesisComponent {
     const formValue = this.editForm.value as Thesis;
     if (formValue.thesisId) {
       this.thesesStore.updateThesis(formValue);
+      this.editReferences?.saveReferences();
+      this.showEdit = false;
     } else {
+      this.thesesStore.changes$
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((res) => {
+          if (res?.changeType !== 'added' || res.ref.type !== 'thesis') return;
+
+          this.editReferences?.saveReferences(res?.ref.id);
+          this.ngOnDestroy();
+          this.showEdit = false;
+        });
       this.thesesStore.addThesis(formValue);
     }
-    this.editReferences?.saveReferences();
-    this.showEdit = false;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }
