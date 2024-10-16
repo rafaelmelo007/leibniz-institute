@@ -48,7 +48,8 @@ export class ErrorHandlerService {
         'Your token has expired. Please sign in again.',
         'Token expired'
       );
-      this.router.navigate(['/pages/account/login']);
+
+      console.log('API Error', err);
     }
 
     return throwError(() => err);
