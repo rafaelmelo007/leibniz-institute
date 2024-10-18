@@ -50,11 +50,11 @@ export class ThesesStore {
     this._query = value;
   }
 
-  loadTheses(index: number, limit: number, query?: string): void {
+  loadTheses(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.thesesService
-      .loadTheses(index, limit, query)
+      .loadTheses(index, limit, this.query)
       .pipe(
         tap((res) => {
           res.data.forEach((thesis) => {

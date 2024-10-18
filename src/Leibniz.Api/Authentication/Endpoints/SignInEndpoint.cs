@@ -66,7 +66,7 @@ public class SignInEndpoint : IEndpoint
 
         var authProperties = new AuthenticationProperties
         {
-            ExpiresUtc = DateTimeOffset.UtcNow.AddHours(4), // Set the token to expire in 4 hours
+            ExpiresUtc = DateTimeOffset.UtcNow.AddHours(24),
             IsPersistent = true,
         };
 
