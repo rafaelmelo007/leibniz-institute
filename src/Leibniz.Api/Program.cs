@@ -72,7 +72,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddAuthentication()
     .AddJwtBearer(options =>
 {
-    var signingKey = Environment.GetEnvironmentVariable("Authentication__SigningKey");
+    var signingKey = authenticationConfiguration.SigningKey;
     var keyBytes = Encoding.ASCII.GetBytes(signingKey);
     options.TokenValidationParameters = new TokenValidationParameters
     {
