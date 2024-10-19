@@ -15,6 +15,7 @@ public class SignInEndpoint : IEndpoint
     // Handler
     public static async Task<IResult> Handle(
         [FromServices] IValidator<LoginRequest> validator,
+        [FromServices] ITokenService tokenService,
         [FromServices] AcademyDbContext database,
         [FromServices] IDateTimeService dateTimeService,
         [FromServices] NotificationHandler notifications,
@@ -41,20 +42,6 @@ public class SignInEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var claimsPrincipal = new ClaimsPrincipal(
-          new ClaimsIdentity(
-            new[]
-            {
-                new Claim(ClaimTypes.Name, user.FullName),
-                new Claim(ClaimTypes.Sid, user.Cpf),
-                new Claim(ClaimTypes.Role, user.Role),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.PrimarySid, user.UserId.ToString()),
-            },
-            BearerTokenDefaults.AuthenticationScheme
-          )
-        );
-
         var now = dateTimeService.NowUtc;
         var queryStringToken = Guid.NewGuid();
         await database.Users.Where(x => x.UserId == user.UserId)
@@ -63,14 +50,9 @@ public class SignInEndpoint : IEndpoint
             .SetProperty(x => x.UpdatedBy, user.UserId));
         await database.SaveChangesAsync();
 
+        var token = await tokenService.GenerateJwtTokenAsync(user, cancellationToken);
 
-        var authProperties = new AuthenticationProperties
-        {
-            ExpiresUtc = DateTimeOffset.UtcNow.AddHours(24),
-            IsPersistent = true,
-        };
-
-        return TypedResults.SignIn(claimsPrincipal, authProperties);
+        return TypedResults.Ok(token);
     }
 
     // Validations

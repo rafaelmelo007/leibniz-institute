@@ -31,9 +31,13 @@ public class GetPostsEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        Expression<Func<Post, bool>> where = x => string.IsNullOrEmpty(request.Query) || x.Title.Contains(request.Query) || x.Content.Contains(request.Query) || x.Author.Contains(request.Query);
-        var count = await database.Posts.Where(where).CountAsync();
-        var rows = await database.Posts.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        var query = database.Posts.AsQueryable();
+        if (!string.IsNullOrEmpty(request.Query))
+        {
+            query = query.Where(x => x.Title.Contains(request.Query) || x.Content.Contains(request.Query) || x.Author.Contains(request.Query));
+        }
+        var count = await query.CountAsync();
+        var rows = await query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
         var ids = rows.Select(x => x.PostId).ToList();
         var refs = await relationshipService.GetRelatedEntitiesAsync(EntityType.Post, ids, cancellationToken);
         var images = database.Images.Where(x => x.EntityType == EntityType.Post && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
