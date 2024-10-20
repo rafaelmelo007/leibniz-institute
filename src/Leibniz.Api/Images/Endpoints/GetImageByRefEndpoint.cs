@@ -1,4 +1,7 @@
-﻿namespace Leibniz.Api.Images.Endpoints;
+﻿using Leibniz.Api.Authentication;
+using Microsoft.Extensions.Options;
+
+namespace Leibniz.Api.Images.Endpoints;
 public class GetImageByRefEndpoint : IEndpoint
 {
     // End-point Map
@@ -17,6 +20,7 @@ public class GetImageByRefEndpoint : IEndpoint
         [FromServices] NotificationHandler notifications,
         [FromServices] AcademyDbContext database,
         [FromServices] IDateTimeService dateTimeService,
+        [FromServices] IOptions<AuthenticationConfiguration> configs,
         [AsParameters] GetImageByRefRequest request,
         CancellationToken cancellationToken)
     {
@@ -35,7 +39,7 @@ public class GetImageByRefEndpoint : IEndpoint
             return TypedResults.NotFound();
         }
 
-        var allowSinceTime = dateTimeService.NowUtc.AddHours(-4);
+        var allowSinceTime = dateTimeService.NowUtc.AddMinutes(-configs.Value.ExpirationInMinutes);
         if (!database.Users.Any(x => x.QueryStringToken == request.QueryStringToken && x.UpdateDateUtc >= allowSinceTime))
         {
             return TypedResults.Forbid();

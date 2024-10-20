@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Leibniz.Api.Books.Endpoints;
+﻿namespace Leibniz.Api.Books.Endpoints;
 public class GetBooksEndpoint : IEndpoint
 {
     // End-point Map
@@ -31,9 +29,14 @@ public class GetBooksEndpoint : IEndpoint
 
         var userId = currentUserService.UserId;
 
-        Expression<Func<Book, bool>> where = x => string.IsNullOrEmpty(request.Query) || x.Title.Contains(request.Query) || x.Content.Contains(request.Query) || x.Author.Contains(request.Query);
-        var count = await database.Books.Where(where).CountAsync();
-        var rows = await database.Books.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        var query = database.Books.AsQueryable();
+        if (!string.IsNullOrEmpty(request.Query))
+        {
+            query = query.Where(x => x.Title.Contains(request.Query) || x.Content.Contains(request.Query) || x.Author.Contains(request.Query));
+        }
+
+        var count = await query.CountAsync();
+        var rows = await query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
         var ids = rows.Select(x => x.BookId).ToList();
         var images = database.Images.Where(x => x.EntityType == EntityType.Book && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
         return TypedResults.Ok(new GetBooksResponse(rows.Select(x => new BookRead

@@ -96,9 +96,6 @@ export class EditAuthorComponent implements OnDestroy {
         name: '',
         content: '',
       } as Author;
-      this.tabs = this.tabs.filter(
-        (x) => x.label !== 'Image' && x.label !== 'Move To'
-      );
       this.editForm.patchValue(area);
       return;
     }
@@ -132,6 +129,12 @@ export class EditAuthorComponent implements OnDestroy {
         });
       this.authorsStore.addAuthor(formValue);
     }
+  }
+
+  getFilteredTabs(): MenuOption[] {
+    return this.authorId == 0
+      ? this.tabs.filter((x) => x.label !== 'Image' && x.label !== 'Move To')
+      : this.tabs;
   }
 
   ngOnDestroy(): void {

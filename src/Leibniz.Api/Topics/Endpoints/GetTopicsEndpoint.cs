@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Leibniz.Api.Topics.Endpoints;
+﻿namespace Leibniz.Api.Topics.Endpoints;
 public class GetTopicsEndpoint : IEndpoint
 {
     // End-point Map
@@ -28,9 +26,15 @@ public class GetTopicsEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        Expression<Func<Topic, bool>> where = x => string.IsNullOrEmpty(request.Query) || x.Name.Contains(request.Query) || x.Content.Contains(request.Query);
-        var count = await database.Topics.Where(where).CountAsync();
-        var rows = await database.Topics.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        var query = database.Topics.AsQueryable();
+        if (!string.IsNullOrEmpty(request.Query))
+        {
+            query = query.Where(x => x.Name.Contains(request.Query) || x.Content.Contains(request.Query));
+        }
+
+
+        var count = await query.CountAsync();
+        var rows = await query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
 
         var ids = rows.Select(x => x.TopicId).ToList();
         var images = database.Images.Where(x => x.EntityType == EntityType.Topic && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);

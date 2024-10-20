@@ -1,5 +1,4 @@
 ﻿using Leibniz.Api.Relationships.Dtos;
-using System.Linq.Expressions;
 
 namespace Leibniz.Api.Posts.Endpoints;
 public class GetPostsEndpoint : IEndpoint

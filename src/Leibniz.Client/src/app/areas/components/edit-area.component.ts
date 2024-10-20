@@ -97,9 +97,6 @@ export class EditAreaComponent implements OnDestroy {
         content: '',
       } as Area;
       this.editForm.patchValue(area);
-      this.tabs = this.tabs.filter(
-        (x) => x.label !== 'Image' && x.label !== 'Move To'
-      );
       return;
     }
 
@@ -130,6 +127,12 @@ export class EditAreaComponent implements OnDestroy {
         });
       this.areasStore.addArea(formValue);
     }
+  }
+
+  getFilteredTabs(): MenuOption[] {
+    return this.areaId == 0
+      ? this.tabs.filter((x) => x.label !== 'Image' && x.label !== 'Move To')
+      : this.tabs;
   }
 
   ngOnDestroy(): void {

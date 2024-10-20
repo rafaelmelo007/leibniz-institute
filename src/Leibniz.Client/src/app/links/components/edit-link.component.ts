@@ -133,6 +133,12 @@ export class EditLinkComponent implements OnDestroy {
     }
   }
 
+  getFilteredTabs(): MenuOption[] {
+    return this.linkId == 0
+      ? this.tabs.filter((x) => x.label !== 'Image' && x.label !== 'Move To')
+      : this.tabs;
+  }
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

@@ -1,4 +1,7 @@
-﻿namespace Leibniz.Api.Images.Endpoints;
+﻿using Leibniz.Api.Authentication;
+using Microsoft.Extensions.Options;
+
+namespace Leibniz.Api.Images.Endpoints;
 public class UploadImageByRefEndpoint : IEndpoint
 {
     // End-point Map
@@ -17,6 +20,7 @@ public class UploadImageByRefEndpoint : IEndpoint
         [FromServices] NotificationHandler notifications,
         [FromServices] AcademyDbContext database,
         [FromServices] IDateTimeService dateTimeService,
+        [FromServices] IOptions<AuthenticationConfiguration> configs,
         [AsParameters] UploadImageByRefRequest request,
         HttpContext context,
         CancellationToken cancellationToken)
@@ -50,7 +54,7 @@ public class UploadImageByRefEndpoint : IEndpoint
             image.ImageFileName = file.FileName;
         }
 
-        var allowSinceTime = dateTimeService.NowUtc.AddHours(-4);
+        var allowSinceTime = dateTimeService.NowUtc.AddMinutes(-configs.Value.ExpirationInMinutes);
         if (!database.Users.Any(x => x.QueryStringToken == request.QueryStringToken && x.UpdateDateUtc >= allowSinceTime))
         {
             return TypedResults.Forbid();

@@ -158,6 +158,12 @@ export class EditBookComponent implements OnDestroy {
     }
   }
 
+  getFilteredTabs(): MenuOption[] {
+    return this.bookId == 0
+      ? this.tabs.filter((x) => x.label !== 'Image' && x.label !== 'Move To')
+      : this.tabs;
+  }
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

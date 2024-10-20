@@ -1,4 +1,7 @@
-﻿namespace Leibniz.Api.Images.Endpoints;
+﻿using Leibniz.Api.Authentication;
+using Microsoft.Extensions.Options;
+
+namespace Leibniz.Api.Images.Endpoints;
 public class GetImageEndpoint : IEndpoint
 {
     // End-point Map
@@ -17,6 +20,7 @@ public class GetImageEndpoint : IEndpoint
         [FromServices] NotificationHandler notifications,
         [FromServices] AcademyDbContext database,
         [FromServices] IDateTimeService dateTimeService,
+        [FromServices] IOptions<AuthenticationConfiguration> configs,
         [AsParameters] GetImageRequest request,
         CancellationToken cancellationToken)
     {
@@ -31,7 +35,7 @@ public class GetImageEndpoint : IEndpoint
         var fileName = parts.ElementAt(0);
         Guid.TryParse(parts.ElementAt(1), out var guid);
 
-        var allowSinceTime = dateTimeService.NowUtc.AddHours(-4);
+        var allowSinceTime = dateTimeService.NowUtc.AddMinutes(-configs.Value.ExpirationInMinutes);
 
         if (!database.Users.Any(x => x.QueryStringToken == guid && x.UpdateDateUtc >= allowSinceTime))
         {

@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Leibniz.Api.Authors.Endpoints;
+﻿namespace Leibniz.Api.Authors.Endpoints;
 public class GetAuthorsEndpoint : IEndpoint
 {
     // End-point Map
@@ -28,9 +26,14 @@ public class GetAuthorsEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        Expression<Func<Author, bool>> where = x => string.IsNullOrEmpty(request.Query) || x.Name.Contains(request.Query) || x.Content.Contains(request.Query);
-        var count = await database.Authors.Where(where).CountAsync();
-        var rows = await database.Authors.Where(where).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        var query = database.Authors.AsQueryable();
+        if (!string.IsNullOrEmpty(request.Query))
+        {
+            query = query.Where(x => x.Name.Contains(request.Query) || x.Content.Contains(request.Query));
+        }
+
+        var count = await query.CountAsync();
+        var rows = await query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
         var ids = rows.Select(x => x.AuthorId).ToList();
         var images = database.Images.Where(x => x.EntityType == EntityType.Author && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
         var authors = rows.Select(x => new AuthorRead

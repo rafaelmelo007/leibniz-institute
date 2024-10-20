@@ -7,7 +7,7 @@
   (submitDialog)="saveArea()"
 >
   <ng-container>
-    <app-tabs [options]="tabs" />
+    <app-tabs [options]="getFilteredTabs()" />
     <div
       class="tab-content"
       [style.display]="selectedTab == 'DETAIL' ? 'block' : 'none'"

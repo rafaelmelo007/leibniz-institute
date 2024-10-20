@@ -136,6 +136,12 @@ export class EditPostComponent implements OnDestroy {
     }
   }
 
+  getFilteredTabs(): MenuOption[] {
+    return this.postId == 0
+      ? this.tabs.filter((x) => x.label !== 'Image' && x.label !== 'Move To')
+      : this.tabs;
+  }
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();
