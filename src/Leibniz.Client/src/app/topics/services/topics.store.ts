@@ -16,6 +16,7 @@ import { ChangedEntity } from '../../common/domain/changed-entity';
 import { AuthService } from '../../account/services/auth.service';
 import { appSettings } from '../../../environments/environment';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
+import { EntityType } from '../../relationships/domain/entity-type';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,15 @@ export class TopicsStore {
     this.changes$ = this.changeTrackerService.asObservable<Topic>();
   }
 
-  private topicsSubject = new BehaviorSubject<ResultSet<Topic> | null>(null);
+  private primaryTopicsSubject = new BehaviorSubject<ResultSet<Topic> | null>(null);
+  primaryTopics$: Observable<ResultSet<Topic> | null> =
+    this.primaryTopicsSubject.asObservable();
+
+    private secondaryTopicsSubject = new BehaviorSubject<ResultSet<Topic> | null>(null);
+    secondaryTopics$: Observable<ResultSet<Topic> | null> =
+      this.secondaryTopicsSubject.asObservable();
+  
+    private topicsSubject = new BehaviorSubject<ResultSet<Topic> | null>(null);
   topics$: Observable<ResultSet<Topic> | null> =
     this.topicsSubject.asObservable();
 
@@ -50,11 +59,40 @@ export class TopicsStore {
     this._query = value;
   }
 
-  loadTopics(index: number, limit: number): void {
+  loadTopics(
+    index: number,
+    limit: number,
+    type: EntityType,
+    id: number,
+    primary: boolean,
+    filterType?: EntityType,
+    filterId?: number
+  ): void {
+    this.loadingSubject.next(true);
+    this.topicsService
+      .loadTopics(index, limit, type, id, primary, filterType, filterId)
+      .pipe(
+        tap((res) => {
+          if (primary) {
+            return this.primaryTopicsSubject.next(res);
+          }
+
+          return this.secondaryTopicsSubject.next(res);
+        }),
+        catchError((err) => {
+          this.errorHandlerService.onError(err);
+          return of(null);
+        }),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe();
+  }
+
+  listTopics(index: number, limit: number): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.topicsService
-      .loadTopics(index, limit, this._query)
+      .listTopics(index, limit, this._query)
       .pipe(
         tap((res) => {
           res.data.forEach((topic) => {

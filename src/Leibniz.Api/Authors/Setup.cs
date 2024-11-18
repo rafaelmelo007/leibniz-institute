@@ -10,11 +10,12 @@ public static class Setup
         root.MapGroup("/authors")
             .WithTags("Authors")
             .RequireAuthorization()
-            .MapEndpoint<GetAuthorsEndpoint>()
+            .MapEndpoint<ListAuthorsEndpoint>()
             .MapEndpoint<GetAuthorEndpoint>()
             .MapEndpoint<AddAuthorEndpoint>()
             .MapEndpoint<UpdateAuthorEndpoint>()
-            .MapEndpoint<RemoveAuthorEndpoint>();
+            .MapEndpoint<RemoveAuthorEndpoint>()
+            .MapEndpoint<SearchAuthorsEndpoint>();
     }
 }
 

@@ -7,7 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Topic } from '../domain/topic';
 import { TopicsStore } from '../services/topics.store';
-import { EditTopicComponent } from '../components/edit-topic.component';
+import { EditTopicComponent } from '../components/edit-topic/edit-topic.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
@@ -165,13 +165,13 @@ export class TopicsPage implements OnDestroy {
   }
 
   loadMore(): void {
-    this.topicsStore.loadTopics(this.dataSource?.length ?? 0, 25);
+    this.topicsStore.listTopics(this.dataSource?.length ?? 0, 25);
   }
 
   loadDeepSearch(query: string): void {
     this.dataSource = [];
     this.topicsStore.query = query;
-    this.topicsStore.loadTopics(this.dataSource?.length ?? 0, 25);
+    this.topicsStore.listTopics(this.dataSource?.length ?? 0, 25);
   }
 
   addTopic(): void {

@@ -16,6 +16,7 @@ import { ChangedEntity } from '../../common/domain/changed-entity';
 import { AuthService } from '../../account/services/auth.service';
 import { appSettings } from '../../../environments/environment';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
+import { EntityType } from '../../relationships/domain/entity-type';
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +31,17 @@ export class ThesesStore {
   ) {
     this.changes$ = this.changeTrackerService.asObservable<Thesis>();
   }
+
+  private primaryThesesSubject = new BehaviorSubject<ResultSet<Thesis> | null>(
+    null
+  );
+  primaryTheses$: Observable<ResultSet<Thesis> | null> =
+    this.primaryThesesSubject.asObservable();
+
+  private secondaryThesesSubject =
+    new BehaviorSubject<ResultSet<Thesis> | null>(null);
+  secondaryTheses$: Observable<ResultSet<Thesis> | null> =
+    this.secondaryThesesSubject.asObservable();
 
   private thesesSubject = new BehaviorSubject<ResultSet<Thesis> | null>(null);
   theses$: Observable<ResultSet<Thesis> | null> =
@@ -50,11 +62,44 @@ export class ThesesStore {
     this._query = value;
   }
 
-  loadTheses(index: number, limit: number): void {
+  loadTheses(
+    index: number,
+    limit: number,
+    type: EntityType,
+    id: number,
+    primary: boolean
+  ): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.thesesService
-      .loadTheses(index, limit, this.query)
+      .loadTheses(index, limit, type, id, primary)
+      .pipe(
+        tap((res) => {
+          res.data.forEach((thesis) => {
+            if (thesis.imageFileName == null) return;
+
+            thesis.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${thesis.imageFileName}~${queryStringToken}`;
+          });
+          if(primary)
+          {
+            return this.primaryThesesSubject.next(res);
+          }
+          return this.secondaryThesesSubject.next(res);
+        }),
+        catchError((err) => {
+          this.errorHandlerService.onError(err);
+          return of(null);
+        }),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe();
+  }
+
+  listTheses(index: number, limit: number): void {
+    var queryStringToken = this.authService.getQueryStringToken();
+    this.loadingSubject.next(true);
+    this.thesesService
+      .listTheses(index, limit, this.query)
       .pipe(
         tap((res) => {
           res.data.forEach((thesis) => {

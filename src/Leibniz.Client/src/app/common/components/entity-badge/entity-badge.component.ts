@@ -1,5 +1,5 @@
 import { Component, input, OnInit } from '@angular/core';
-import { EntityType } from '../../../relationships/components/domain/entity-type';
+import { EntityType } from '../../../relationships/domain/entity-type';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 

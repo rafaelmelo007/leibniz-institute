@@ -3,4 +3,5 @@
   border: solid 1px #aaa;
   padding: 10px;
   text-decoration: none;
+  text-wrap: auto;
 }

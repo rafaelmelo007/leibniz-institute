@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { EntityType } from '../domain/entity-type';
+import { EntityType } from '../../domain/entity-type';
 import { RelationshipsService } from '../../services/relationships.service';
-import { RelationshipListItem } from '../domain/relationship-list-item';
+import { RelationshipListItem } from '../../domain/relationship-list-item';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -20,6 +20,7 @@ export class EditReferencesComponent implements OnInit {
   selectedType = '';
   itemName = '';
   selectedId?: number = undefined;
+  isPrimary = false;
 
   items?: RelationshipListItem[];
   searchResults?: RelationshipListItem[];
@@ -43,9 +44,12 @@ export class EditReferencesComponent implements OnInit {
       this.items = [];
     }
 
+    item.isPrimary = this.isPrimary;
+
     this.searchResults = [];
     this.itemName = '';
     this.selectedType = '';
+    this.isPrimary = false;
 
     this.items?.push(item);
   }

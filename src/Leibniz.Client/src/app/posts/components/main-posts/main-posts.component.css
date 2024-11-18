@@ -1,0 +1,9 @@
+.content-contracted {
+  max-height: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.content-expanded {
+  max-height: none;
+}

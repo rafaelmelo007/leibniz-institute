@@ -3,7 +3,7 @@ import { LoginPage } from './account/pages/login/login.component';
 import { RegisterPage } from './account/pages/register/register.component';
 import { ForgotPasswordPage } from './account/pages/forgot-password/forgot-password.component';
 import { PostsPage } from './posts/pages/posts.component';
-import { BooksPage } from './books/pages/books.component';
+import { BooksPage } from './books/pages/books/books.component';
 import { AuthorsPage } from './authors/pages/authors.component';
 import { TopicsPage } from './topics/pages/topics.component';
 import { ThesesPage } from './theses/pages/theses.component';
@@ -11,6 +11,10 @@ import { PeriodsPage } from './periods/pages/periods.component';
 import { AreasPage } from './areas/pages/areas.component';
 import { LinksPage } from './links/pages/links.component';
 import { ResetPasswordPage } from './account/pages/reset-password/reset-password.component';
+import { BookDetailPage } from './books/pages/book-detail/book-detail.component';
+import { AuthorDetailPage } from './authors/pages/author-detail/author-detail.component';
+import { TopicDetailPage } from './topics/pages/topic-detail/topic-detail.component';
+import { ThesisDetailPage } from './theses/pages/thesis-detail/thesis-detail.component';
 
 export const routes: Routes = [
   /* Feature: Account */
@@ -24,15 +28,19 @@ export const routes: Routes = [
 
   /* Feature: Books */
   { path: 'pages/books', component: BooksPage },
+  { path: 'pages/books/:id', component: BookDetailPage },
 
   /* Feature: Authors */
   { path: 'pages/authors', component: AuthorsPage },
+  { path: 'pages/authors/:id', component: AuthorDetailPage },
 
   /* Feature: Topics */
   { path: 'pages/topics', component: TopicsPage },
+  { path: 'pages/topics/:id', component: TopicDetailPage },
 
   /* Feature: Theses */
   { path: 'pages/theses', component: ThesesPage },
+  { path: 'pages/theses/:id', component: ThesisDetailPage },
 
   /* Feature: Periods */
   { path: 'pages/periods', component: PeriodsPage },

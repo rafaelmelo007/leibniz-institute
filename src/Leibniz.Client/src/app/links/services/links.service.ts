@@ -4,6 +4,8 @@ import { appSettings } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
 import { ResultSet } from '../../common/domain/result-set';
 import { Link } from '../domain/link';
+import { EntityType } from '../../relationships/domain/entity-type';
+import utils from '../../common/services/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -14,13 +16,32 @@ export class LinksService {
   loadLinks(
     index: number,
     limit: number,
+    type: EntityType,
+    id: number,
+    primary: boolean
+  ): Observable<ResultSet<Link>> {
+    const result = this.http
+      .get<ResultSet<Link>>(
+        `${
+          appSettings.baseUrl
+        }/links/search-links?Index=${index}&Limit=${limit}&Type=${utils.toTypeId(
+          type
+        )}&Id=${id}&Primary=${primary}`
+      )
+      .pipe(map((res) => res));
+    return result;
+  }
+
+  listLinks(
+    index: number,
+    limit: number,
     query?: string
   ): Observable<ResultSet<Link>> {
     const result = this.http
       .get<ResultSet<Link>>(
         `${
           appSettings.baseUrl
-        }/links/get-links?Index=${index}&Limit=${limit}&Query=${
+        }/links/list-links?Index=${index}&Limit=${limit}&Query=${
           !query ? '' : query
         }`
       )

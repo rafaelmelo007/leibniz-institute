@@ -10,11 +10,12 @@ public static class Setup
         root.MapGroup("/links")
             .WithTags("Links")
             .RequireAuthorization()
-            .MapEndpoint<GetLinksEndpoint>()
+            .MapEndpoint<ListLinksEndpoint>()
             .MapEndpoint<GetLinkEndpoint>()
             .MapEndpoint<AddLinkEndpoint>()
             .MapEndpoint<UpdateLinkEndpoint>()
-            .MapEndpoint<RemoveLinkEndpoint>();
+            .MapEndpoint<RemoveLinkEndpoint>()
+            .MapEndpoint<SearchLinksEndpoint>();
     }
 }
 

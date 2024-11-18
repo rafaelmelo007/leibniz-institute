@@ -577,6 +577,9 @@ namespace Leibniz.Api.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool?>("IsPrimary")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("UpdateDateUtc")
                         .HasColumnType("datetime2");
 
@@ -584,6 +587,8 @@ namespace Leibniz.Api.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("RelationshipId");
+
+                    b.HasIndex("IsPrimary");
 
                     b.HasIndex("EntityTypeA", "EntityIdA");
 

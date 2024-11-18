@@ -4,6 +4,8 @@ import { appSettings } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
 import { ResultSet } from '../../common/domain/result-set';
 import { Author } from '../domain/author';
+import { EntityType } from '../../relationships/domain/entity-type';
+import utils from '../../common/services/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -14,13 +16,32 @@ export class AuthorsService {
   loadAuthors(
     index: number,
     limit: number,
+    type: EntityType,
+    id: number,
+    primary: boolean
+  ): Observable<ResultSet<Author>> {
+    const result = this.http
+      .get<ResultSet<Author>>(
+        `${
+          appSettings.baseUrl
+        }/authors/search-authors?Index=${index}&Limit=${limit}&Type=${utils.toTypeId(
+          type
+        )}&Id=${id}&Primary=${primary}`
+      )
+      .pipe(map((res) => res));
+    return result;
+  }
+
+  listAuthors(
+    index: number,
+    limit: number,
     query?: string
   ): Observable<ResultSet<Author>> {
     const result = this.http
       .get<ResultSet<Author>>(
         `${
           appSettings.baseUrl
-        }/authors/get-authors?Index=${index}&Limit=${limit}&query=${
+        }/authors/list-authors?Index=${index}&Limit=${limit}&query=${
           query !== undefined ? query : ''
         }`
       )

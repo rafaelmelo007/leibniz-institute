@@ -10,11 +10,12 @@ public static class Setup
         root.MapGroup("/theses")
             .WithTags("Theses")
             .RequireAuthorization()
-            .MapEndpoint<GetThesesEndpoint>()
+            .MapEndpoint<ListThesesEndpoint>()
             .MapEndpoint<GetThesisEndpoint>()
             .MapEndpoint<AddThesisEndpoint>()
             .MapEndpoint<UpdateThesisEndpoint>()
-            .MapEndpoint<RemoveThesisEndpoint>();
+            .MapEndpoint<RemoveThesisEndpoint>()
+            .MapEndpoint<SearchThesesEndpoint>();
     }
 }
 

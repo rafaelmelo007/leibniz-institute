@@ -7,7 +7,7 @@ import { Post } from '../domain/post';
 import { PostsStore } from '../services/posts.store';
 import { LoadingComponent } from '../../common/components/loading/loading.component';
 import { CommonModule } from '@angular/common';
-import { EditPostComponent } from '../components/edit-post.component';
+import { EditPostComponent } from '../components/edit-post/edit-post.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
@@ -183,12 +183,12 @@ export class PostsPage implements OnDestroy {
   }
 
   loadMore(): void {
-    this.postsStore.loadPosts(this.dataSource?.length ?? 0, 10);
+    this.postsStore.listPosts(this.dataSource?.length ?? 0, 10);
   }
 
   loadDeepSearch(): void {
     this.dataSource = [];
-    this.postsStore.loadPosts(this.dataSource?.length ?? 0, 50);
+    this.postsStore.listPosts(this.dataSource?.length ?? 0, 50);
   }
 
   addPost(): void {

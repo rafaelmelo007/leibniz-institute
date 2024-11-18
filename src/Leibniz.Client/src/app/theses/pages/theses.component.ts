@@ -7,7 +7,7 @@ import {
 import { Thesis } from '../domain/thesis';
 import { ThesesStore } from '../services/theses.store';
 import { CommonModule } from '@angular/common';
-import { EditThesisComponent } from '../components/edit-thesis.component';
+import { EditThesisComponent } from '../components/edit-thesis/edit-thesis.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
@@ -165,13 +165,13 @@ export class ThesesPage implements OnDestroy {
   }
 
   loadMore(): void {
-    this.thesesStore.loadTheses(this.dataSource?.length ?? 0, 25);
+    this.thesesStore.listTheses(this.dataSource?.length ?? 0, 25);
   }
 
   loadDeepSearch(query: string): void {
     this.dataSource = [];
     this.thesesStore.query = query;
-    this.thesesStore.loadTheses(this.dataSource?.length ?? 0, 25);
+    this.thesesStore.listTheses(this.dataSource?.length ?? 0, 25);
   }
 
   addThesis(): void {

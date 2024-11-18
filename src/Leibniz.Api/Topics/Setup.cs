@@ -10,11 +10,12 @@ public static class Setup
         root.MapGroup("/topics")
             .WithTags("Topics")
             .RequireAuthorization()
-            .MapEndpoint<GetTopicsEndpoint>()
+            .MapEndpoint<ListTopicsEndpoint>()
             .MapEndpoint<GetTopicEndpoint>()
             .MapEndpoint<AddTopicEndpoint>()
             .MapEndpoint<UpdateTopicEndpoint>()
-            .MapEndpoint<RemoveTopicEndpoint>();
+            .MapEndpoint<RemoveTopicEndpoint>()
+            .MapEndpoint<SearchTopicsEndpoint>();
     }
 }
 

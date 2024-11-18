@@ -91,7 +91,7 @@ public class RelationshipService : IRelationshipService
         return newId;
     }
 
-    public int SaveRelationships(EntityType type, long id, List<KeyValuePair<EntityType, long>> items)
+    public int SaveRelationships(EntityType type, long id, List<KeyValuePair<EntityType, long>> items, long[] primaryIds)
     {
         var existing = _database.Relationships.Where(x => (x.EntityTypeA == type && x.EntityIdA == id) || (x.EntityTypeB == type && x.EntityIdB == id)).ToList();
         var selected = new List<Relationship>();
@@ -109,9 +109,14 @@ public class RelationshipService : IRelationshipService
                     EntityTypeA = type,
                     EntityIdA = id,
                     EntityTypeB = item.Key,
-                    EntityIdB = item.Value
+                    EntityIdB = item.Value,
+                    IsPrimary = primaryIds.Contains(item.Value)
                 };
                 _database.Relationships.Add(found);
+            }
+            else
+            {
+                found.IsPrimary = primaryIds.Contains(item.Value);
             }
             selected.Add(found);
             existing.Remove(found);
@@ -124,27 +129,66 @@ public class RelationshipService : IRelationshipService
         return affected;
     }
 
-    public async Task<IEnumerable<RelatedEntity>> GetRelatedEntitiesAsync(EntityType type, List<long> ids, CancellationToken cancellationToken)
+    public async Task<IEnumerable<RelatedEntity>> GetRelatedEntitiesAsync(
+    EntityType type,
+    List<long> ids,
+    bool onlyPrimary,
+    EntityType? filterType,
+    long? filterId,
+    CancellationToken cancellationToken)
     {
-        var refs = await _database.Relationships.Where(x =>
-            (x.EntityTypeA == type && ids.Contains(x.EntityIdA)) ||
-            (x.EntityTypeB == type && ids.Contains(x.EntityIdB)))
-            .ToListAsync(cancellationToken);
+        var query = _database.Relationships.Where(x =>
+            ((x.EntityTypeA == type && ids.Contains(x.EntityIdA)) ||
+             (x.EntityTypeB == type && ids.Contains(x.EntityIdB))) &&
+            (!onlyPrimary || x.IsPrimary.Value));
+
+        var refs = await query.ToListAsync(cancellationToken);
+
         var items = refs.Select(x => x.ToRelatedEntity(type, ids)).ToList();
-        var result = items.GroupBy(x => new { x.Type, x.Id, x.Name }).Select(item =>
-        {
-            var name = GetRelationshipName(item.Key.Type, item.Key.Id);
-            var assignedIds = item.Select(x => x.AssignedId).ToList();
-            return new RelatedEntity
+
+        var result = items
+            .GroupBy(x => new { x.Type, x.Id, x.Name })
+            .Select(item =>
             {
-                Type = item.Key.Type,
-                Id = item.Key.Id,
-                Name = name,
-                AssignedIds = assignedIds
-            };
-        });
+                var name = GetRelationshipName(item.Key.Type, item.Key.Id);
+                return new RelatedEntity
+                {
+                    Type = item.Key.Type,
+                    Id = item.Key.Id,
+                    Name = name,
+                    AssignedIds = item.Select(x => x.AssignedId).ToList()
+                };
+            });
+
+        // If filterType and filterId are provided, apply the additional filter
+        if (filterType.HasValue && filterId.HasValue)
+        {
+            items = items.Where(x =>
+                _database.Relationships.Any(r =>
+                    ((r.EntityTypeA == filterType && r.EntityIdA == filterId) ||
+                     (r.EntityTypeB == filterType && r.EntityIdB == filterId)) &&
+                    ((r.EntityTypeA == x.Type && r.EntityIdA == x.Id) ||
+                     (r.EntityTypeB == x.Type && r.EntityIdB == x.Id))))
+                .ToList();
+
+            result = items
+            .GroupBy(x => new { x.Type, x.Id, x.Name })
+            .Select(item =>
+            {
+                var name = GetRelationshipName(item.Key.Type, item.Key.Id);
+                return new RelatedEntity
+                {
+                    Type = item.Key.Type,
+                    Id = item.Key.Id,
+                    Name = name,
+                    AssignedIds = item.Select(x => x.AssignedId).ToList()
+                };
+            });
+        }
+
         return result;
     }
+
 
     #region Helper Methods
 

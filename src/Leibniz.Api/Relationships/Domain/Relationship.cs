@@ -8,5 +8,6 @@ public record Relationship : AuditableEntity
     public long EntityIdA { get; set; }
     public EntityType? EntityTypeB { get; set; }
     public long EntityIdB { get; set; }
+    public bool? IsPrimary { get; set; }
 }
 

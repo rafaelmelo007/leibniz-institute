@@ -16,6 +16,7 @@ import { ChangedEntity } from '../../common/domain/changed-entity';
 import { appSettings } from '../../../environments/environment';
 import { AuthService } from '../../account/services/auth.service';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
+import { EntityType } from '../../relationships/domain/entity-type';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +36,17 @@ export class AuthorsStore {
   authors$: Observable<ResultSet<Author> | null> =
     this.authorsSubject.asObservable();
 
+  private primaryAuthorsSubject = new BehaviorSubject<ResultSet<Author> | null>(
+    null
+  );
+  primaryAuthors$: Observable<ResultSet<Author> | null> =
+    this.primaryAuthorsSubject.asObservable();
+
+  private secondaryAuthorsSubject =
+    new BehaviorSubject<ResultSet<Author> | null>(null);
+  secondaryAuthors$: Observable<ResultSet<Author> | null> =
+    this.secondaryAuthorsSubject.asObservable();
+
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
@@ -50,11 +62,44 @@ export class AuthorsStore {
     this._query = value;
   }
 
-  loadAuthors(index: number, limit: number): void {
+  loadAuthors(
+    index: number,
+    limit: number,
+    type: EntityType,
+    id: number,
+    primary: boolean
+  ): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.authorsService
-      .loadAuthors(index, limit, this.query)
+      .loadAuthors(index, limit, type, id, primary)
+      .pipe(
+        tap((res) => {
+          res.data.forEach((author) => {
+            if (author.imageFileName == null) return;
+
+            author.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${author.imageFileName}~${queryStringToken}`;
+          });
+          if(primary)
+          {
+            return this.primaryAuthorsSubject.next(res);
+          }
+          return this.secondaryAuthorsSubject.next(res);
+        }),
+        catchError((err) => {
+          this.errorHandlerService.onError(err);
+          return of(null);
+        }),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe();
+  }
+
+  listAuthors(index: number, limit: number): void {
+    var queryStringToken = this.authService.getQueryStringToken();
+    this.loadingSubject.next(true);
+    this.authorsService
+      .listAuthors(index, limit, this.query)
       .pipe(
         tap((res) => {
           res.data.forEach((author) => {

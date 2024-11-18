@@ -1,0 +1,56 @@
+<div class="container-fluid">
+  <h3 class="pb-3 mb-4 font-italic border-bottom">Quotes</h3>
+
+  <div class="blog-post">
+    @for (item of dataSource; track $index) {
+    <div class="card mb-3">
+      <div class="card-header">
+        <a
+          href="javascript:;"
+          (click)="editPostLink(item.postId)"
+          style="text-decoration: none"
+          ><b>{{ item.title }}</b></a
+        >
+        <button
+          class="btn btn-danger btn-sm"
+          style="float: right"
+          (click)="deletePost(item.postId)"
+        >
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+      <div class="card-body enhance-text">
+        <p [innerHTML]="encodeValue(item.content)"></p>
+        <b>{{ item.author }}</b
+        ><br /><span *ngIf="item.bookName" style="margin-top: 10px"
+          ><app-entity-badge
+            [type]="'book'"
+            [id]="item.bookId ?? 0"
+            [name]="
+              item.bookName +
+              (item.page && item.page > 0 ? ', p. ' + item.page : '')
+            "
+          ></app-entity-badge
+        ></span>
+      </div>
+      <div class="card-footer">
+        @for (tag of item.refs; track $index) {
+        <app-entity-badge
+          [type]="tag.type"
+          [id]="tag.id"
+          [name]="tag.name"
+        ></app-entity-badge>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  @if(!reachedEnd) {
+  <app-infinite-scroll (loadMore)="loadMore()"></app-infinite-scroll>
+  } @if(reachedEnd && dataSource?.length == 0) {
+  <div class="card mb-3">
+    <div class="card-header">No quotes found.</div>
+  </div>
+  }
+  <app-edit-post></app-edit-post>
+</div>

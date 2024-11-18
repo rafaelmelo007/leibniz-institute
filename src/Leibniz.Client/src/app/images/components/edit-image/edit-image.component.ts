@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
-import { EntityType } from '../../../relationships/components/domain/entity-type';
+import { EntityType } from '../../../relationships/domain/entity-type';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldValidationErrorsComponent } from '../../../common/components/field-validation-errors/field-validation-errors.component';

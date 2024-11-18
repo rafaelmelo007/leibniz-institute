@@ -7,7 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Author } from '../domain/author';
 import { AuthorsStore } from '../services/authors.store';
-import { EditAuthorComponent } from '../components/edit-author.component';
+import { EditAuthorComponent } from '../components/edit-author/edit-author.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
@@ -164,13 +164,13 @@ export class AuthorsPage implements OnDestroy {
   }
 
   loadMore(): void {
-    this.authorsStore.loadAuthors(this.dataSource?.length ?? 0, 25);
+    this.authorsStore.listAuthors(this.dataSource?.length ?? 0, 25);
   }
 
   loadDeepSearch(query: string): void {
     this.authorsStore.query = query;
     this.dataSource = [];
-    this.authorsStore.loadAuthors(this.dataSource?.length ?? 0, 25);
+    this.authorsStore.listAuthors(this.dataSource?.length ?? 0, 25);
   }
 
   addAuthor(): void {

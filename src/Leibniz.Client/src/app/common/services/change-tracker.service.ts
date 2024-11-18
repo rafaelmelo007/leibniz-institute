@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChangedEntity } from '../domain/changed-entity';
-import { EntityType } from '../../relationships/components/domain/entity-type';
+import { EntityType } from '../../relationships/domain/entity-type';
 import { ChangeType } from '../domain/change-type';
 
 @Injectable({

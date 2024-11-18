@@ -16,7 +16,8 @@ import { ChangedEntity } from '../../common/domain/changed-entity';
 import { AuthService } from '../../account/services/auth.service';
 import { appSettings } from '../../../environments/environment';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
-import { EntityType } from '../../relationships/components/domain/entity-type';
+import { EntityType } from '../../relationships/domain/entity-type';
+import utils from '../../common/services/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +36,18 @@ export class PostsStore {
   private postsSubject = new BehaviorSubject<ResultSet<Post> | null>(null);
   posts$: Observable<ResultSet<Post> | null> = this.postsSubject.asObservable();
 
+  private primaryPostsSubject = new BehaviorSubject<ResultSet<Post> | null>(
+    null
+  );
+  primaryPosts$: Observable<ResultSet<Post> | null> =
+    this.primaryPostsSubject.asObservable();
+
+  private secondaryPostsSubject = new BehaviorSubject<ResultSet<Post> | null>(
+    null
+  );
+  secondaryPosts$: Observable<ResultSet<Post> | null> =
+    this.secondaryPostsSubject.asObservable();
+
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
@@ -50,17 +63,57 @@ export class PostsStore {
     this._query = value;
   }
 
-  loadPosts(index: number, limit: number): void {
+  loadPosts(
+    index: number,
+    limit: number,
+    type: EntityType,
+    id: number,
+    primary: boolean,
+    filterType?: EntityType,
+    filterId?: number
+  ): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.postsService
-      .loadPosts(index, limit, this.query)
+      .loadPosts(index, limit, type, id, primary, filterType, filterId)
       .pipe(
         tap((res) => {
           res.data.forEach((post) => {
             post.refs?.forEach((element) => {
               const type = <any>element.type;
-              element.type = this.toEntityType(type);
+              element.type = utils.toEntityType(type);
+            });
+
+            if (post.imageFileName == null) return;
+
+            post.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${post.imageFileName}~${queryStringToken}`;
+          });
+          if (primary) {
+            return this.primaryPostsSubject.next(res);
+          }
+
+          return this.secondaryPostsSubject.next(res);
+        }),
+        catchError((err) => {
+          this.errorHandlerService.onError(err);
+          return of(null);
+        }),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe();
+  }
+
+  listPosts(index: number, limit: number): void {
+    var queryStringToken = this.authService.getQueryStringToken();
+    this.loadingSubject.next(true);
+    this.postsService
+      .listPosts(index, limit, this.query)
+      .pipe(
+        tap((res) => {
+          res.data.forEach((post) => {
+            post.refs?.forEach((element) => {
+              const type = <any>element.type;
+              element.type = utils.toEntityType(type);
             });
 
             if (post.imageFileName == null) return;
@@ -127,29 +180,5 @@ export class PostsStore {
           'Post deleted'
         );
       });
-  }
-
-  toEntityType(type: number): EntityType {
-    switch (type) {
-      case 1:
-        return 'post';
-      case 2:
-        return 'link';
-      case 3:
-        return 'area';
-      case 4:
-        return 'author';
-      case 5:
-        return 'book';
-      case 6:
-        return 'period';
-      case 7:
-        return 'thesis';
-      case 8:
-        return 'topic';
-      case 9:
-        return 'unknown';
-    }
-    return 'unknown';
   }
 }

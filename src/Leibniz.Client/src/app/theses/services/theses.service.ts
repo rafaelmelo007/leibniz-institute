@@ -4,6 +4,8 @@ import { appSettings } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
 import { ResultSet } from '../../common/domain/result-set';
 import { Thesis } from '../domain/thesis';
+import { EntityType } from '../../relationships/domain/entity-type';
+import utils from '../../common/services/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -14,13 +16,32 @@ export class ThesesService {
   loadTheses(
     index: number,
     limit: number,
+    type: EntityType,
+    id: number,
+    primary: boolean
+  ): Observable<ResultSet<Thesis>> {
+    const result = this.http
+      .get<ResultSet<Thesis>>(
+        `${
+          appSettings.baseUrl
+        }/theses/search-theses?Index=${index}&Limit=${limit}&Type=${utils.toTypeId(
+          type
+        )}&Id=${id}&Primary=${primary}`
+      )
+      .pipe(map((res) => res));
+    return result;
+  }
+
+  listTheses(
+    index: number,
+    limit: number,
     query?: string
   ): Observable<ResultSet<Thesis>> {
     const result = this.http
       .get<ResultSet<Thesis>>(
         `${
           appSettings.baseUrl
-        }/theses/get-theses?Index=${index}&Limit=${limit}&query=${
+        }/theses/list-theses?Index=${index}&Limit=${limit}&query=${
           !query ? '' : query
         }`
       )

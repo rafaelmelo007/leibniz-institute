@@ -4,6 +4,8 @@ import { appSettings } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
 import { Post } from '../domain/post';
 import { ResultSet } from '../../common/domain/result-set';
+import { EntityType } from '../../relationships/domain/entity-type';
+import utils from '../../common/services/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -11,16 +13,37 @@ import { ResultSet } from '../../common/domain/result-set';
 export class PostsService {
   constructor(private http: HttpClient) {}
 
-  loadPosts(
+  listPosts(
     index: number,
     limit: number,
     query: string
   ): Observable<ResultSet<Post>> {
     const result = this.http
       .get<ResultSet<Post>>(
-        `${appSettings.baseUrl}/posts/get-posts?Index=${index}&Limit=${limit}&Query=${query}`
+        `${appSettings.baseUrl}/posts/list-posts?Index=${index}&Limit=${limit}&Query=${query}`
       )
       .pipe(map((res) => res));
+    return result;
+  }
+
+  loadPosts(
+    index: number,
+    limit: number,
+    type: EntityType,
+    id: number,
+    primary: boolean,
+    filterType?: EntityType,
+    filterId?: number
+  ): Observable<ResultSet<Post>> {
+    let url = `${
+      appSettings.baseUrl
+    }/posts/search-posts?Index=${index}&Limit=${limit}&Type=${utils.toTypeId(
+      type
+    )}&Id=${id}&Primary=${primary}`;
+    if (filterType != null) {
+      url += `&FilterType=${utils.toTypeId(filterType)}&FilterId=${filterId}`;
+    }
+    const result = this.http.get<ResultSet<Post>>(url).pipe(map((res) => res));
     return result;
   }
 

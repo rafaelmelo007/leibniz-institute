@@ -1,0 +1,5 @@
+.main-image {
+    display: block;
+    transform: perspective(300px) rotateY(-10deg);
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
+}

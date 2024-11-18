@@ -1,4 +1,4 @@
-import { EntityType } from '../../relationships/components/domain/entity-type';
+import { EntityType } from '../../relationships/domain/entity-type';
 
 export interface RefItem {
   type: EntityType;

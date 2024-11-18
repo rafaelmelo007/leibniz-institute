@@ -7,7 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Period } from '../domain/period';
 import { PeriodsStore } from '../services/periods.store';
-import { EditPeriodComponent } from '../components/edit-period.component';
+import { EditPeriodComponent } from '../components/edit-period/edit-period.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';

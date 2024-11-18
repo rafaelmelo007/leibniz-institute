@@ -11,7 +11,7 @@ public class GetImageByRefEndpoint : IEndpoint
         .WithSummary("Retrieve a image");
 
     // Request / Response
-    public record GetImageByRefRequest(EntityType Type, long Id, Guid QueryStringToken);
+    public record GetImageByRefRequest(EntityType Type, long Id, Guid QueryStringToken, int? Width = null, int? Height = null);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -45,7 +45,7 @@ public class GetImageByRefEndpoint : IEndpoint
             return TypedResults.Forbid();
         }
 
-        var imageFilePath = await imagesService.GetImageFilePathAsync(image.ImageFileName, default, default, cancellationToken);
+        var imageFilePath = await imagesService.GetImageFilePathAsync(image.ImageFileName, request.Width, request.Height, cancellationToken);
         if (imageFilePath is null)
         {
             return TypedResults.NotFound();

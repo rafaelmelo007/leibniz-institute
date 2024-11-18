@@ -16,6 +16,7 @@ import { ChangedEntity } from '../../common/domain/changed-entity';
 import { appSettings } from '../../../environments/environment';
 import { AuthService } from '../../account/services/auth.service';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
+import { EntityType } from '../../relationships/domain/entity-type';
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +31,18 @@ export class LinksStore {
   ) {
     this.changes$ = this.changeTrackerService.asObservable<Link>();
   }
+
+  private primaryLinksSubject = new BehaviorSubject<ResultSet<Link> | null>(
+    null
+  );
+  primaryLinks$: Observable<ResultSet<Link> | null> =
+    this.primaryLinksSubject.asObservable();
+
+  private secondaryLinksSubject = new BehaviorSubject<ResultSet<Link> | null>(
+    null
+  );
+  secondaryLinks$: Observable<ResultSet<Link> | null> =
+    this.secondaryLinksSubject.asObservable();
 
   private linksSubject = new BehaviorSubject<ResultSet<Link> | null>(null);
   links$: Observable<ResultSet<Link> | null> = this.linksSubject.asObservable();
@@ -49,11 +62,38 @@ export class LinksStore {
     this._query = value;
   }
 
-  loadLinks(index: number, limit: number): void {
+  loadLinks(
+    index: number,
+    limit: number,
+    type: EntityType,
+    id: number,
+    primary: boolean
+  ): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.linksService
-      .loadLinks(index, limit, this.query)
+      .loadLinks(index, limit, type, id, primary)
+      .pipe(
+        tap((res) => {
+          if (primary) {
+            return this.primaryLinksSubject.next(res);
+          }
+          return this.secondaryLinksSubject.next(res);
+        }),
+        catchError((err) => {
+          this.errorHandlerService.onError(err);
+          return of(null);
+        }),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe();
+  }
+
+  listLinks(index: number, limit: number): void {
+    var queryStringToken = this.authService.getQueryStringToken();
+    this.loadingSubject.next(true);
+    this.linksService
+      .listLinks(index, limit, this.query)
       .pipe(
         tap((res) => {
           res.data.forEach((link) => {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
 import { ImagesService } from './images.service';
-import { EntityType } from '../../relationships/components/domain/entity-type';
+import { EntityType } from '../../relationships/domain/entity-type';
 import { BehaviorSubject, catchError, finalize, Observable, of } from 'rxjs';
 import { ChangedEntity } from '../../common/domain/changed-entity';
 import { RefItem } from '../../common/domain/ref-item';

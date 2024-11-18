@@ -7,7 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Link } from '../domain/link';
 import { LinksStore } from '../services/links.store';
-import { EditLinkComponent } from '../components/edit-link.component';
+import { EditLinkComponent } from '../components/edit-link/edit-link.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
@@ -175,13 +175,13 @@ export class LinksPage implements OnDestroy {
   }
 
   loadMore(): void {
-    this.linksStore.loadLinks(this.dataSource?.length ?? 0, 50);
+    this.linksStore.listLinks(this.dataSource?.length ?? 0, 50);
   }
 
   loadDeepSearch(query: string): void {
     this.linksStore.query = query;
     this.dataSource = [];
-    this.linksStore.loadLinks(this.dataSource?.length ?? 0, 50);
+    this.linksStore.listLinks(this.dataSource?.length ?? 0, 50);
   }
 
   addLink(): void {

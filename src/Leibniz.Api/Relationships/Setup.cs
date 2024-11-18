@@ -11,6 +11,7 @@ public static class Setup
             .WithTags("Relationships")
             .RequireAuthorization()
             .MapEndpoint<GetRelationshipsEndpoint>()
+            .MapEndpoint<GetRelationshipsContentEndpoint>()
             .MapEndpoint<LookupEntitiesEndpoint>()
             .MapEndpoint<SaveRelationshipsEndpoint>()
             .MapEndpoint<MoveToEndpoint>();

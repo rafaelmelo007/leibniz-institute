@@ -10,6 +10,7 @@ public class RelationshipConfiguration : IEntityTypeConfiguration<Relationship>
 
         builder.HasIndex(f => new { f.EntityTypeA, f.EntityIdA });
         builder.HasIndex(f => new { f.EntityTypeB, f.EntityIdB });
+        builder.HasIndex(x => x.IsPrimary);
 
         builder.HasQueryFilter(x => !x.IsDeleted);
     }

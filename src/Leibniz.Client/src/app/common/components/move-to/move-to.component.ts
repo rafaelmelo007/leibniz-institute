@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { EntityType } from '../../../relationships/components/domain/entity-type';
+import { EntityType } from '../../../relationships/domain/entity-type';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RelationshipsService } from '../../../relationships/services/relationships.service';

@@ -10,11 +10,12 @@ public static class Setup
         root.MapGroup("/posts")
             .WithTags("Posts")
             .RequireAuthorization()
-            .MapEndpoint<GetPostsEndpoint>()
+            .MapEndpoint<ListPostsEndpoint>()
             .MapEndpoint<GetPostEndpoint>()
             .MapEndpoint<AddPostEndpoint>()
             .MapEndpoint<UpdatePostEndpoint>()
-            .MapEndpoint<RemovePostEndpoint>();
+            .MapEndpoint<RemovePostEndpoint>()
+            .MapEndpoint<SearchPostsEndpoint>();
     }
 }
 

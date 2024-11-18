@@ -1,0 +1,14 @@
+<div class="p-3">
+  <h4 class="font-italic">Authors</h4>
+  <ol class="list-unstyled mb-0">
+    @for (item of dataSource; track $index) {
+    <li>
+      <a href="javascript:;" (click)="selectAuthor.emit(item.authorId)">{{
+        item.name
+      }}</a>
+    </li>
+    } @if(dataSource?.length == 0) {
+    <li style="margin-bottom: 10px">No authors found.</li>
+    }
+  </ol>
+</div>
