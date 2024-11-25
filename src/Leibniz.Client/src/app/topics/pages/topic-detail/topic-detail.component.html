@@ -1,34 +1,31 @@
 <div class="container" style="margin-top: 25px">
-    <app-main-posts [type]="'topic'" [id]="topicId"></app-main-posts>
-  </div>
-  
-  <main role="main" class="container">
-    <div class="row">
-      <div class="col-md-8 blog-main">
-        <app-other-posts [type]="'topic'" [id]="topicId"></app-other-posts>
-      </div>
-  
-      <aside class="col-md-4 blog-sidebar">
-        <app-authors-list
-          [type]="'topic'"
-          [id]="topicId"
-          (selectAuthor)="applyFilter('author', $event)"
-        ></app-authors-list>
-        <app-thesis-list
-          [type]="'topic'"
-          [id]="topicId"
-          (selectThesis)="applyFilter('thesis', $event)"
-        ></app-thesis-list>
-        <app-topics-list
-          [type]="'topic'"
-          [id]="topicId"
-          (selectTopic)="applyFilter('topic', $event)"
-        ></app-topics-list>
-        <app-links-list
-          [type]="'topic'"
-          [id]="topicId"
-        ></app-links-list>
-      </aside>
+  <app-topic-splash [topicId]="topicId"></app-topic-splash>
+  <app-main-posts [type]="'topic'" [id]="topicId"></app-main-posts>
+</div>
+
+<main role="main" class="container">
+  <div class="row">
+    <div class="col-md-8 blog-main">
+      <app-other-posts [type]="'topic'" [id]="topicId"></app-other-posts>
     </div>
-  </main>
-  
+
+    <aside class="col-md-4 blog-sidebar">
+      <app-authors-list
+        [type]="'topic'"
+        [id]="topicId"
+        (selectAuthor)="applyFilter('author', $event)"
+      ></app-authors-list>
+      <app-thesis-list
+        [type]="'topic'"
+        [id]="topicId"
+        (selectThesis)="applyFilter('thesis', $event)"
+      ></app-thesis-list>
+      <app-topics-list
+        [type]="'topic'"
+        [id]="topicId"
+        (selectTopic)="applyFilter('topic', $event)"
+      ></app-topics-list>
+      <app-links-list [type]="'topic'" [id]="topicId"></app-links-list>
+    </aside>
+  </div>
+</main>

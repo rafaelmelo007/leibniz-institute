@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true
 })
 export class NewlineToBrPipe implements PipeTransform {
-  transform(value: string | null): string {
+  transform(value: string | null | undefined): string {
     if (!value) {
       return '';
     }

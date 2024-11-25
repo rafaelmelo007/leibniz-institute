@@ -11,6 +11,7 @@ import { EditThesisComponent } from '../components/edit-thesis/edit-thesis.compo
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-theses',
@@ -49,7 +50,7 @@ export class ThesesPage implements OnDestroy {
       width: '600px',
       useHyperlink: true,
       action: (data: Thesis) => {
-        this.editThesis?.editThesis(data.thesisId);
+        this.router.navigate(['/pages/theses/' + data.thesisId]);
       },
     },
   ];
@@ -84,7 +85,8 @@ export class ThesesPage implements OnDestroy {
   constructor(
     public thesesStore: ThesesStore,
     private imagesStore: ImagesStore,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.subscribeTheses();
     this.subscribeThesisChanges();

@@ -7,11 +7,12 @@ import { AuthorsListComponent } from "../../../authors/components/authors-list/a
 import { ThesisListComponent } from "../../../theses/components/thesis-list/thesis-list.component";
 import { TopicsListComponent } from "../../components/topics-list/topics-list.component";
 import { LinksListComponent } from "../../../links/components/links-list/links-list.component";
+import { TopicSplashComponent } from "../../components/topic-splash/topic-splash.component";
 
 @Component({
   selector: 'app-topic-detail',
   standalone: true,
-  imports: [MainPostsComponent, OtherPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent],
+  imports: [MainPostsComponent, OtherPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, TopicSplashComponent],
   templateUrl: './topic-detail.component.html',
   styleUrl: './topic-detail.component.css'
 })

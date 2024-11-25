@@ -44,7 +44,7 @@ export class OtherPostsComponent implements OnDestroy {
         if (!posts || posts.index == 0) {
           this.dataSource = [];
         }
-        if (!!posts && posts.index > 0 && posts.count == 0) {
+        if (!!posts && posts.count == 0) {
           this.reachedEnd = true;
         } else {
           this.reachedEnd = false;

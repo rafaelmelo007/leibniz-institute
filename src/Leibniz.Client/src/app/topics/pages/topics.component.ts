@@ -11,6 +11,7 @@ import { EditTopicComponent } from '../components/edit-topic/edit-topic.componen
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-topics',
@@ -49,7 +50,7 @@ export class TopicsPage implements OnDestroy {
       width: '600px',
       useHyperlink: true,
       action: (data: Topic) => {
-        this.editTopic?.editTopic(data.topicId);
+        this.router.navigate(['/pages/topics/' + data.topicId]);
       },
     },
   ];
@@ -82,6 +83,7 @@ export class TopicsPage implements OnDestroy {
   queryStringToken: string | null;
 
   constructor(
+    private router: Router,
     public topicsStore: TopicsStore,
     private imagesStore: ImagesStore,
     private authService: AuthService

@@ -11,6 +11,7 @@ import { EditAuthorComponent } from '../components/edit-author/edit-author.compo
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-authors',
@@ -50,7 +51,7 @@ export class AuthorsPage implements OnDestroy {
       width: '600px',
       useHyperlink: true,
       action: (data: Author) => {
-        this.editAuthor?.editAuthor(data.authorId);
+        this.router.navigate(['/pages/authors/' + data.authorId]);
       },
     },
   ];
@@ -83,6 +84,7 @@ export class AuthorsPage implements OnDestroy {
   query?: string;
 
   constructor(
+    private router: Router,
     public authorsStore: AuthorsStore,
     private imagesStore: ImagesStore,
     private authService: AuthService
