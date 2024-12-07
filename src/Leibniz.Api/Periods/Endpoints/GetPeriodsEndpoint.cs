@@ -3,13 +3,13 @@ public class GetPeriodsEndpoint : IEndpoint
 {
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-periods", Handle)
-        .Produces<GetPeriodsResponse>()
+        .Produces<ResultSet<PeriodRead>>()
         .WithSummary("Retrieve a set of periods from database");
 
     // Request / Response
     public record GetPeriodsRequest(int Index, int Limit, string Query);
-    public record GetPeriodsResponse(IEnumerable<PeriodRead> Data, int Index, int Limit, int Count);
-    public record PeriodRead(long PeriodId, string? Name, string? Content, string ImageFileName, short? BeginYear, short? EndYear);
+    public record PeriodRead(long PeriodId, string? Name, string? Content,
+        string ImageFileName, short? BeginYear, short? EndYear);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -33,10 +33,14 @@ public class GetPeriodsEndpoint : IEndpoint
         }
 
         var count = await query.CountAsync();
-        var rows = await query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        var rows = await query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
+            .Skip(request.Index).Take(request.Limit).ToListAsync();
 
         var ids = rows.Select(x => x.PeriodId).ToList();
-        var images = database.Images.Where(x => x.EntityType == EntityType.Period && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
+        var images = database.Images
+            .Where(x => x.EntityType == EntityType.Period && ids.Contains(x.EntityId))
+            .ToDictionary(x => x.EntityId, x => x.ImageFileName);
+
         var periods = rows.Select(x => new PeriodRead
         (
             PeriodId: x.PeriodId,
@@ -45,8 +49,17 @@ public class GetPeriodsEndpoint : IEndpoint
             BeginYear: x.BeginYear,
             EndYear: x.EndYear,
             ImageFileName: images.ContainsKey(x.PeriodId) ? images[x.PeriodId] : default
-        ));
-        return TypedResults.Ok(new GetPeriodsResponse(periods, request.Index, request.Limit, count));
+        )).ToList();
+
+        return TypedResults.Ok(
+            new ResultSet<PeriodRead>
+            {
+                Data = periods,
+                Index = request.Index,
+                Count = rows.Count,
+                Limit = request.Limit,
+                Query = request.Query
+            });
     }
 
     // Validations

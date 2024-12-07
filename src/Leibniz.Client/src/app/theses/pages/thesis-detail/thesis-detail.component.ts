@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
-import { OtherPostsComponent } from '../../../posts/components/other-posts/other-posts.component';
+import { SecondaryPostsComponent } from '../../../posts/components/secondary-posts/secondary-posts.component';
 import { ActivatedRoute } from '@angular/router';
 import { EntityType } from '../../../relationships/domain/entity-type';
-import { MainPostsComponent } from "../../../posts/components/main-posts/main-posts.component";
+import { PrimaryPostsComponent } from "../../../posts/components/primary-posts/primary-posts.component";
 import { AuthorsListComponent } from "../../../authors/components/authors-list/authors-list.component";
 import { ThesisListComponent } from "../../components/thesis-list/thesis-list.component";
 import { TopicsListComponent } from "../../../topics/components/topics-list/topics-list.component";
@@ -12,12 +12,12 @@ import { ThesisSplashComponent } from "../../components/thesis-splash/thesis-spl
 @Component({
   selector: 'app-thesis-detail',
   standalone: true,
-  imports: [MainPostsComponent, OtherPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, ThesisSplashComponent],
+  imports: [PrimaryPostsComponent, SecondaryPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, ThesisSplashComponent],
   templateUrl: './thesis-detail.component.html',
   styleUrl: './thesis-detail.component.css'
 })
 export class ThesisDetailPage {
-  @ViewChild(OtherPostsComponent) otherPostsComponent?: OtherPostsComponent;
+  @ViewChild(SecondaryPostsComponent) SecondaryPostsComponent?: SecondaryPostsComponent;
   thesisId: number = 0;
 
   constructor(private route: ActivatedRoute) {
@@ -27,6 +27,6 @@ export class ThesisDetailPage {
   }
 
   applyFilter(type: EntityType, id: number): void {
-    this.otherPostsComponent?.applyFilter(type, id);
+    this.SecondaryPostsComponent?.applyFilter(type, id);
   }
 }

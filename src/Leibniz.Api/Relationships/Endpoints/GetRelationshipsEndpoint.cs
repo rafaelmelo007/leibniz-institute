@@ -1,18 +1,18 @@
-﻿using static Leibniz.Api.Relationships.Endpoints.GetRelationshipsContentEndpoint;
-
-namespace Leibniz.Api.Relationships.Endpoints;
+﻿namespace Leibniz.Api.Relationships.Endpoints;
 public class GetRelationshipsEndpoint : IEndpoint
 {
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-relationships", Handle)
-        .Produces<GetRelationshipsResponse>()
+        .Produces<ResultSet<RelationshipRead>>()
         .WithSummary("Retrieve a set of relationships from database");
 
     // Request / Response
-    public record GetRelationshipsRequest(EntityType Type, long Id,
-        EntityType? FilterType, bool OnlyPrimary = false);
-    public record GetRelationshipsResponse(List<RelationshipRead> Data, int Index, int Limit, int Count);
-    public record RelationshipRead(EntityType TypeId, long Id, string? Label, bool IsPrimary);
+    public record GetRelationshipsRequest(
+        EntityType Type, long Id, EntityType? FilterType,
+        bool OnlyPrimary = false, EntityType? AddType = null,
+        long? AddId = null);
+    public record RelationshipRead(EntityType TypeId, long Id, 
+        string? Label, bool IsPrimary);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -55,7 +55,23 @@ public class GetRelationshipsEndpoint : IEndpoint
             return null;
         }).Where(x => x != null).ToList();
 
-        return TypedResults.Ok(new GetRelationshipsResponse(rows, 0, rows.Count, rows.Count));
+        if (request.AddType != null && request.AddId != null)
+        {
+            var addName = relationshipService.GetRelationshipName(request.AddType!.Value, request.AddId!.Value);
+            rows.Add(new RelationshipRead(request.AddType!.Value, request.AddId!.Value, addName, true));
+        }
+
+        return TypedResults.Ok(
+            new ResultSet<RelationshipRead>
+            {
+                Data = rows,
+                Index = 0,
+                Count = rows.Count,
+                Type = request.Type,
+                Id = request.Id,
+                FilterType = request.FilterType,
+                Limit = rows.Count,
+            });
     }
 
     // Validations

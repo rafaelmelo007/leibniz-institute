@@ -10,7 +10,7 @@ import {
 import { EntityType } from '../../../relationships/domain/entity-type';
 import { EditAuthorComponent } from '../edit-author/edit-author.component';
 import { Author } from '../../domain/author';
-import { ReplaySubject, takeUntil } from 'rxjs';
+import { filter, ReplaySubject, takeUntil } from 'rxjs';
 import { AuthorsStore } from '../../services/authors.store';
 
 @Component({
@@ -31,7 +31,10 @@ export class AuthorsListComponent implements OnDestroy, AfterViewInit {
 
   constructor(private authorsStore: AuthorsStore) {
     this.authorsStore.primaryAuthors$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(
+        filter((x) => x?.type == this.type && x?.id == this.id),
+        takeUntil(this.destroyed$)
+      )
       .subscribe((authors) => {
         if (!authors || authors.index == 0) {
           this.dataSource = [];

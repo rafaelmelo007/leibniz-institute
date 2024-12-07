@@ -12,10 +12,10 @@ import { EditPostComponent } from '../edit-post/edit-post.component';
 import { EntityBadgeComponent } from '../../../common/components/entity-badge/entity-badge.component';
 import { CommonModule } from '@angular/common';
 import { InfiniteScrollComponent } from '../../../common/components/infinite-scroll/infinite-scroll.component';
-import { ReplaySubject, takeUntil } from 'rxjs';
+import { filter, ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-other-posts',
+  selector: 'app-secondary-posts',
   standalone: true,
   imports: [
     EditPostComponent,
@@ -23,10 +23,10 @@ import { ReplaySubject, takeUntil } from 'rxjs';
     CommonModule,
     InfiniteScrollComponent,
   ],
-  templateUrl: './other-posts.component.html',
-  styleUrl: './other-posts.component.css',
+  templateUrl: './secondary-posts.component.html',
+  styleUrl: './secondary-posts.component.css',
 })
-export class OtherPostsComponent implements OnDestroy {
+export class SecondaryPostsComponent implements OnDestroy {
   @ViewChild(EditPostComponent) editPost?: EditPostComponent;
   dataSource?: Post[];
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -39,7 +39,16 @@ export class OtherPostsComponent implements OnDestroy {
 
   constructor(private postsStore: PostsStore) {
     this.postsStore.secondaryPosts$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(
+        filter(
+          (x) =>
+            x?.type == this.type &&
+            x?.id == this.id &&
+            x?.filterType == this.filterType &&
+            x?.filterId == this.filterId
+        ),
+        takeUntil(this.destroyed$)
+      )
       .subscribe((posts) => {
         if (!posts || posts.index == 0) {
           this.dataSource = [];

@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { BookSplashComponent } from '../../components/book-splash/book-splash.component';
 import { ActivatedRoute } from '@angular/router';
-import { MainPostsComponent } from '../../../posts/components/main-posts/main-posts.component';
-import { OtherPostsComponent } from '../../../posts/components/other-posts/other-posts.component';
+import { PrimaryPostsComponent } from '../../../posts/components/primary-posts/primary-posts.component';
+import { SecondaryPostsComponent } from '../../../posts/components/secondary-posts/secondary-posts.component';
 import { ChronologyComponent } from '../../../periods/components/chronology/chronology.component';
 import { AuthorsListComponent } from '../../../authors/components/authors-list/authors-list.component';
 import { ThesisListComponent } from '../../../theses/components/thesis-list/thesis-list.component';
@@ -15,8 +15,8 @@ import { LinksListComponent } from "../../../links/components/links-list/links-l
   standalone: true,
   imports: [
     BookSplashComponent,
-    MainPostsComponent,
-    OtherPostsComponent,
+    PrimaryPostsComponent,
+    SecondaryPostsComponent,
     ChronologyComponent,
     AuthorsListComponent,
     ThesisListComponent,
@@ -27,7 +27,7 @@ import { LinksListComponent } from "../../../links/components/links-list/links-l
   styleUrl: './book-detail.component.css',
 })
 export class BookDetailPage {
-  @ViewChild(OtherPostsComponent) otherPostsComponent?: OtherPostsComponent;
+  @ViewChild(SecondaryPostsComponent) SecondaryPostsComponent?: SecondaryPostsComponent;
   bookId: number = 0;
 
   constructor(private route: ActivatedRoute) {
@@ -37,6 +37,6 @@ export class BookDetailPage {
   }
 
   applyFilter(type: EntityType, id: number): void {
-    this.otherPostsComponent?.applyFilter(type, id);
+    this.SecondaryPostsComponent?.applyFilter(type, id);
   }
 }

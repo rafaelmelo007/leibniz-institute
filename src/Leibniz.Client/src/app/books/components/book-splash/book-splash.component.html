@@ -15,6 +15,7 @@
             <span class="author">{{ book.author }}</span>
           </h1>
           <p class="lead my-3" [innerHTML]="book.content | newlineToBr"></p>
+          <app-dropdown label="More" [options]="menuList"></app-dropdown>
         </div>
         <div class="col-md-4">
           <app-image-box [type]="'book'" [id]="bookId"></app-image-box>
@@ -22,5 +23,6 @@
       </div>
     </div>
     <app-edit-book></app-edit-book>
+    <app-edit-post></app-edit-post>
   </div>
 </div>

@@ -39,6 +39,11 @@ global using Microsoft.AspNetCore.Authentication.BearerToken;
 global using Microsoft.AspNetCore.Mvc;
 
 global using System.Security.Claims;
+global using System.Text.Json.Serialization;
+global using System.ComponentModel;
+global using System.Text.Json;
 
 global using FluentValidation;
 global using FluentValidation.Results;
+
+

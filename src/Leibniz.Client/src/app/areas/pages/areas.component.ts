@@ -7,7 +7,7 @@ import {
 import { Area } from '../domain/area';
 import { AreasStore } from '../services/areas.store';
 import { CommonModule } from '@angular/common';
-import { EditAreaComponent } from '../components/edit-area.component';
+import { EditAreaComponent } from '../components/edit-area/edit-area.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';

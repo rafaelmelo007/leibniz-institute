@@ -3,12 +3,11 @@ public class SearchLinksEndpoint : IEndpoint
 {
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/search-links", Handle)
-        .Produces<SearchLinksResponse>()
+        .Produces<ResultSet<SearchLinkRead>>()
         .WithSummary("Search a set of links from database");
 
     // Request / Response
     public record SearchLinksRequest(int Index, int Limit, EntityType Type, long Id, bool Primary = false);
-    public record SearchLinksResponse(IEnumerable<SearchLinkRead> Data, int Index, int Limit, int Count);
     public record SearchLinkRead(long LinkId, string? Name, string? Content, string? Url, string ImageFileName);
 
     // Handler
@@ -32,12 +31,16 @@ public class SearchLinksEndpoint : IEndpoint
             .Where(x => x.Type == EntityType.Link).Select(x => x.Id).ToList();
 
         var query = database.Links.AsQueryable();
-        var rows = await query.Where(x => linkIds.Contains(x.LinkId)).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        var rows = await query.Where(x => linkIds.Contains(x.LinkId))
+            .OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
+            .Skip(request.Index).Take(request.Limit).ToListAsync();
 
         var count = await query.CountAsync();
 
         var ids = rows.Select(x => x.LinkId).ToList();
-        var images = database.Images.Where(x => x.EntityType == EntityType.Link && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
+        var images = database.Images
+            .Where(x => x.EntityType == EntityType.Link && ids.Contains(x.EntityId))
+            .ToDictionary(x => x.EntityId, x => x.ImageFileName);
         var links = rows.Select(x => new SearchLinkRead
         (
             LinkId: x.LinkId,
@@ -45,8 +48,19 @@ public class SearchLinksEndpoint : IEndpoint
             Content: x.Content,
             Url: x.Url,
             ImageFileName: images.ContainsKey(x.LinkId) ? images[x.LinkId] : default
-        ));
-        return TypedResults.Ok(new SearchLinksResponse(links, request.Index, request.Limit, count));
+        )).ToList();
+
+        return TypedResults.Ok(
+            new ResultSet<SearchLinkRead>
+            {
+                Data = links,
+                Index = request.Index,
+                Count = rows.Count,
+                Limit = request.Limit,
+                Type = request.Type,
+                Id = request.Id,
+                IsPrimary = request.Primary
+            });
     }
 
     // Validations

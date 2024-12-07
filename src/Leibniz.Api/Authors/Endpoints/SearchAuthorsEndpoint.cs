@@ -3,12 +3,11 @@ public class SearchAuthorsEndpoint : IEndpoint
 {
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/search-authors", Handle)
-        .Produces<SearchAuthorsResponse>()
+        .Produces<ResultSet<SearchAuthorsRead>>()
         .WithSummary("Search a set of authors from database");
 
     // Request / Response
     public record SearchAuthorsRequest(int Index, int Limit, EntityType Type, long Id, bool Primary = false);
-    public record SearchAuthorsResponse(IEnumerable<SearchAuthorsRead> Data, int Index, int Limit, int Count);
     public record SearchAuthorsRead(long AuthorId, string? Name, string? Content, string ImageFileName);
 
     // Handler
@@ -46,8 +45,19 @@ public class SearchAuthorsEndpoint : IEndpoint
             Name: x.Name,
             Content: x.Content,
             ImageFileName: images.ContainsKey(x.AuthorId) ? images[x.AuthorId] : default
-        ));
-        return TypedResults.Ok(new SearchAuthorsResponse(authors, request.Index, request.Limit, count));
+        )).ToList();
+
+        return TypedResults.Ok(
+            new ResultSet<SearchAuthorsRead>
+            {
+                Data = authors,
+                Index = request.Index,
+                Count = rows.Count,
+                Limit = request.Limit,
+                Type = request.Type,
+                Id = request.Id,
+                IsPrimary = request.Primary
+            });
     }
 
     // Validations

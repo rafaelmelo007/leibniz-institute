@@ -1,21 +1,21 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { Area } from '../domain/area';
+import { Area } from '../../domain/area';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { AreasStore } from '../services/areas.store';
-import { DialogWindowComponent } from '../../common/components/dialog-window/dialog-window.component';
-import { FieldValidationErrorsComponent } from '../../common/components/field-validation-errors/field-validation-errors.component';
+import { AreasStore } from '../../services/areas.store';
+import { DialogWindowComponent } from '../../../common/components/dialog-window/dialog-window.component';
+import { FieldValidationErrorsComponent } from '../../../common/components/field-validation-errors/field-validation-errors.component';
 import { CommonModule } from '@angular/common';
-import { TabsComponent } from '../../common/components/tabs/tabs.component';
-import { MenuOption } from '../../common/domain/menu-option';
-import { EditReferencesComponent } from '../../relationships/components/edit-references/edit-references.component';
-import { EditTabType } from '../../relationships/domain/edit-tab-type';
-import { EditImageComponent } from '../../images/components/edit-image/edit-image.component';
-import { MoveToComponent } from '../../common/components/move-to/move-to.component';
+import { TabsComponent } from '../../../common/components/tabs/tabs.component';
+import { MenuOption } from '../../../common/domain/menu-option';
+import { EditReferencesComponent } from '../../../relationships/components/edit-references/edit-references.component';
+import { EditTabType } from '../../../relationships/domain/edit-tab-type';
+import { EditImageComponent } from '../../../images/components/edit-image/edit-image.component';
+import { MoveToComponent } from '../../../common/components/move-to/move-to.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({

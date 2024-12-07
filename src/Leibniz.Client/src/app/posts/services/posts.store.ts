@@ -79,11 +79,6 @@ export class PostsStore {
       .pipe(
         tap((res) => {
           res.data.forEach((post) => {
-            post.refs?.forEach((element) => {
-              const type = <any>element.type;
-              element.type = utils.toEntityType(type);
-            });
-
             if (post.imageFileName == null) return;
 
             post.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${post.imageFileName}~${queryStringToken}`;
@@ -111,11 +106,6 @@ export class PostsStore {
       .pipe(
         tap((res) => {
           res.data.forEach((post) => {
-            post.refs?.forEach((element) => {
-              const type = <any>element.type;
-              element.type = utils.toEntityType(type);
-            });
-
             if (post.imageFileName == null) return;
 
             post.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${post.imageFileName}~${queryStringToken}`;

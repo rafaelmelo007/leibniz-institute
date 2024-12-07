@@ -1,5 +1,13 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
-import { ReplaySubject, takeUntil } from 'rxjs';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { filter, ReplaySubject, takeUntil } from 'rxjs';
 import { EditTopicComponent } from '../edit-topic/edit-topic.component';
 import { Topic } from '../../domain/topic';
 import { EntityType } from '../../../relationships/domain/entity-type';
@@ -10,7 +18,7 @@ import { TopicsStore } from '../../services/topics.store';
   standalone: true,
   imports: [],
   templateUrl: './topics-list.component.html',
-  styleUrl: './topics-list.component.css'
+  styleUrl: './topics-list.component.css',
 })
 export class TopicsListComponent implements OnDestroy, AfterViewInit {
   @ViewChild(EditTopicComponent) editTopic?: EditTopicComponent;
@@ -23,7 +31,10 @@ export class TopicsListComponent implements OnDestroy, AfterViewInit {
 
   constructor(private topicsStore: TopicsStore) {
     this.topicsStore.primaryTopics$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(
+        filter((x) => x?.type == this.type && x?.id == this.id),
+        takeUntil(this.destroyed$)
+      )
       .subscribe((topics) => {
         if (!topics || topics.index == 0) {
           this.dataSource = [];

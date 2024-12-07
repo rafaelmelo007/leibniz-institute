@@ -5,13 +5,12 @@ public class ListPostsEndpoint : IEndpoint
 {
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/list-posts", Handle)
-        .Produces<ListPostsResponse>()
+        .Produces<ResultSet<ListPostRead>>()
         .Produces<BadRequestObjectResult>(StatusCodes.Status400BadRequest)
         .WithSummary("List a set of posts from database");
 
     // Request / Response
     public record ListPostsRequest(int Index, int Limit, string Query);
-    public record ListPostsResponse(IEnumerable<ListPostRead> Data, int Index, int Limit, int Count);
     public record ListPostRead(long PostId, string? Title, string? Content, string? Author,
         long? BookId, string? BookName, int? Page, string ImageFileName,
         IEnumerable<RelatedEntity> Refs);
@@ -35,13 +34,19 @@ public class ListPostsEndpoint : IEndpoint
         var query = database.Posts.AsQueryable();
         if (!string.IsNullOrEmpty(request.Query))
         {
-            query = query.Where(x => x.Title.Contains(request.Query) || x.Content.Contains(request.Query) || x.Author.Contains(request.Query));
+            query = query.Where(x => x.Title.Contains(request.Query)
+                || x.Content.Contains(request.Query)
+                || x.Author.Contains(request.Query));
         }
         var count = await query.CountAsync();
-        var rows = await query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        var rows = await query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
+            .Skip(request.Index).Take(request.Limit).ToListAsync();
         var ids = rows.Select(x => x.PostId).ToList();
         var refs = await relationshipService.GetRelatedEntitiesAsync(EntityType.Post, ids, false, default, default, cancellationToken);
-        var images = database.Images.Where(x => x.EntityType == EntityType.Post && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
+        var images = database.Images
+            .Where(x => x.EntityType == EntityType.Post && ids.Contains(x.EntityId))
+            .ToDictionary(x => x.EntityId, x => x.ImageFileName);
+
         var posts = rows.Select(x => new ListPostRead
         (
             PostId: x.PostId,
@@ -59,8 +64,16 @@ public class ListPostsEndpoint : IEndpoint
                         Id = x2.Id,
                         Name = x2.Name
                     }).ToList()
-        ));
-        return TypedResults.Ok(new ListPostsResponse(posts, request.Index, request.Limit, count));
+        )).ToList();
+
+        return TypedResults.Ok(
+            new ResultSet<ListPostRead>
+            {
+                Data = posts,
+                Index = request.Index,
+                Count = rows.Count,
+                Limit = request.Limit,
+            });
     }
 
     // Validations

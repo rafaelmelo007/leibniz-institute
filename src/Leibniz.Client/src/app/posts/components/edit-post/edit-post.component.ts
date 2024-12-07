@@ -17,6 +17,7 @@ import { EditTabType } from '../../../relationships/domain/edit-tab-type';
 import { EditImageComponent } from '../../../images/components/edit-image/edit-image.component';
 import { MoveToComponent } from '../../../common/components/move-to/move-to.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
+import { EntityType } from '../../../relationships/domain/entity-type';
 
 @Component({
   selector: 'app-edit-post',
@@ -40,6 +41,9 @@ export class EditPostComponent implements OnDestroy {
   postId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
+  addType?: EntityType;
+  addId?: number;
+
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   editForm = new FormGroup({
@@ -89,9 +93,11 @@ export class EditPostComponent implements OnDestroy {
 
   constructor(private postsStore: PostsStore) {}
 
-  editPost(postId: number): void {
+  editPost(postId: number, addType?: EntityType, addId?: number): void {
     this.showEdit = true;
     this.postId = postId;
+    this.addType = addType;
+    this.addId = addId;
 
     if (postId == 0) {
       const post = {

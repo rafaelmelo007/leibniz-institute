@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MainPostsComponent } from './main-posts.component';
+import { SecondaryPostsComponent } from './secondary-posts.component';
 
-describe('MainPostsComponent', () => {
-  let component: MainPostsComponent;
-  let fixture: ComponentFixture<MainPostsComponent>;
+describe('SecondaryPostsComponent', () => {
+  let component: SecondaryPostsComponent;
+  let fixture: ComponentFixture<SecondaryPostsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainPostsComponent]
+      imports: [SecondaryPostsComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MainPostsComponent);
+    fixture = TestBed.createComponent(SecondaryPostsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

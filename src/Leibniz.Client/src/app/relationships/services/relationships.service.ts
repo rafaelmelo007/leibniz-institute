@@ -19,22 +19,21 @@ export class RelationshipsService {
 
   loadRelationships(
     type: EntityType,
-    id: number
+    id: number,
+    addType?: EntityType,
+    addId?: number
   ): Observable<ResultSet<RelationshipListItem>> {
     const result = this.http
       .get<ResultSet<RelationshipListItem>>(
         `${
           appSettings.baseUrl
-        }/relationships/get-relationships?Type=${utils.toTypeId(type)}&Id=${id}`
+        }/relationships/get-relationships?Type=${utils.toTypeId(
+          type
+        )}&Id=${id}${
+          addType != undefined ? '&AddType=' + utils.toTypeId(addType) : ''
+        }${addId != undefined ? '&AddId=' + addId : ''}`
       )
-      .pipe(
-        map((res) => {
-          res.data.forEach((item) => {
-            item.type = utils.toEntityType(item.typeId);
-          });
-          return res;
-        })
-      );
+      .pipe(map((res) => res));
     return result;
   }
 
@@ -50,14 +49,7 @@ export class RelationshipsService {
           type
         )}&Query=${query}`
       )
-      .pipe(
-        map((res) => {
-          res.data.forEach((item) => {
-            item.type = utils.toEntityType(item.typeId);
-          });
-          return res;
-        })
-      );
+      .pipe(map((res) => res));
     return result;
   }
 

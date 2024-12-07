@@ -14,6 +14,7 @@ using Leibniz.Api.Images;
 using Leibniz.Api.Relationships;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(probeForEnv: true, probeLevelsToSearch: 6));
@@ -28,6 +29,11 @@ builder.Services.AddTransient<IImagesService, ImagesService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddScoped<NotificationHandler>();
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonEnumToDescriptionConverter<EntityType>());
+});
 
 var emailConfiguration = builder.Configuration.GetSection(nameof(EmailConfiguration)).Get<EmailConfiguration>();
 builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection(nameof(EmailConfiguration)));

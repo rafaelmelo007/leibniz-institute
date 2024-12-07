@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { EditThesisComponent } from '../edit-thesis/edit-thesis.component';
 import { Thesis } from '../../domain/thesis';
-import { ReplaySubject, takeUntil } from 'rxjs';
+import { filter, ReplaySubject, takeUntil } from 'rxjs';
 import { EntityType } from '../../../relationships/domain/entity-type';
 import { ThesesStore } from '../../services/theses.store';
 
@@ -31,7 +31,10 @@ export class ThesisListComponent implements OnDestroy, AfterViewInit {
 
   constructor(private thesesStore: ThesesStore) {
     this.thesesStore.primaryTheses$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(
+        filter((x) => x?.type == this.type && x?.id == this.id),
+        takeUntil(this.destroyed$)
+      )
       .subscribe((theses) => {
         if (!theses || theses.index == 0) {
           this.dataSource = [];

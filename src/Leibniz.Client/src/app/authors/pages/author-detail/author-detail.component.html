@@ -1,12 +1,12 @@
 <div class="container" style="margin-top: 25px">
   <app-author-splash [authorId]="authorId"></app-author-splash>
-  <app-main-posts [type]="'author'" [id]="authorId"></app-main-posts>
+  <app-primary-posts [type]="'author'" [id]="authorId"></app-primary-posts>
 </div>
 
 <main role="main" class="container">
   <div class="row">
     <div class="col-md-8 blog-main">
-      <app-other-posts [type]="'author'" [id]="authorId"></app-other-posts>
+      <app-secondary-posts [type]="'author'" [id]="authorId"></app-secondary-posts>
     </div>
 
     <aside class="col-md-4 blog-sidebar">

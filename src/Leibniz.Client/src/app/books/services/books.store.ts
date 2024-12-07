@@ -60,6 +60,7 @@ export class BooksStore {
       .loadBooks(index, limit, this.query)
       .pipe(
         tap((res) => {
+          res.query = this.query;
           res.data.forEach((book) => {
             if (book.imageFileName == null) return;
 

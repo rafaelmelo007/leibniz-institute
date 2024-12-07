@@ -17,10 +17,14 @@ export class EditReferencesComponent implements OnInit {
   @Input() type?: EntityType;
   @Input() id?: number;
 
+  @Input() addType?: EntityType;
+  @Input() addId?: number;
+
   selectedType = '';
   itemName = '';
   selectedId?: number = undefined;
   isPrimary = false;
+  loading = false;
 
   items?: RelationshipListItem[];
   searchResults?: RelationshipListItem[];
@@ -29,10 +33,12 @@ export class EditReferencesComponent implements OnInit {
   constructor(private relationshipsService: RelationshipsService) {}
 
   ngOnInit(): void {
+    this.loading = true;
     this.relationshipsService
-      .loadRelationships(this.type!, this.id!)
+      .loadRelationships(this.type!, this.id!, this.addType, this.addId)
       .subscribe((res) => {
         this.items = res.data;
+        this.loading = false;
       });
   }
 

@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { OtherPostsComponent } from '../../../posts/components/other-posts/other-posts.component';
+import { SecondaryPostsComponent } from '../../../posts/components/secondary-posts/secondary-posts.component';
 import { EntityType } from '../../../relationships/domain/entity-type';
-import { MainPostsComponent } from "../../../posts/components/main-posts/main-posts.component";
+import { PrimaryPostsComponent } from "../../../posts/components/primary-posts/primary-posts.component";
 import { AuthorsListComponent } from "../../../authors/components/authors-list/authors-list.component";
 import { ThesisListComponent } from "../../../theses/components/thesis-list/thesis-list.component";
 import { TopicsListComponent } from "../../components/topics-list/topics-list.component";
@@ -12,12 +12,12 @@ import { TopicSplashComponent } from "../../components/topic-splash/topic-splash
 @Component({
   selector: 'app-topic-detail',
   standalone: true,
-  imports: [MainPostsComponent, OtherPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, TopicSplashComponent],
+  imports: [PrimaryPostsComponent, SecondaryPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, TopicSplashComponent],
   templateUrl: './topic-detail.component.html',
   styleUrl: './topic-detail.component.css'
 })
 export class TopicDetailPage {
-  @ViewChild(OtherPostsComponent) otherPostsComponent?: OtherPostsComponent;
+  @ViewChild(SecondaryPostsComponent) SecondaryPostsComponent?: SecondaryPostsComponent;
   topicId: number = 0;
 
   constructor(private route: ActivatedRoute) {
@@ -27,6 +27,6 @@ export class TopicDetailPage {
   }
 
   applyFilter(type: EntityType, id: number): void {
-    this.otherPostsComponent?.applyFilter(type, id);
+    this.SecondaryPostsComponent?.applyFilter(type, id);
   }
 }

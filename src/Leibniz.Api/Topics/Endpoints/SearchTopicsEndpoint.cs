@@ -3,12 +3,11 @@ public class SearchTopicsEndpoint : IEndpoint
 {
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/search-topics", Handle)
-        .Produces<SearchTopicsResponse>()
+        .Produces<ResultSet<SearchTopicRead>>()
         .WithSummary("Search a set of topics from database");
 
     // Request / Response
     public record SearchTopicsRequest(int Index, int Limit, EntityType Type, long Id, bool Primary = false);
-    public record SearchTopicsResponse(IEnumerable<SearchTopicRead> Data, int Index, int Limit, int Count);
     public record SearchTopicRead(long TopicId, string? Name, string? Content, string ImageFileName);
 
     // Handler
@@ -32,20 +31,35 @@ public class SearchTopicsEndpoint : IEndpoint
             .Where(x => x.Type == EntityType.Topic).Select(x => x.Id).ToList();
 
         var query = database.Topics.AsQueryable();
-        var rows = await query.Where(x => topicIds.Contains(x.TopicId)).OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc).Skip(request.Index).Take(request.Limit).ToListAsync();
+        var rows = await query.Where(x => topicIds.Contains(x.TopicId))
+            .OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
+            .Skip(request.Index).Take(request.Limit).ToListAsync();
 
         var count = await query.CountAsync();
 
         var ids = rows.Select(x => x.TopicId).ToList();
-        var images = database.Images.Where(x => x.EntityType == EntityType.Topic && ids.Contains(x.EntityId)).ToDictionary(x => x.EntityId, x => x.ImageFileName);
+        var images = database.Images
+            .Where(x => x.EntityType == EntityType.Topic && ids.Contains(x.EntityId))
+            .ToDictionary(x => x.EntityId, x => x.ImageFileName);
         var topics = rows.Select(x => new SearchTopicRead
         (
             TopicId: x.TopicId,
             Name: x.Name,
             Content: x.Content,
             ImageFileName: images.ContainsKey(x.TopicId) ? images[x.TopicId] : default
-        ));
-        return TypedResults.Ok(new SearchTopicsResponse(topics, request.Index, request.Limit, count));
+        )).ToList();
+
+        return TypedResults.Ok(
+            new ResultSet<SearchTopicRead>
+            {
+                Data = topics,
+                Index = request.Index,
+                Count = rows.Count,
+                Limit = request.Limit,
+                Type = request.Type,
+                Id = request.Id,
+                IsPrimary = request.Primary
+            });
     }
 
     // Validations
