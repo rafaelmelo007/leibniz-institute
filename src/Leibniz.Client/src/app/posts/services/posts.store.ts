@@ -17,7 +17,6 @@ import { AuthService } from '../../account/services/auth.service';
 import { appSettings } from '../../../environments/environment';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 import { EntityType } from '../../relationships/domain/entity-type';
-import utils from '../../common/services/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -131,6 +130,18 @@ export class PostsStore {
       finalize(() => this.loadingSubject.next(false))
     );
     return result;
+  }
+
+  addManyPosts(type: EntityType, id: number, content: string): void {
+    this.postsService
+      .addManyPosts(type, id, content)
+      .pipe(catchError((err) => this.errorHandlerService.onError(err)))
+      .subscribe((postIds: number[]) => {
+        this.messagesService.success(
+          `Added ${postIds.length} post(s) successfully.`,
+          'Posts added'
+        );
+      });
   }
 
   addPost(post: Post): void {

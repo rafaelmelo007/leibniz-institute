@@ -15,7 +15,8 @@ public static class Setup
             .MapEndpoint<AddPostEndpoint>()
             .MapEndpoint<UpdatePostEndpoint>()
             .MapEndpoint<RemovePostEndpoint>()
-            .MapEndpoint<SearchPostsEndpoint>();
+            .MapEndpoint<SearchPostsEndpoint>()
+            .MapEndpoint<AddBatchPostsEndpoint>();
     }
 }
 

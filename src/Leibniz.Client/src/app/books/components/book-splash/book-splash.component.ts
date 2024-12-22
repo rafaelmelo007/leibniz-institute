@@ -8,7 +8,7 @@ import { EditBookComponent } from '../edit-book/edit-book.component';
 import { DropdownComponent } from '../../../common/components/dropdown/dropdown.component';
 import { MenuOption } from '../../../common/domain/menu-option';
 import { EditPostComponent } from '../../../posts/components/edit-post/edit-post.component';
-import { EntityType } from '../../../relationships/domain/entity-type';
+import { AddBatchPostsComponent } from '../../../posts/components/add-batch-posts/add-batch-posts.component';
 
 @Component({
   selector: 'app-book-splash',
@@ -20,6 +20,7 @@ import { EntityType } from '../../../relationships/domain/entity-type';
     EditBookComponent,
     DropdownComponent,
     EditPostComponent,
+    AddBatchPostsComponent,
   ],
   templateUrl: './book-splash.component.html',
   styleUrl: './book-splash.component.css',
@@ -27,14 +28,22 @@ import { EntityType } from '../../../relationships/domain/entity-type';
 export class BookSplashComponent implements OnInit {
   @ViewChild(EditBookComponent) editBook?: EditBookComponent;
   @ViewChild(EditPostComponent) editPost?: EditPostComponent;
+  @ViewChild(AddBatchPostsComponent) addBatchPosts?: AddBatchPostsComponent;
   @Input() bookId: number = 0;
   book?: Book | null;
   menuList?: MenuOption[] = [
     {
-      label: 'Add Post',
+      label: 'Add Single Post',
       icon: 'fa fa-comment',
       action: () => {
         this.editPost?.editPost(0, 'book', this.bookId);
+      },
+    },
+    {
+      label: 'Add Many Posts',
+      icon: 'fa fa-comments',
+      action: () => {
+        this.addBatchPosts?.show('book', this.bookId);
       },
     },
   ];

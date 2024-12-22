@@ -1,5 +1,6 @@
 ﻿using Leibniz.Api.Common.Constants;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.BearerToken;
 
 namespace Leibniz.Api.Authentication.Endpoints;
 public class RegisterEndpoint : IEndpoint

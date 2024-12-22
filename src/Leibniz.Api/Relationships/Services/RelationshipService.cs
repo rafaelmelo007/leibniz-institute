@@ -73,7 +73,7 @@ public class RelationshipService : IRelationshipService
             var name = _database.Books.Where(x => x.BookId == id).Select(x => x.Title + " [" + x.Author + "]").FirstOrDefault();
             return name;
         }
-        throw new NotSupportedException();
+        return default;
     }
 
     public async Task<long> MoveToAsync(EntityType fromType, long id, EntityType toType, CancellationToken cancellationToken)

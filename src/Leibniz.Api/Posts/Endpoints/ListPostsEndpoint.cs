@@ -39,8 +39,13 @@ public class ListPostsEndpoint : IEndpoint
                 || x.Author.Contains(request.Query));
         }
         var count = await query.CountAsync();
-        var rows = await query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
-            .Skip(request.Index).Take(request.Limit).ToListAsync();
+        var query2 = query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
+            .Skip(request.Index).Take(request.Limit);
+
+        // DEBUG query
+        //var sql = query2.ToQueryString();
+
+        var rows = await query2.ToListAsync();
         var ids = rows.Select(x => x.PostId).ToList();
         var refs = await relationshipService.GetRelatedEntitiesAsync(EntityType.Post, ids, false, default, default, cancellationToken);
         var images = database.Images

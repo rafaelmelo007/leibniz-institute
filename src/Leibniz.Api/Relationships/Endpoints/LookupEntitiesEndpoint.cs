@@ -1,16 +1,14 @@
-﻿
-namespace Leibniz.Api.Relationships.Endpoints;
+﻿namespace Leibniz.Api.Relationships.Endpoints;
 public class LookupEntitiesEndpoint : IEndpoint
 {
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/lookup-entities", Handle)
-        .Produces<LookupEntitiesResponse>()
+        .Produces<ResultSet<LookupEntitiesRead>>()
         .WithSummary("Search for entities based on an expression from database");
 
     // Request / Response
     public record LookupEntitiesRequest(EntityType Type, string Query);
-    public record LookupEntitiesResponse(List<LookupEntitiesRead> Data, int Index, int Limit, int Count);
-    public record LookupEntitiesRead(EntityType TypeId, long Id, string? Label);
+    public record LookupEntitiesRead(EntityType Type, long Id, string? Label);
     public const int MAX_RECORDS = 50;
 
     // Handler
@@ -59,7 +57,15 @@ public class LookupEntitiesEndpoint : IEndpoint
             results = QueryLinks(database, request.Query);
         }
 
-        return TypedResults.Ok(new LookupEntitiesResponse(results, 0, results.Count, results.Count));
+        return TypedResults.Ok(
+            new ResultSet<LookupEntitiesRead>
+            {
+                Data = results,
+                Index = 0,
+                Count = results.Count,
+                Type = request.Type,
+                Query = request.Query
+            });
     }
 
     private static List<LookupEntitiesRead> QueryLinks(AcademyDbContext database, string query)

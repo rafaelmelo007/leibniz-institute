@@ -62,7 +62,7 @@ export class EditReferencesComponent implements OnInit {
 
   removeItem(item: RelationshipListItem): void {
     this.items = this.items?.filter(
-      (x) => x.typeId !== item.typeId || x.id !== item.id
+      (x) => x.type !== item.type || x.id !== item.id
     );
   }
 

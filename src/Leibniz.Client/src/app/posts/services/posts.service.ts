@@ -56,6 +56,16 @@ export class PostsService {
     return result;
   }
 
+  addManyPosts(type: EntityType, id: number, content: string): Observable<number[]> {
+    const result = this.http
+      .post<{ postIds: number[] }>(
+        `${appSettings.baseUrl}/posts/create-batch-posts`,
+        { type, id, content }
+      )
+      .pipe(map((res) => res.postIds));
+    return result;
+  }
+
   addPost(post: Post): Observable<number> {
     const result = this.http
       .post<{ postId: number }>(

@@ -1,17 +1,19 @@
-import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { EntityType } from '../../../relationships/domain/entity-type';
 import { PostsStore } from '../../services/posts.store';
 import { Post } from '../../domain/post';
 import { filter, ReplaySubject, takeUntil } from 'rxjs';
+import { EditPostComponent } from "../edit-post/edit-post.component";
 
 @Component({
   selector: 'app-primary-posts',
   standalone: true,
-  imports: [],
+  imports: [EditPostComponent],
   templateUrl: './primary-posts.component.html',
   styleUrl: './primary-posts.component.css',
 })
 export class PrimaryPostsComponent implements AfterViewInit, OnDestroy {
+  @ViewChild(EditPostComponent) editPost?: EditPostComponent;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   @Input() type?: EntityType;
@@ -36,6 +38,10 @@ export class PrimaryPostsComponent implements AfterViewInit, OnDestroy {
     if (!this.type || !this.id) return;
 
     this.postsStore.loadPosts(0, 3, this.type, this.id, true);
+  }
+
+  editPostLink(postId: number): void {
+    this.editPost?.editPost(postId);
   }
 
   ngOnDestroy(): void {

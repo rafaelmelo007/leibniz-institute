@@ -1,0 +1,47 @@
+<app-dialog-window
+  *ngIf="showWindow"
+  primaryButtonLabel="Add posts"
+  title="Add many posts"
+  (closeDialog)="showWindow = false"
+  [width]="1024"
+  (submitDialog)="addManyPosts()"
+>
+  <ng-container>
+    <div class="tab-content">
+      <form [formGroup]="editForm">
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="bookId" class="form-label mt-4">Ref</label>
+              <input
+                readonly="true"
+                class="form-control"
+                type="text"
+                placeholder="type"
+                [value]="type + ' ~ ' + id"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="content" class="form-label mt-4">Content</label>
+              <textarea
+                class="form-control"
+                formControlName="content"
+                type="text"
+                placeholder="
+                [title]
+                '[post content]'
+                [autor] - p. [page number] - [references]
+                "
+                rows="5"
+              ></textarea>
+              <app-field-validation-errors
+                [control]="editForm.get('content')"
+              ></app-field-validation-errors>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+</app-dialog-window>

@@ -4,7 +4,7 @@
         <div class="row">
           <div class="col-md-8 px-0">
             <h1 class="display-4 font-italic">
-              <span class="title">{{ topic?.name }}</span>
+              <span class="title">{{ topic.name }}</span>
               <a href="javascript:;" (click)="edit()">
                 <i
                   class="fa fa-edit"
@@ -13,7 +13,7 @@
               </a>
               <br />
             </h1>
-            <p class="lead my-3" [innerHTML]="topic?.content | newlineToBr"></p>
+            <p class="lead my-3" [innerHTML]="topic.content | newlineToBr"></p>
           </div>
           <div class="col-md-4">
             <app-image-box [type]="'topic'" [id]="topicId"></app-image-box>

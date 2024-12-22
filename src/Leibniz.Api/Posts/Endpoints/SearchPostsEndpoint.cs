@@ -1,6 +1,4 @@
-﻿using Leibniz.Api.Relationships.Dtos;
-
-namespace Leibniz.Api.Posts.Endpoints;
+﻿namespace Leibniz.Api.Posts.Endpoints;
 public class SearchPostsEndpoint : IEndpoint
 {
     // End-point Map

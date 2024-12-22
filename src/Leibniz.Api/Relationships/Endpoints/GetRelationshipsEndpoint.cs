@@ -11,8 +11,8 @@ public class GetRelationshipsEndpoint : IEndpoint
         EntityType Type, long Id, EntityType? FilterType,
         bool OnlyPrimary = false, EntityType? AddType = null,
         long? AddId = null);
-    public record RelationshipRead(EntityType TypeId, long Id, 
-        string? Label, bool IsPrimary);
+    public record RelationshipRead(EntityType Type, 
+        long Id, string? Label, bool IsPrimary);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -58,7 +58,7 @@ public class GetRelationshipsEndpoint : IEndpoint
         if (request.AddType != null && request.AddId != null)
         {
             var addName = relationshipService.GetRelationshipName(request.AddType!.Value, request.AddId!.Value);
-            rows.Add(new RelationshipRead(request.AddType!.Value, request.AddId!.Value, addName, true));
+            rows.Add(new RelationshipRead(request.AddType!.Value, request.AddId!.Value, addName, false));
         }
 
         return TypedResults.Ok(

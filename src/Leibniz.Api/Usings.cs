@@ -29,21 +29,18 @@ global using Leibniz.Api.Images.Services;
 
 global using Leibniz.Api.Relationships.Domain;
 global using Leibniz.Api.Relationships.Services;
-
-global using Microsoft.EntityFrameworkCore;
-global using Microsoft.EntityFrameworkCore.Metadata.Builders;
-global using System.ComponentModel.DataAnnotations;
-
-global using Microsoft.AspNetCore.Http.HttpResults;
-global using Microsoft.AspNetCore.Authentication.BearerToken;
-global using Microsoft.AspNetCore.Mvc;
-
-global using System.Security.Claims;
-global using System.Text.Json.Serialization;
-global using System.ComponentModel;
-global using System.Text.Json;
+global using Leibniz.Api.Relationships.Dtos;
 
 global using FluentValidation;
 global using FluentValidation.Results;
 
+global using System.Security.Claims;
+global using System.ComponentModel;
+global using System.ComponentModel.DataAnnotations;
+global using System.Text.Json.Serialization;
+global using System.Text.Json;
 
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Http.HttpResults;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;

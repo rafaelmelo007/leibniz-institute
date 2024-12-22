@@ -11,13 +11,20 @@ public class JsonEnumToDescriptionConverter<T> : JsonConverter<T> where T : Enum
     {
         var type = typeof(T);
 
-        var memberInfo = type.GetMember(value.ToString())[0];
+        try
+        {
+            var memberInfo = type.GetMember(value.ToString())[0];
 
-        var descriptionAttribute = memberInfo
-            .GetCustomAttributes(typeof(DescriptionAttribute), false)
-            .FirstOrDefault() as DescriptionAttribute;
+            var descriptionAttribute = memberInfo
+                .GetCustomAttributes(typeof(DescriptionAttribute), false)
+                .FirstOrDefault() as DescriptionAttribute;
 
-        var stringValue = descriptionAttribute?.Description ?? value.ToString();
-        writer.WriteStringValue(stringValue);
+            var stringValue = descriptionAttribute?.Description ?? value.ToString();
+            writer.WriteStringValue(stringValue);
+        }
+        catch (IndexOutOfRangeException ex)
+        {
+            writer.WriteStringValue(string.Empty);
+        }
     }
 }
