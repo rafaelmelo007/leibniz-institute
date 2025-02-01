@@ -4,7 +4,8 @@ public class AddPeriodEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/create-period", Handle)
         .Produces<AddPeriodResponse>()
-        .WithSummary("Add a new period into the database");
+        .WithSummary("Add a new period into the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record AddPeriodRequest(int Type, string Name, string Content,

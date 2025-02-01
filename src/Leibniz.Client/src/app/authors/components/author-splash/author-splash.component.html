@@ -14,6 +14,7 @@
               <br />
             </h1>
             <p class="lead my-3" [innerHTML]="author.content | newlineToBr"></p>
+            <app-dropdown label="More" [options]="menuList"></app-dropdown>
           </div>
           <div class="col-md-4">
             <app-image-box [type]="'author'" [id]="authorId"></app-image-box>
@@ -21,6 +22,8 @@
         </div>
       </div>
       <app-edit-author></app-edit-author>
+      <app-edit-post></app-edit-post>
+      <app-add-batch-posts></app-add-batch-posts>
     </div>
   </div>
   

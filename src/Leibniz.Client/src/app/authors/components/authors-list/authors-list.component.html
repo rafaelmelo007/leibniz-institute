@@ -6,9 +6,22 @@
       <a href="javascript:;" (click)="selectAuthor.emit(item.authorId)">{{
         item.name
       }}</a>
+      <a
+        href="javascript:;"
+        style="margin-left: 5px"
+        (click)="edit(item.authorId)"
+        ><i class="fa fa-edit"></i
+      ></a>
+      <a
+        href="javascript:;"
+        style="margin-left: 5px"
+        (click)="navigate(item.authorId)"
+        ><i class="fa fa-window-maximize"></i
+      ></a>
     </li>
     } @if(dataSource?.length == 0) {
     <li style="margin-bottom: 10px">No authors found.</li>
     }
   </ol>
+  <app-edit-author></app-edit-author>
 </div>

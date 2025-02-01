@@ -4,7 +4,8 @@ public class UpdateThesisEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPut($"/update-thesis", Handle)
         .Produces<UpdateThesisResponse>()
-        .WithSummary("Update an existing thesis in the database");
+        .WithSummary("Update an existing thesis in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record UpdateThesisRequest(long ThesisId, string Name, string Content);

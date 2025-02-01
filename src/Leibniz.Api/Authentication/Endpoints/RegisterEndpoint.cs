@@ -1,5 +1,4 @@
-﻿using Leibniz.Api.Common.Constants;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 
 namespace Leibniz.Api.Authentication.Endpoints;
@@ -9,7 +8,8 @@ public class RegisterEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/register", Handle)
         .AllowAnonymous()
         .Produces<IResult>()
-        .WithSummary("Register a new user in the system");
+        .WithSummary("Register a new user in the system")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record RegisterRequest(string FullName, string Cpf, string City, string State,

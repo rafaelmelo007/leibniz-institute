@@ -4,7 +4,8 @@ public class RemoveAuthorEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapDelete($"/remove-author", Handle)
         .Produces<RemoveAuthorResponse>()
-        .WithSummary("Delete an existing author in the database");
+        .WithSummary("Delete an existing author in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record RemoveAuthorRequest(long AuthorId);

@@ -4,7 +4,8 @@ public class UpdatePostEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPut($"/update-post", Handle)
         .Produces<UpdatePostResponse>()
-        .WithSummary("Update an existing post in the database");
+        .WithSummary("Update an existing post in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record UpdatePostRequest(long PostId, string Title, string Content, string Author, long? BookId, short? Page, string Reference);

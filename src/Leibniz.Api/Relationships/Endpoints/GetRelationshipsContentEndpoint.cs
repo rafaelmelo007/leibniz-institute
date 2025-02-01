@@ -4,7 +4,8 @@ public class GetRelationshipsContentEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-relationships-content", Handle)
         .Produces<GetRelationshipsContentResponse>()
-        .WithSummary("Retrieve a set of relationships with content from database");
+        .WithSummary("Retrieve a set of relationships with content from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetRelationshipsContentRequest(EntityType Type, long Id,

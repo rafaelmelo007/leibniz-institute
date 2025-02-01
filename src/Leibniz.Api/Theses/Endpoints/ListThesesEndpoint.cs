@@ -4,7 +4,8 @@ public class ListThesesEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/list-theses", Handle)
         .Produces<ResultSet<ListThesisRead>>()
-        .WithSummary("List a set of theses from database");
+        .WithSummary("List a set of theses from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record ListThesesRequest(int Index, int Limit, string? Query);

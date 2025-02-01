@@ -4,7 +4,8 @@ public class GetThesisEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-thesis", Handle)
         .Produces<GetThesisResponse>()
-        .WithSummary("Retrieve a thesis from database");
+        .WithSummary("Retrieve a thesis from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetThesisRequest(long ThesisId);

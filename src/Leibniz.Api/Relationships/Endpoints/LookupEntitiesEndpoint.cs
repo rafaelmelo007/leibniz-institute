@@ -4,7 +4,8 @@ public class LookupEntitiesEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/lookup-entities", Handle)
         .Produces<ResultSet<LookupEntitiesRead>>()
-        .WithSummary("Search for entities based on an expression from database");
+        .WithSummary("Search for entities based on an expression from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record LookupEntitiesRequest(EntityType Type, string Query);

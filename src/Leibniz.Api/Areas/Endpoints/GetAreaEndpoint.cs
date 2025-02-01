@@ -5,7 +5,8 @@ public class GetAreaEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-area", Handle)
         .Produces<GetAreaResponse>()
         .Produces<BadRequestObjectResult>(StatusCodes.Status400BadRequest)
-        .WithSummary("Retrieve an area from database");
+        .WithSummary("Retrieve an area from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetAreaRequest(long AreaId);

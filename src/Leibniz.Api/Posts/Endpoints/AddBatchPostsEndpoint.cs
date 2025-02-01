@@ -7,7 +7,8 @@ public class AddBatchPostsEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/create-batch-posts", Handle)
         .Produces<AddBatchPostsResponse>()
-        .WithSummary("Add a batch of posts into the database");
+        .WithSummary("Add a batch of posts into the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record AddBatchPostsRequest(EntityType Type, long Id, string Content);

@@ -4,7 +4,8 @@ public class GetPeriodsEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-periods", Handle)
         .Produces<ResultSet<PeriodRead>>()
-        .WithSummary("Retrieve a set of periods from database");
+        .WithSummary("Retrieve a set of periods from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetPeriodsRequest(int Index, int Limit, string Query);

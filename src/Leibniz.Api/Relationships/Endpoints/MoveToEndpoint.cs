@@ -4,7 +4,8 @@ public class MoveToEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPut($"/move-to", Handle)
         .Produces<MoveToResponse>()
-        .WithSummary("Save a set of relationships from database");
+        .WithSummary("Save a set of relationships from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record MoveToRequest(EntityType FromType, long Id, EntityType ToType);

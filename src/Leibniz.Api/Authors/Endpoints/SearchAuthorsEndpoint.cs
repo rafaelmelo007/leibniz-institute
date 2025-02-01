@@ -4,7 +4,8 @@ public class SearchAuthorsEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/search-authors", Handle)
         .Produces<ResultSet<SearchAuthorsRead>>()
-        .WithSummary("Search a set of authors from database");
+        .WithSummary("Search a set of authors from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record SearchAuthorsRequest(int Index, int Limit, EntityType Type, long Id, bool Primary = false);

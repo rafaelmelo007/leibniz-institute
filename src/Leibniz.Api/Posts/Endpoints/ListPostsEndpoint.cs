@@ -1,13 +1,12 @@
-﻿using Leibniz.Api.Relationships.Dtos;
-
-namespace Leibniz.Api.Posts.Endpoints;
+﻿namespace Leibniz.Api.Posts.Endpoints;
 public class ListPostsEndpoint : IEndpoint
 {
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/list-posts", Handle)
         .Produces<ResultSet<ListPostRead>>()
         .Produces<BadRequestObjectResult>(StatusCodes.Status400BadRequest)
-        .WithSummary("List a set of posts from database");
+        .WithSummary("List a set of posts from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record ListPostsRequest(int Index, int Limit, string Query);

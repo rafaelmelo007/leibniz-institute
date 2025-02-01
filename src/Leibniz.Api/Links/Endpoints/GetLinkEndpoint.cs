@@ -4,7 +4,8 @@ public class GetLinkEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-link", Handle)
         .Produces<GetLinkResponse>()
-        .WithSummary("Retrieve a set of links from database");
+        .WithSummary("Retrieve a set of links from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetLinkRequest(long LinkId);

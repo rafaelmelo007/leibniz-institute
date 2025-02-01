@@ -4,7 +4,8 @@ public class RemoveBookEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapDelete($"/remove-book", Handle)
         .Produces<RemoveBookResponse>()
-        .WithSummary("Delete an existing book in the database");
+        .WithSummary("Delete an existing book in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record RemoveBookRequest(long BookId);

@@ -4,7 +4,8 @@ public class SaveRelationshipsEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/save-relationships", Handle)
         .Produces<SaveRelationshipsResponse>()
-        .WithSummary("Save a set of relationships from database");
+        .WithSummary("Save a set of relationships from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record SaveRelationshipsRequest(EntityType Type, long Id, [FromBody] RelationshipSave[] Items);

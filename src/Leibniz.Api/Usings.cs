@@ -1,6 +1,7 @@
 ﻿global using Leibniz.Api.Common;
 global using Leibniz.Api.Common.Services;
 global using Leibniz.Api.Common.Extensions;
+global using Leibniz.Api.Common.Constants;
 
 global using Leibniz.Api.Data;
 global using Leibniz.Api.Data.Services;

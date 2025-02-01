@@ -5,7 +5,8 @@ public class ForgotPasswordResetEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapPut($"/forgot-password", Handle)
         .AllowAnonymous()
         .Produces<IResult>()
-        .WithSummary("Reset user password based on reset password token");
+        .WithSummary("Reset user password based on reset password token")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record ForgotPasswordResetRequest(Guid ChangePasswordToken, string NewPassword, string ConfirmNewPassword);

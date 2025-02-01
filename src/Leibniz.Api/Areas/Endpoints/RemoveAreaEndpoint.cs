@@ -5,7 +5,8 @@ public class RemoveAreaEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapDelete($"/remove-area", Handle)
         .Produces<RemoveAreaResponse>()
         .Produces<BadRequestObjectResult>(StatusCodes.Status400BadRequest)
-        .WithSummary("Delete an existing area in the database");
+        .WithSummary("Delete an existing area in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record RemoveAreaRequest

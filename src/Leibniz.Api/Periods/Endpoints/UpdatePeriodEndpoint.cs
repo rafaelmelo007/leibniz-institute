@@ -4,7 +4,8 @@ public class UpdatePeriodEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPut($"/update-period", Handle)
         .Produces<UpdatePeriodResponse>()
-        .WithSummary("Update an existing period in the database");
+        .WithSummary("Update an existing period in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record UpdatePeriodRequest(long PeriodId, string Name, string Content,

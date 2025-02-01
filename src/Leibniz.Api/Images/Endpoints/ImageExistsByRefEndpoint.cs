@@ -8,7 +8,8 @@ public class ImageExistsByRefEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/image-exists-by-ref", Handle)
         .Produces<ImageExistsByRefResponse>()
         .AllowAnonymous()
-        .WithSummary("Check if an image exists or not");
+        .WithSummary("Check if an image exists or not")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record ImageExistsByRefRequest(EntityType Type, long Id, Guid QueryStringToken);

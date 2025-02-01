@@ -4,7 +4,8 @@ public class SearchTopicsEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/search-topics", Handle)
         .Produces<ResultSet<SearchTopicRead>>()
-        .WithSummary("Search a set of topics from database");
+        .WithSummary("Search a set of topics from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record SearchTopicsRequest(int Index, int Limit, EntityType Type, long Id, bool Primary = false);

@@ -4,7 +4,8 @@ public class GetPostEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-post", Handle)
         .Produces<GetPostResponse>()
-        .WithSummary("Retrieve a post from database");
+        .WithSummary("Retrieve a post from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetPostRequest(long PostId);

@@ -4,7 +4,8 @@ public class GetTopicEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-topic", Handle)
         .Produces<GetTopicResponse>()
-        .WithSummary("Retrieve a set of topics from database");
+        .WithSummary("Retrieve a set of topics from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetTopicRequest(long TopicId);

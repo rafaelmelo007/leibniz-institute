@@ -4,7 +4,8 @@ public class RemoveLinkEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapDelete($"/remove-link", Handle)
         .Produces<RemoveLinkResponse>()
-        .WithSummary("Delete an existing link in the database");
+        .WithSummary("Delete an existing link in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record RemoveLinkRequest(long LinkId);

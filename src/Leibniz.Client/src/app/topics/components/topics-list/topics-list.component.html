@@ -9,9 +9,22 @@
         (click)="selectTopic.emit(item.topicId)"
         >{{ $index + 1 }}. {{ item.name }}</a
       >
+      <a
+        href="javascript:;"
+        style="margin-left: 5px"
+        (click)="edit(item.topicId)"
+        ><i class="fa fa-edit"></i
+      ></a>
+      <a
+        href="javascript:;"
+        style="margin-left: 5px"
+        (click)="navigate(item.topicId)"
+        ><i class="fa fa-window-maximize"></i
+      ></a>
     </li>
     } @if(dataSource?.length == 0) {
     <li style="margin-bottom: 10px">No topics found.</li>
     }
   </ol>
+  <app-edit-topic></app-edit-topic>
 </div>

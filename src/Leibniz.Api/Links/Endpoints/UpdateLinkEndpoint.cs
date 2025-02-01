@@ -4,7 +4,8 @@ public class UpdateLinkEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPut($"/update-link", Handle)
         .Produces<UpdateLinkResponse>()
-        .WithSummary("Update an existing link in the database");
+        .WithSummary("Update an existing link in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record UpdateLinkRequest(long LinkId, string Name, string Content, string Url);

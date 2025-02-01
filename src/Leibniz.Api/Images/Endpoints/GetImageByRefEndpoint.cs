@@ -8,7 +8,8 @@ public class GetImageByRefEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-image-by-ref", Handle)
         .Produces<IResult>()
         .AllowAnonymous()
-        .WithSummary("Retrieve a image");
+        .WithSummary("Retrieve a image")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetImageByRefRequest(EntityType Type, long Id, Guid QueryStringToken, int? Width = null, int? Height = null);

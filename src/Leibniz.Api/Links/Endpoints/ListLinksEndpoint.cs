@@ -4,7 +4,8 @@ public class ListLinksEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/list-links", Handle)
         .Produces<ResultSet<ListLinkRead>>()
-        .WithSummary("List a set of links from database");
+        .WithSummary("List a set of links from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record ListLinksRequest(int Index, int Limit, string Query);

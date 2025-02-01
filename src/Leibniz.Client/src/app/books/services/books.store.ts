@@ -17,6 +17,7 @@ import { appSettings } from '../../../environments/environment';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
+import { EntityType } from '../../relationships/domain/entity-type';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +32,18 @@ export class BooksStore {
   ) {
     this.changes$ = this.changeTrackerService.asObservable<Book>();
   }
+
+  private primaryBooksSubject = new BehaviorSubject<ResultSet<Book> | null>(
+    null
+  );
+  primaryBooks$: Observable<ResultSet<Book> | null> =
+    this.primaryBooksSubject.asObservable();
+
+  private secondaryBooksSubject = new BehaviorSubject<ResultSet<Book> | null>(
+    null
+  );
+  secondaryBooks$: Observable<ResultSet<Book> | null> =
+    this.secondaryBooksSubject.asObservable();
 
   private booksSubject = new BehaviorSubject<ResultSet<BookListItem> | null>(
     null
@@ -53,11 +66,43 @@ export class BooksStore {
     this._query = value;
   }
 
-  loadBooks(index: number, limit: number): void {
+  loadBooks(
+    index: number,
+    limit: number,
+    type: EntityType,
+    id: number,
+    primary: boolean
+  ): void {
     var queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.booksService
-      .loadBooks(index, limit, this.query)
+      .loadBooks(index, limit, type, id, primary)
+      .pipe(
+        tap((res) => {
+          res.data.forEach((book) => {
+            if (book.imageFileName == null) return;
+
+            book.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${book.imageFileName}~${queryStringToken}`;
+          });
+          if (primary) {
+            return this.primaryBooksSubject.next(res);
+          }
+          return this.secondaryBooksSubject.next(res);
+        }),
+        catchError((err) => {
+          this.errorHandlerService.onError(err);
+          return of(null);
+        }),
+        finalize(() => this.loadingSubject.next(false))
+      )
+      .subscribe();
+  }
+
+  listBooks(index: number, limit: number): void {
+    var queryStringToken = this.authService.getQueryStringToken();
+    this.loadingSubject.next(true);
+    this.booksService
+      .listBooks(index, limit, this.query)
       .pipe(
         tap((res) => {
           res.query = this.query;

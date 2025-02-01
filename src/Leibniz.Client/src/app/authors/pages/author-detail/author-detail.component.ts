@@ -8,11 +8,12 @@ import { ThesisListComponent } from "../../../theses/components/thesis-list/thes
 import { TopicsListComponent } from "../../../topics/components/topics-list/topics-list.component";
 import { LinksListComponent } from "../../../links/components/links-list/links-list.component";
 import { AuthorSplashComponent } from "../../components/author-splash/author-splash.component";
+import { BookListComponent } from "../../../books/components/book-list/book-list.component";
 
 @Component({
   selector: 'app-author-detail',
   standalone: true,
-  imports: [PrimaryPostsComponent, SecondaryPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, AuthorSplashComponent],
+  imports: [PrimaryPostsComponent, SecondaryPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, AuthorSplashComponent, BookListComponent],
   templateUrl: './author-detail.component.html',
   styleUrl: './author-detail.component.css'
 })

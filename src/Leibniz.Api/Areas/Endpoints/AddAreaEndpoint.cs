@@ -5,7 +5,8 @@ public class AddAreaEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/create-area", Handle)
         .Produces<AddAreaResponse>()
         .Produces<BadRequestObjectResult>(StatusCodes.Status400BadRequest)
-        .WithSummary("Add a new area into the database");
+        .WithSummary("Add a new area into the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record AddAreaRequest(int Type, string Name, string Content);

@@ -4,7 +4,8 @@ public class RemovePostEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapDelete($"/remove-post", Handle)
         .Produces<RemovePostResponse>()
-        .WithSummary("Delete an existing post from the database");
+        .WithSummary("Delete an existing post from the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record RemovePostRequest(long PostId);

@@ -4,7 +4,8 @@ public class ListAuthorsEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/list-authors", Handle)
         .Produces<ResultSet<ListAuthorRead>>()
-        .WithSummary("List a set of authors from database");
+        .WithSummary("List a set of authors from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record ListAuthorsRequest(int Index, int Limit, string Query);

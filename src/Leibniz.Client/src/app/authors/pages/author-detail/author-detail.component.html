@@ -10,11 +10,11 @@
     </div>
 
     <aside class="col-md-4 blog-sidebar">
-      <app-authors-list
+      <app-book-list
         [type]="'author'"
         [id]="authorId"
-        (selectAuthor)="applyFilter('author', $event)"
-      ></app-authors-list>
+        (selectBook)="applyFilter('book', $event)"
+      ></app-book-list>
       <app-thesis-list
         [type]="'author'"
         [id]="authorId"
@@ -25,6 +25,11 @@
         [id]="authorId"
         (selectTopic)="applyFilter('topic', $event)"
       ></app-topics-list>
+      <app-authors-list
+        [type]="'author'"
+        [id]="authorId"
+        (selectAuthor)="applyFilter('author', $event)"
+      ></app-authors-list>
       <app-links-list [type]="'author'" [id]="authorId"></app-links-list>
     </aside>
   </div>

@@ -3,6 +3,7 @@ export interface Book {
   title: string | null;
   author: string | null;
   publisher: string | null;
+  imageFileName: string | null;
   edition: number | null;
   content: string | null;
   year: number | null;

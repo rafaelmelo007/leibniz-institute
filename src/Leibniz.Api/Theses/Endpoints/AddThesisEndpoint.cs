@@ -4,7 +4,8 @@ public class AddThesisEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/create-thesis", Handle)
         .Produces<AddThesisResponse>()
-        .WithSummary("Add a new thesis into the database");
+        .WithSummary("Add a new thesis into the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record AddThesisRequest(int Type, string Name, string Content);

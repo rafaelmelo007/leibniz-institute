@@ -4,7 +4,8 @@ public class AddAuthorEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/create-author", Handle)
         .Produces<AddAuthorResponse>()
-        .WithSummary("Add a new author into the database");
+        .WithSummary("Add a new author into the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record AddAuthorRequest(int Type, string Name, string Content);

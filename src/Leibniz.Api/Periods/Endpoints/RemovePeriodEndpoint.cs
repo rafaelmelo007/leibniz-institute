@@ -4,7 +4,8 @@ public class RemovePeriodEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapDelete($"/remove-period", Handle)
         .Produces<RemovePeriodResponse>()
-        .WithSummary("Delete an existing period in the database");
+        .WithSummary("Delete an existing period in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record RemovePeriodRequest(long PeriodId);

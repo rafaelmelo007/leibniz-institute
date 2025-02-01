@@ -4,7 +4,8 @@ public class RemoveThesisEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapDelete($"/remove-thesis", Handle)
         .Produces<RemoveThesisResponse>()
-        .WithSummary("Delete an existing thesis in the database");
+        .WithSummary("Delete an existing thesis in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record RemoveThesisRequest(long ThesisId);

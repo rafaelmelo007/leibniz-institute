@@ -178,13 +178,13 @@ export class BooksPage implements OnDestroy {
   }
 
   loadMore(): void {
-    this.booksStore.loadBooks(this.dataSource?.length ?? 0, 25);
+    this.booksStore.listBooks(this.dataSource?.length ?? 0, 25);
   }
 
   loadDeepSearch(query: string): void {
     this.dataSource = [];
     this.booksStore.query = query;
-    this.booksStore.loadBooks(this.dataSource?.length ?? 0, 25);
+    this.booksStore.listBooks(this.dataSource?.length ?? 0, 25);
   }
 
   addBook(): void {

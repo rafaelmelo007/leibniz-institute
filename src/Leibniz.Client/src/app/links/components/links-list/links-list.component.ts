@@ -9,14 +9,15 @@ import {
 } from '@angular/core';
 import { EditLinkComponent } from '../edit-link/edit-link.component';
 import { Link } from '../../domain/link';
-import { ReplaySubject, takeUntil } from 'rxjs';
+import { filter, ReplaySubject, takeUntil } from 'rxjs';
 import { EntityType } from '../../../relationships/domain/entity-type';
 import { LinksStore } from '../../services/links.store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-links-list',
   standalone: true,
-  imports: [],
+  imports: [EditLinkComponent],
   templateUrl: './links-list.component.html',
   styleUrl: './links-list.component.css',
 })
@@ -29,9 +30,12 @@ export class LinksListComponent implements OnDestroy, AfterViewInit {
   count?: number;
   @Output() selectLink = new EventEmitter();
 
-  constructor(private linksStore: LinksStore) {
+  constructor(private linksStore: LinksStore, private router: Router) {
     this.linksStore.secondaryLinks$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(
+        filter((x) => x?.type == this.type && x?.id == this.id),
+        takeUntil(this.destroyed$)
+      )
       .subscribe((links) => {
         if (!links || links.index == 0) {
           this.dataSource = [];
@@ -60,6 +64,14 @@ export class LinksListComponent implements OnDestroy, AfterViewInit {
     this.linksStore.getLink(linkId).subscribe((link) => {
       window.open(link?.url, '_blank');
     });
+  }
+
+  edit(linkId: number): void {
+    this.editLink?.editLink(linkId);
+  }
+
+  navigate(linkId: number): void {
+    this.router.navigate([`/pages/links/${linkId}`]);
   }
 
   ngOnDestroy(): void {

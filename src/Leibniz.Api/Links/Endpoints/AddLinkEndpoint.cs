@@ -4,7 +4,8 @@ public class AddLinkEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/create-link", Handle)
         .Produces<AddLinkResponse>()
-        .WithSummary("Add a new link into the database");
+        .WithSummary("Add a new link into the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record AddLinkRequest(string Name, string Content, string Url);

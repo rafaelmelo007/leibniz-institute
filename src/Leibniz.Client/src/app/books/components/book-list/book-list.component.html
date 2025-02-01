@@ -1,0 +1,31 @@
+<div class="p-3">
+  <h4 class="font-italic">Books ({{ count }})</h4>
+  <ol class="list-unstyled mb-0">
+    @if(loading) {
+    <div class="spinner-border" role="status" style="width: 3rem; height: 3rem">
+      <span class="sr-only">Loading...</span>
+    </div>
+    } @else { @for (item of dataSource; track $index) {
+    <li>
+      <a href="javascript:;" (click)="selectBook.emit(item.bookId)"
+        >{{ item.title }} [{{ item.author }}]</a
+      >
+      <a
+        href="javascript:;"
+        style="margin-left: 5px"
+        (click)="edit(item.bookId)"
+        ><i class="fa fa-edit"></i
+      ></a>
+      <a
+        href="javascript:;"
+        style="margin-left: 5px"
+        (click)="navigate(item.bookId)"
+        ><i class="fa fa-window-maximize"></i
+      ></a>
+    </li>
+    } @if(dataSource?.length == 0) {
+    <li style="margin-bottom: 10px">No authors found.</li>
+    } }
+  </ol>
+  <app-edit-book></app-edit-book>
+</div>

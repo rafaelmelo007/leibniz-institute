@@ -6,7 +6,8 @@ public class GetBookEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-book", Handle)
         .Produces<GetBookResponse>()
-        .WithSummary("Retrieve a book from database");
+        .WithSummary("Retrieve a book from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetBookRequest(long BookId);

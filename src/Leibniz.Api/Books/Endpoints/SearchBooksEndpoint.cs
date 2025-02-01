@@ -1,15 +1,15 @@
-﻿namespace Leibniz.Api.Theses.Endpoints;
-public class SearchThesesEndpoint : IEndpoint
+﻿namespace Leibniz.Api.Books.Endpoints;
+public class SearchBooksEndpoint : IEndpoint
 {
     // End-point Map
-    public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/search-theses", Handle)
-        .Produces<ResultSet<SearchThesesRead>>()
-        .WithSummary("Search a set of theses from database")
+    public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/search-books", Handle)
+        .Produces<ResultSet<SearchBookRead>>()
+        .WithSummary("Search a set of books from database")
         .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
-    public record SearchThesesRequest(int Index, int Limit, EntityType Type, long Id, bool Primary = false);
-    public record SearchThesesRead(long ThesisId, string? Name, string? Content, string ImageFileName);
+    public record SearchBooksRequest(int Index, int Limit, EntityType Type, long Id, bool Primary = false);
+    public record SearchBookRead(long BookId, string? Title, string Author, string? Content, string ImageFileName);
 
     // Handler
     public static async Task<IResult> Handle(
@@ -17,7 +17,7 @@ public class SearchThesesEndpoint : IEndpoint
         [FromServices] IRelationshipService relationshipService,
         [FromServices] Validator validator,
         [FromServices] NotificationHandler notifications,
-        [AsParameters] SearchThesesRequest request,
+        [AsParameters] SearchBooksRequest request,
         CancellationToken cancellationToken)
     {
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -27,33 +27,34 @@ public class SearchThesesEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var thesisIds = (await relationshipService.GetRelatedEntitiesAsync(request.Type,
+        var booksIds = (await relationshipService.GetRelatedEntitiesAsync(request.Type,
             new List<long> { request.Id }, request.Primary, default, default, cancellationToken))
-            .Where(x => x.Type == EntityType.Thesis).Select(x => x.Id).ToList();
+            .Where(x => x.Type == EntityType.Book).Select(x => x.Id).ToList();
 
-        var query = database.Theses.AsQueryable();
-        var rows = await query.Where(x => thesisIds.Contains(x.ThesisId))
+        var query = database.Books.AsQueryable();
+        var rows = await query.Where(x => booksIds.Contains(x.BookId))
             .OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
             .Skip(request.Index).Take(request.Limit).ToListAsync();
 
         var count = await query.CountAsync();
 
-        var ids = rows.Select(x => x.ThesisId).ToList();
+        var ids = rows.Select(x => x.BookId).ToList();
         var images = database.Images
-            .Where(x => x.EntityType == EntityType.Thesis && ids.Contains(x.EntityId))
+            .Where(x => x.EntityType == EntityType.Topic && ids.Contains(x.EntityId))
             .ToDictionary(x => x.EntityId, x => x.ImageFileName);
-        var theses = rows.Select(x => new SearchThesesRead
+        var topics = rows.Select(x => new SearchBookRead
         (
-            ThesisId: x.ThesisId,
-            Name: x.Name,
+            BookId: x.BookId,
+            Title: x.Title,
+            Author: x.Author,
             Content: x.Content,
-            ImageFileName: images.ContainsKey(x.ThesisId) ? images[x.ThesisId] : default
+            ImageFileName: images.ContainsKey(x.BookId) ? images[x.BookId] : default
         )).ToList();
 
         return TypedResults.Ok(
-            new ResultSet<SearchThesesRead>
+            new ResultSet<SearchBookRead>
             {
-                Data = theses,
+                Data = topics,
                 Index = request.Index,
                 Count = rows.Count,
                 Limit = request.Limit,
@@ -64,7 +65,7 @@ public class SearchThesesEndpoint : IEndpoint
     }
 
     // Validations
-    public class Validator : AbstractValidator<SearchThesesRequest>
+    public class Validator : AbstractValidator<SearchBooksRequest>
     {
         public Validator()
         {

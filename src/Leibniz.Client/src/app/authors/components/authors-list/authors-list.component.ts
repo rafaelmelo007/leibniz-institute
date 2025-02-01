@@ -12,11 +12,12 @@ import { EditAuthorComponent } from '../edit-author/edit-author.component';
 import { Author } from '../../domain/author';
 import { filter, ReplaySubject, takeUntil } from 'rxjs';
 import { AuthorsStore } from '../../services/authors.store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-authors-list',
   standalone: true,
-  imports: [],
+  imports: [EditAuthorComponent],
   templateUrl: './authors-list.component.html',
   styleUrl: './authors-list.component.css',
 })
@@ -29,7 +30,7 @@ export class AuthorsListComponent implements OnDestroy, AfterViewInit {
   count?: number;
   @Output() selectAuthor = new EventEmitter();
 
-  constructor(private authorsStore: AuthorsStore) {
+  constructor(private authorsStore: AuthorsStore, private router: Router) {
     this.authorsStore.primaryAuthors$
       .pipe(
         filter((x) => x?.type == this.type && x?.id == this.id),
@@ -57,6 +58,14 @@ export class AuthorsListComponent implements OnDestroy, AfterViewInit {
       this.id,
       true
     );
+  }
+
+  edit(authorId: number): void {
+    this.editAuthor?.editAuthor(authorId);
+  }
+
+  navigate(authorId: number): void {
+    this.router.navigate([`/pages/authors/${authorId}`]);
   }
 
   ngOnDestroy(): void {

@@ -4,7 +4,8 @@ public class UpdateTopicEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPut($"/update-topic", Handle)
         .Produces<UpdateTopicResponse>()
-        .WithSummary("Update an existing topic in the database");
+        .WithSummary("Update an existing topic in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record UpdateTopicRequest(long TopicId, string Name, string Content);

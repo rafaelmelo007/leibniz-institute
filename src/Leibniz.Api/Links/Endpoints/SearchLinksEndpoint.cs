@@ -4,7 +4,8 @@ public class SearchLinksEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/search-links", Handle)
         .Produces<ResultSet<SearchLinkRead>>()
-        .WithSummary("Search a set of links from database");
+        .WithSummary("Search a set of links from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record SearchLinksRequest(int Index, int Limit, EntityType Type, long Id, bool Primary = false);

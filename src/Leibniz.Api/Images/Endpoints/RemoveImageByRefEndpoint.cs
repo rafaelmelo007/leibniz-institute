@@ -8,7 +8,8 @@ public class RemoveImageByRefEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapDelete($"/remove-image-by-ref", Handle)
         .Produces<IResult>()
         .AllowAnonymous()
-        .WithSummary("Remove image from the server by ref");
+        .WithSummary("Remove image from the server by ref")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record RemoveImageByRefRequest(EntityType Type, long Id, Guid QueryStringToken);

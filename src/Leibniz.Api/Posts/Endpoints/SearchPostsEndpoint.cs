@@ -5,7 +5,8 @@ public class SearchPostsEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/search-posts", Handle)
         .Produces<ResultSet<SearchPostRead>>()
         .Produces<BadRequestObjectResult>(StatusCodes.Status400BadRequest)
-        .WithSummary("Search some posts from database");
+        .WithSummary("Search some posts from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record SearchPostsRequest(int Index, int Limit, EntityType Type, long Id,

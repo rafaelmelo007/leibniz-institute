@@ -8,7 +8,8 @@ public class UploadImageByRefEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/upload-image-by-ref", Handle)
         .Produces<IResult>()
         .AllowAnonymous()
-        .WithSummary("Upload image to the server by ref");
+        .WithSummary("Upload image to the server by ref")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record UploadImageByRefRequest(EntityType Type, long Id, Guid QueryStringToken);

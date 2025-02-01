@@ -4,7 +4,8 @@ public class UpdateAuthorEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPut($"/update-author", Handle)
         .Produces<UpdateAuthorResponse>()
-        .WithSummary("Update an existing author in the database");
+        .WithSummary("Update an existing author in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record UpdateAuthorRequest(long AuthorId, string Name, string Content);

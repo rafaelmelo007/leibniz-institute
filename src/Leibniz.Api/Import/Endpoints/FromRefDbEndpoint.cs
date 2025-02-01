@@ -5,7 +5,8 @@ public class FromRefDbEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/from-ref-db", Handle)
         .Produces<FromRefDbResponse>()
         .AllowAnonymous()
-        .WithSummary("Import all links, posts and tags from ref database");
+        .WithSummary("Import all links, posts and tags from ref database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record FromRefDbResponse(int LinksLoaded, int PostsLoaded, int BooksLoaded, int AuthorsLoaded, int ThesesLoaded, int TopicsLoaded, int RefsLoaded);

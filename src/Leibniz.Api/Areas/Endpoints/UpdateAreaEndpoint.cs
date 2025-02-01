@@ -4,7 +4,8 @@ public class UpdateAreaEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPut($"/update-area", Handle)
         .Produces<UpdateAreaResponse>()
-        .WithSummary("Update an existing area in the database");
+        .WithSummary("Update an existing area in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record UpdateAreaRequest(long AreaId, string Name, string Content);

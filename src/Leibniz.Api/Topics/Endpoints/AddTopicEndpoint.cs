@@ -4,7 +4,8 @@ public class AddTopicEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/create-topic", Handle)
         .Produces<AddTopicResponse>()
-        .WithSummary("Add a new topic into the database");
+        .WithSummary("Add a new topic into the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record AddTopicRequest(int Type, string Name, string Content);

@@ -4,7 +4,8 @@ public class AddPostEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/create-post", Handle)
         .Produces<AddPostResponse>()
-        .WithSummary("Add a new post into the database");
+        .WithSummary("Add a new post into the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record AddPostRequest(string Title, string Content, string Author, long? BookId, short? Page, string Reference);

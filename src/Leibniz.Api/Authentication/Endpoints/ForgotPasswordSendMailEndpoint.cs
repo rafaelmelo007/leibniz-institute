@@ -5,7 +5,8 @@ public class ForgotPasswordSendMailEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/forgot-password", Handle)
         .AllowAnonymous()
         .Produces<IResult>()
-        .WithSummary("Trigger the workflow to reset the user password");
+        .WithSummary("Trigger the workflow to reset the user password")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record ForgotPasswordRequest(string Email);

@@ -14,7 +14,8 @@ public static class Setup
             .MapEndpoint<GetBookEndpoint>()
             .MapEndpoint<AddBookEndpoint>()
             .MapEndpoint<UpdateBookEndpoint>()
-            .MapEndpoint<RemoveBookEndpoint>();
+            .MapEndpoint<RemoveBookEndpoint>()
+            .MapEndpoint<SearchBooksEndpoint>();
     }
 }
 

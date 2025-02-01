@@ -5,6 +5,8 @@ import { map, Observable } from 'rxjs';
 import { ResultSet } from '../../common/domain/result-set';
 import { Book } from '../domain/book';
 import { BookListItem } from '../domain/book-list-item';
+import { EntityType } from '../../relationships/domain/entity-type';
+import utils from '../../common/services/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +15,25 @@ export class BooksService {
   constructor(private http: HttpClient) {}
 
   loadBooks(
+    index: number,
+    limit: number,
+    type: EntityType,
+    id: number,
+    primary: boolean
+  ): Observable<ResultSet<Book>> {
+    const result = this.http
+      .get<ResultSet<Book>>(
+        `${
+          appSettings.baseUrl
+        }/books/search-books?Index=${index}&Limit=${limit}&Type=${utils.toTypeId(
+          type
+        )}&Id=${id}&Primary=${primary}`
+      )
+      .pipe(map((res) => res));
+    return result;
+  }
+
+  listBooks(
     index: number,
     limit: number,
     query?: string

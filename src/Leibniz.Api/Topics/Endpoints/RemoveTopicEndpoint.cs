@@ -4,7 +4,8 @@ public class RemoveTopicEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapDelete($"/remove-topic", Handle)
         .Produces<RemoveTopicResponse>()
-        .WithSummary("Delete an existing topic in the database");
+        .WithSummary("Delete an existing topic in the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record RemoveTopicRequest(long TopicId);

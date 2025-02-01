@@ -4,7 +4,8 @@ public class AddBookEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/create-book", Handle)
         .Produces<AddBookResponse>()
-        .WithSummary("Add a new book into the database");
+        .WithSummary("Add a new book into the database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record AddBookRequest(string Title, string Author, string? Publisher, short? Edition, string? Isbn,

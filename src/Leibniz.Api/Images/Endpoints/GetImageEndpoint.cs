@@ -8,7 +8,8 @@ public class GetImageEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-image", Handle)
         .Produces<IResult>()
         .AllowAnonymous()
-        .WithSummary("Retrieve a image");
+        .WithSummary("Retrieve a image")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetImageRequest(string ImageFileName, int? Width = default, int Height = default);

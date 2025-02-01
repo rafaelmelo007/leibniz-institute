@@ -4,7 +4,8 @@ public class GetRelationshipsEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-relationships", Handle)
         .Produces<ResultSet<RelationshipRead>>()
-        .WithSummary("Retrieve a set of relationships from database");
+        .WithSummary("Retrieve a set of relationships from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetRelationshipsRequest(

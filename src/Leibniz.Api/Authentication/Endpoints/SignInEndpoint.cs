@@ -7,7 +7,8 @@ public class SignInEndpoint : IEndpoint
     public static void Map(IEndpointRouteBuilder app) => app.MapPost($"/sign-in", Handle)
         .AllowAnonymous()
         .Produces<IResult>()
-        .WithSummary("Sign in an existing user of the system");
+        .WithSummary("Sign in an existing user of the system")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record LoginRequest(string Email, string Password);

@@ -12,11 +12,12 @@ import { Thesis } from '../../domain/thesis';
 import { filter, ReplaySubject, takeUntil } from 'rxjs';
 import { EntityType } from '../../../relationships/domain/entity-type';
 import { ThesesStore } from '../../services/theses.store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-thesis-list',
   standalone: true,
-  imports: [],
+  imports: [EditThesisComponent],
   templateUrl: './thesis-list.component.html',
   styleUrl: './thesis-list.component.css',
 })
@@ -29,7 +30,7 @@ export class ThesisListComponent implements OnDestroy, AfterViewInit {
   count?: number;
   @Output() selectThesis = new EventEmitter();
 
-  constructor(private thesesStore: ThesesStore) {
+  constructor(private thesesStore: ThesesStore, private router: Router) {
     this.thesesStore.primaryTheses$
       .pipe(
         filter((x) => x?.type == this.type && x?.id == this.id),
@@ -45,6 +46,14 @@ export class ThesisListComponent implements OnDestroy, AfterViewInit {
         this.dataSource = [...this.dataSource!, ...theses.data];
         this.count = theses.count;
       });
+  }
+
+  edit(thesisId: number): void {
+    this.editThesis?.editThesis(thesisId);
+  }
+
+  navigate(thesisId: number): void {
+    this.router.navigate([`/pages/theses/${thesisId}`]);
   }
 
   ngAfterViewInit(): void {

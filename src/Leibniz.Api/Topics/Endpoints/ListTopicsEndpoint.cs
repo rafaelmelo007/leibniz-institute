@@ -4,7 +4,8 @@ public class ListTopicsEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/list-topics", Handle)
         .Produces<ResultSet<ListTopicRead>>()
-        .WithSummary("List a set of topics from database");
+        .WithSummary("List a set of topics from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record ListTopicsRequest(int Index, int Limit, string Query);

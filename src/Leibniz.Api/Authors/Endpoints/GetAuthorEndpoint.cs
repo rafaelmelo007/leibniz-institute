@@ -4,7 +4,8 @@ public class GetAuthorEndpoint : IEndpoint
     // End-point Map
     public static void Map(IEndpointRouteBuilder app) => app.MapGet($"/get-author", Handle)
         .Produces<GetAuthorResponse>()
-        .WithSummary("Retrieve an author from database");
+        .WithSummary("Retrieve an author from database")
+        .WithRequestTimeout(AppSettings.RequestTimeout);
 
     // Request / Response
     public record GetAuthorRequest(long AuthorId);
