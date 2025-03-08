@@ -32,7 +32,7 @@ public class GetBooksEndpoint : IEndpoint
 
         var userId = currentUserService.UserId;
 
-        var query = database.Books.AsQueryable();
+        var query = database.Books.AsNoTracking().AsQueryable();
         if (!string.IsNullOrEmpty(request.Query))
         {
             query = query.Where(x => x.Title.Contains(request.Query)

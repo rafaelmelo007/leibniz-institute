@@ -27,7 +27,7 @@ public class GetAreasEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var query = database.Areas.AsQueryable();
+        var query = database.Areas.AsNoTracking().AsQueryable();
         if (!string.IsNullOrEmpty(request.Query))
         {
             query = query.Where(x => x.Name.Contains(request.Query) || x.Content.Contains(request.Query));

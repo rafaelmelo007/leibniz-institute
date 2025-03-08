@@ -1,11 +1,14 @@
 <ul class="nav nav-tabs">
   @for (option of options; track $index) {
-  <li class="nav-item" (click)="setSection(option.label!)">
+  <li class="nav-item" (click)="setSection(option.label!)" style="text-align: center;">
     <a
       href="javascript:;"
       (click)="option?.action(option)"
-      [class]="selectedSection === option.label ? 'nav-link active' : 'nav-link'"
-      ><i [class]="option?.icon"></i> {{ option.label }}</a
+      [class]="
+        selectedSection === option.label ? 'nav-link active' : 'nav-link'
+      "
+      ><i [class]="option?.icon"></i>
+      <span class="d-none d-sm-block">{{ option.label }}</span></a
     >
   </li>
   }

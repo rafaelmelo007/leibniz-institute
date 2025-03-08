@@ -1,7 +1,12 @@
-<nav class="navbar navbar-expand navbar-dark bg-primary">
+<!-- computer (begin) -->
+<nav
+  class="navbar navbar-expand navbar-dark bg-primary d-none d-xl-block d-xxl-block"
+>
   <div class="collapse navbar-collapse">
-    <div class="container" style="position: relative;">
-      <h4 class="navbar-brand" style="float: left"><i class="fa fa-bank"></i> Leibniz</h4>
+    <div class="container" style="position: relative">
+      <h4 class="navbar-brand" style="float: left">
+        <i class="fa fa-bank"></i> Leibniz
+      </h4>
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
           <a
@@ -82,3 +87,202 @@
     </div>
   </div>
 </nav>
+<!-- computer (end) -->
+
+<!-- tablet (begin) -->
+<nav
+  class="navbar navbar-expand navbar-dark bg-primary d-none d-sm-block d-md-none"
+>
+  <div class="collapse navbar-collapse">
+    <div class="container" style="position: relative; margin: 0">
+      <h4 class="navbar-brand" style="float: left; text-align: center">
+        <i class="fa fa-bank"></i>
+        <br /><span>Leibniz</span>
+      </h4>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/posts"
+            routerLinkActive="active"
+            style="text-align: center"
+          >
+            <i class="fa fa-comment"></i>
+            <span>Posts</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/books"
+            routerLinkActive="active"
+            style="text-align: center"
+          >
+            <i class="fa fa-book"></i>
+            <span>Books</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="pages/authors"
+            routerLinkActive="active"
+            style="text-align: center"
+          >
+            <i class="fa fa-users"></i>
+            <span>Authors</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/topics"
+            routerLinkActive="active"
+            style="text-align: center"
+          >
+            <i class="fa fa-tags"></i>
+            <span>Topics</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="pages/periods"
+            routerLinkActive="active"
+            style="text-align: center"
+          >
+            <i class="fa fa-clock-o"></i>
+            <span>Periods</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/areas"
+            routerLinkActive="active"
+            style="text-align: center"
+          >
+            <i class="fa fa-map-o"></i>
+            <span>Areas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/theses"
+            routerLinkActive="active"
+            style="text-align: center"
+          >
+            <i class="fa fa-graduation-cap"></i>
+            <span>Theses</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/links"
+            routerLinkActive="active"
+            style="text-align: center"
+          >
+            <i class="fa fa-link"></i>
+            <span>Links</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:;" style="text-align: center" (click)="settingsMenu.showMenu($event.target)">
+            <i class="fa fa-wrench"></i>
+            <span>Account</span>
+          </a>
+          <app-menu-list #settingsMenu [options]="menuList"></app-menu-list>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- tablet (end) -->
+
+<!-- phone (begin) -->
+<nav class="navbar navbar-expand navbar-dark bg-primary d-block d-sm-none">
+  <div class="collapse navbar-collapse">
+    <div class="container" style="position: relative">
+      <h4 class="navbar-brand" style="float: left">
+        <i class="fa fa-bank"></i>
+      </h4>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/posts"
+            routerLinkActive="active"
+          >
+            <i class="fa fa-comment"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/books"
+            routerLinkActive="active"
+          >
+            <i class="fa fa-book"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="pages/authors"
+            routerLinkActive="active"
+          >
+            <i class="fa fa-users"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/topics"
+            routerLinkActive="active"
+          >
+            <i class="fa fa-tags"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="pages/periods"
+            routerLinkActive="active"
+          >
+            <i class="fa fa-clock-o"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/areas"
+            routerLinkActive="active"
+          >
+            <i class="fa fa-map-o"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/theses"
+            routerLinkActive="active"
+          >
+            <i class="fa fa-graduation-cap"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/links"
+            routerLinkActive="active"
+          >
+            <i class="fa fa-link"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- phone (end) -->

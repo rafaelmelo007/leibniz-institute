@@ -9,8 +9,8 @@
       <tr>
         <th scope="col">Type</th>
         <th scope="col">Name</th>
-        <th scope="col">IsPrimary?</th>
-        <th scope="col" style="width: 140px">Actions</th>
+        <th scope="col" class="d-none d-sm-block">IsPrimary?</th>
+        <th scope="col" style="width: 50px"></th>
       </tr>
     </thead>
     <tbody>
@@ -18,10 +18,10 @@
       <tr>
         <td>{{ item.type }}</td>
         <td>{{ item.label }}</td>
-        <td>{{ item.isPrimary }}</td>
+        <td class="d-none d-sm-block">{{ item.isPrimary }}</td>
         <td>
           <button class="btn btn-danger btn-sm" (click)="removeItem(item)">
-            <i class="fa fa-remove"></i> Remove
+            <i class="fa fa-remove"></i> 
           </button>
         </td>
       </tr>
@@ -29,7 +29,7 @@
 
       <tr>
         <td>
-          <select id="item-type" [(ngModel)]="selectedType" class="form-select">
+          <select id="item-type" [(ngModel)]="selectedType" class="form-select form-control">
             <option value="">- Type -</option>
             <option value="post">Post</option>
             <option value="link">Link</option>
@@ -62,12 +62,12 @@
             }
           </select>
         </td>
-        <td>
+        <td class="d-none d-sm-block">
           <input type="checkbox" [(ngModel)]="isPrimary" />
         </td>
         <td>
           <button class="btn btn-primary btn-sm" (click)="addItem()">
-            <i class="fa fa-plus"></i> Add
+            <i class="fa fa-plus"></i>
           </button>
         </td>
       </tr>

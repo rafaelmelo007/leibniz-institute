@@ -30,7 +30,7 @@ public class ListPostsEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var query = database.Posts.AsQueryable();
+        var query = database.Posts.AsNoTracking().AsQueryable();
         if (!string.IsNullOrEmpty(request.Query))
         {
             query = query.Where(x => x.Title.Contains(request.Query)

@@ -26,7 +26,7 @@ public class ListThesesEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var query = database.Theses.AsQueryable();
+        var query = database.Theses.AsNoTracking().AsQueryable();
         if (!string.IsNullOrEmpty(request.Query))
         {
             query = query.Where(x => x.Name.Contains(request.Query)

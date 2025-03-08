@@ -1,17 +1,12 @@
 <div class="container" style="padding: 10px; min-height: 350px">
-  <h3>
-    <i class="fa fa-comment"></i> Posts @if(count){
-    <span>({{ count }})</span>
-    }
-    <button
-      type="button"
-      class="btn btn-primary"
-      (click)="addPost()"
-      style="float: right"
-    >
-      New Post
-    </button>
-  </h3>
+  <app-page-title
+    title="Posts"
+    addButtonLabel="New Post"
+    iconName="fa fa-comment"
+    (addClick)="addPost()"
+  ></app-page-title>
+
+  <hr />
 
   <div class="row">
     <div class="col">
@@ -36,16 +31,17 @@
           style="text-decoration: none"
           ><b>{{ item.title }}</b></a
         >
-        <button
-          class="btn btn-danger btn-sm"
-          style="float: right"
-          (click)="deletePost(item.postId)"
-        >
-          <i class="fa fa-trash"></i>
-        </button>
+        <app-dropdown
+          [options]="actions"
+          [data]="item"
+          style="position: absolute; right: 1; top: 1px"
+        ></app-dropdown>
       </div>
       <div class="card-body enhance-text">
-        <p [innerHTML]="encodeValue(item.content)"></p>
+        <app-expandable-text
+          [text]="item.content"
+          [maxLength]="600"
+        ></app-expandable-text>
         <b>{{ item.author }}</b
         ><br /><span *ngIf="item.bookName" style="margin-top: 10px"
           ><app-entity-badge

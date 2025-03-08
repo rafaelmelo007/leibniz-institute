@@ -26,7 +26,7 @@ public class ListLinksEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var query = database.Links.AsQueryable();
+        var query = database.Links.AsNoTracking().AsQueryable();
         if (!string.IsNullOrEmpty(request.Query))
         {
             query = query.Where(x => x.Name.Contains(request.Query)

@@ -3,7 +3,6 @@
   primaryButtonLabel="Save Changes"
   [title]="postId > 0 ? 'Edit Post' : 'Add Post'"
   (closeDialog)="showEdit = false"
-  [width]="1024"
   (submitDialog)="savePost()"
 >
   <ng-container>
@@ -68,7 +67,7 @@
               ></app-field-validation-errors>
             </div>
           </div>
-          <div class="col">
+          <div class="col d-none d-sm-block">
             <div class="row">
               <div class="col-8">
                 <div class="form-group">

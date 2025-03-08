@@ -26,7 +26,7 @@ public class ListTopicsEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var query = database.Topics.AsQueryable();
+        var query = database.Topics.AsNoTracking().AsQueryable();
         if (!string.IsNullOrEmpty(request.Query))
         {
             query = query.Where(x => x.Name.Contains(request.Query) || x.Content.Contains(request.Query));

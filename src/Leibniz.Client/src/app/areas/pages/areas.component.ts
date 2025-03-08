@@ -11,6 +11,7 @@ import { EditAreaComponent } from '../components/edit-area/edit-area.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
+import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({
   selector: 'app-areas',
@@ -20,7 +21,8 @@ import { AuthService } from '../../account/services/auth.service';
     GridTableComponent,
     CommonModule,
     EditAreaComponent,
-  ],
+    PageTitleComponent
+],
   templateUrl: './areas.component.html',
   styleUrl: './areas.component.css',
 })

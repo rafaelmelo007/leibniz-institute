@@ -31,7 +31,7 @@ public class SearchThesesEndpoint : IEndpoint
             new List<long> { request.Id }, request.Primary, default, default, cancellationToken))
             .Where(x => x.Type == EntityType.Thesis).Select(x => x.Id).ToList();
 
-        var query = database.Theses.AsQueryable();
+        var query = database.Theses.AsNoTracking().AsQueryable();
         var rows = await query.Where(x => thesisIds.Contains(x.ThesisId))
             .OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
             .Skip(request.Index).Take(request.Limit).ToListAsync();

@@ -11,13 +11,11 @@
           style="text-decoration: none"
           ><b>{{ item.title }}</b></a
         >
-        <button
-          class="btn btn-danger btn-sm"
-          style="float: right"
-          (click)="deletePost(item.postId)"
-        >
-          <i class="fa fa-trash"></i>
-        </button>
+        <app-dropdown
+          [options]="actions"
+          [data]="item"
+          style="position: absolute; right: 1; top: 1px"
+        ></app-dropdown>
       </div>
       <div class="card-body enhance-text">
         <p [innerHTML]="encodeValue(item.content)"></p>

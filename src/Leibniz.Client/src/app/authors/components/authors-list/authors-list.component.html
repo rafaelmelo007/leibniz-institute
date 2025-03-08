@@ -1,7 +1,11 @@
 <div class="p-3">
   <h4 class="font-italic">Authors</h4>
   <ol class="list-unstyled mb-0">
-    @for (item of dataSource; track $index) {
+    @if(loading) {
+    <div class="spinner-border" role="status" style="width: 3rem; height: 3rem">
+      <span class="sr-only">Loading...</span>
+    </div>
+    } @else { @for (item of dataSource; track $index) {
     <li>
       <a href="javascript:;" (click)="selectAuthor.emit(item.authorId)">{{
         item.name
@@ -21,7 +25,7 @@
     </li>
     } @if(dataSource?.length == 0) {
     <li style="margin-bottom: 10px">No authors found.</li>
-    }
+    } }
   </ol>
   <app-edit-author></app-edit-author>
 </div>

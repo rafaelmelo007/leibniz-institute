@@ -11,6 +11,7 @@ import { EditLinkComponent } from '../components/edit-link/edit-link.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
+import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({
   selector: 'app-links',
@@ -20,7 +21,8 @@ import { AuthService } from '../../account/services/auth.service';
     GridTableComponent,
     CommonModule,
     EditLinkComponent,
-  ],
+    PageTitleComponent
+],
   templateUrl: './links.component.html',
   styleUrl: './links.component.css',
 })

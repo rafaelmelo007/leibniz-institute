@@ -1,0 +1,13 @@
+<h3>
+  <div style="margin-top: 10px; display: inline-block">
+    <i [class]="iconName"></i> {{ title }}
+  </div>
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="addClick.emit('clicked')"
+    style="float: right"
+  >
+    <i class="fa fa-plus"></i> {{ addButtonLabel }}
+  </button>
+</h3>

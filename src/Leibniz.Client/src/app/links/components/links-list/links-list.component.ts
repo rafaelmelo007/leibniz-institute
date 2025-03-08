@@ -1,10 +1,12 @@
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
+  OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { EditLinkComponent } from '../edit-link/edit-link.component';
@@ -21,7 +23,7 @@ import { Router } from '@angular/router';
   templateUrl: './links-list.component.html',
   styleUrl: './links-list.component.css',
 })
-export class LinksListComponent implements OnDestroy, AfterViewInit {
+export class LinksListComponent implements OnDestroy, OnInit, OnChanges {
   @ViewChild(EditLinkComponent) editLink?: EditLinkComponent;
   dataSource?: Link[];
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -30,7 +32,21 @@ export class LinksListComponent implements OnDestroy, AfterViewInit {
   count?: number;
   @Output() selectLink = new EventEmitter();
 
-  constructor(private linksStore: LinksStore, private router: Router) {
+  constructor(private linksStore: LinksStore, private router: Router) {}
+
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['id']) {
+      this.loadData();
+    }
+  }
+
+  loadData(): void {
+    this.dataSource = [];
+
     this.linksStore.secondaryLinks$
       .pipe(
         filter((x) => x?.type == this.type && x?.id == this.id),
@@ -46,9 +62,7 @@ export class LinksListComponent implements OnDestroy, AfterViewInit {
         this.dataSource = [...this.dataSource!, ...links.data];
         this.count = links.count;
       });
-  }
 
-  ngAfterViewInit(): void {
     if (!this.type || !this.id) return;
 
     this.linksStore.loadLinks(

@@ -26,7 +26,7 @@ public class ListAuthorsEndpoint : IEndpoint
             return notifications.ToBadRequest();
         }
 
-        var query = database.Authors.AsQueryable();
+        var query = database.Authors.AsNoTracking().AsQueryable();
         if (!string.IsNullOrEmpty(request.Query))
         {
             query = query.Where(x => x.Name.Contains(request.Query) || x.Content.Contains(request.Query));

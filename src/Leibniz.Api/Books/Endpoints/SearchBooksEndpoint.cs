@@ -31,7 +31,7 @@ public class SearchBooksEndpoint : IEndpoint
             new List<long> { request.Id }, request.Primary, default, default, cancellationToken))
             .Where(x => x.Type == EntityType.Book).Select(x => x.Id).ToList();
 
-        var query = database.Books.AsQueryable();
+        var query = database.Books.AsNoTracking().AsQueryable();
         var rows = await query.Where(x => booksIds.Contains(x.BookId))
             .OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
             .Skip(request.Index).Take(request.Limit).ToListAsync();

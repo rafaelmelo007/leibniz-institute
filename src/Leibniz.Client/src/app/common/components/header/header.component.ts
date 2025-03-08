@@ -5,11 +5,12 @@ import { AccountStore } from '../../../account/services/account.store';
 import { Me } from '../../../account/domain/me';
 import { tap } from 'rxjs';
 import { MenuOption } from '../../domain/menu-option';
+import { MenuListComponent } from "../menu-list/menu-list.component";
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [DropdownComponent, RouterLink, RouterModule],
+  imports: [DropdownComponent, RouterLink, RouterModule, MenuListComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })

@@ -35,7 +35,7 @@ public class SearchPostsEndpoint : IEndpoint
             cancellationToken))
             .Where(x => x.Type == EntityType.Post).Select(x => x.Id).ToList();
 
-        var query = database.Posts.AsQueryable();
+        var query = database.Posts.AsNoTracking().AsQueryable();
         var rows = await query.Where(x => postIds.Contains(x.PostId)).OrderBy(x => x.Page)
             .ThenByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
             .Skip(request.Index).Take(request.Limit).ToListAsync();

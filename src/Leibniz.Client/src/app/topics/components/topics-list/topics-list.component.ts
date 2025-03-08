@@ -1,10 +1,12 @@
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
+  OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { filter, ReplaySubject, takeUntil } from 'rxjs';
@@ -21,7 +23,7 @@ import { Router } from '@angular/router';
   templateUrl: './topics-list.component.html',
   styleUrl: './topics-list.component.css',
 })
-export class TopicsListComponent implements OnDestroy, AfterViewInit {
+export class TopicsListComponent implements OnDestroy, OnInit, OnChanges {
   @ViewChild(EditTopicComponent) editTopic?: EditTopicComponent;
   dataSource?: Topic[];
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -30,7 +32,21 @@ export class TopicsListComponent implements OnDestroy, AfterViewInit {
   count?: number;
   @Output() selectTopic = new EventEmitter();
 
-  constructor(private topicsStore: TopicsStore, private router: Router) {
+  constructor(private topicsStore: TopicsStore, private router: Router) {}
+
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['id']) {
+      this.loadData();
+    }
+  }
+
+  loadData(): void {
+    this.dataSource = [];
+
     this.topicsStore.primaryTopics$
       .pipe(
         filter((x) => x?.type == this.type && x?.id == this.id),
@@ -46,17 +62,7 @@ export class TopicsListComponent implements OnDestroy, AfterViewInit {
         this.dataSource = [...this.dataSource!, ...topics.data];
         this.count = topics.count;
       });
-  }
 
-  edit(topicId: number): void {
-    this.editTopic?.editTopic(topicId);
-  }
-
-  navigate(topicId: number): void {
-    this.router.navigate([`/pages/topics/${topicId}`]);
-  }
-
-  ngAfterViewInit(): void {
     if (!this.type || !this.id) return;
 
     this.topicsStore.loadTopics(
@@ -66,6 +72,14 @@ export class TopicsListComponent implements OnDestroy, AfterViewInit {
       this.id,
       true
     );
+  }
+
+  edit(topicId: number): void {
+    this.editTopic?.editTopic(topicId);
+  }
+
+  navigate(topicId: number): void {
+    this.router.navigate([`/pages/topics/${topicId}`]);
   }
 
   ngOnDestroy(): void {

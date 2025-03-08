@@ -1,3 +1,3 @@
 export const appSettings = {
-  baseUrl: 'http://localhost/tamarindo/leibniz/api',
+  baseUrl: '/tamarindo/leibniz/api',
 };

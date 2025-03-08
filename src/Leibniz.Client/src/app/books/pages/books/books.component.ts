@@ -13,6 +13,7 @@ import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../../images/services/images.store';
 import { AuthService } from '../../../account/services/auth.service';
 import { Router } from '@angular/router';
+import { PageTitleComponent } from "../../../common/components/page-title/page-title.component";
 
 @Component({
   selector: 'app-books',
@@ -22,7 +23,8 @@ import { Router } from '@angular/router';
     GridTableComponent,
     CommonModule,
     EditBookComponent,
-  ],
+    PageTitleComponent
+],
   templateUrl: './books.component.html',
   styleUrl: './books.component.css',
 })

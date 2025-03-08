@@ -1,5 +1,6 @@
 <div class="dropdown-container" style="position: relative; display: block">
   <div class="btn-group">
+    @if(label()) {
     <a
       class="btn bg-primary"
       (click)="showDrop = !showDrop"
@@ -16,6 +17,11 @@
         style="color: white"
       ></button>
     </div>
+    } @else {
+    <button class="btn" (click)="showDrop = !showDrop" (keyup)="showDrop = !showDrop">
+      <i [style]="'color: ' + color" class="fa fa-ellipsis-v"></i>
+    </button>
+    }
   </div>
   <ul
     *ngIf="showDrop"
@@ -23,7 +29,7 @@
     style="
       position: absolute;
       top: 100%;
-      left: 0;
+      right: 0;
       z-index: 1000;
       display: block;
     "

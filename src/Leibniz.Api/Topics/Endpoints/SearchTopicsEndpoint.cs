@@ -31,7 +31,7 @@ public class SearchTopicsEndpoint : IEndpoint
             new List<long> { request.Id }, request.Primary, default, default, cancellationToken))
             .Where(x => x.Type == EntityType.Topic).Select(x => x.Id).ToList();
 
-        var query = database.Topics.AsQueryable();
+        var query = database.Topics.AsNoTracking().AsQueryable();
         var rows = await query.Where(x => topicIds.Contains(x.TopicId))
             .OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
             .Skip(request.Index).Take(request.Limit).ToListAsync();

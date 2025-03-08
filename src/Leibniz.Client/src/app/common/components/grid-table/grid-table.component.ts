@@ -38,7 +38,7 @@ export interface Column {
 @Component({
   selector: 'app-grid-table',
   standalone: true,
-  imports: [CommonModule, DropdownComponent, RouterLink, FormsModule],
+  imports: [CommonModule, DropdownComponent, FormsModule],
   templateUrl: './grid-table.component.html',
   styleUrls: ['./grid-table.component.css'],
 })

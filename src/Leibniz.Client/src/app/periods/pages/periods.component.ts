@@ -11,6 +11,7 @@ import { EditPeriodComponent } from '../components/edit-period/edit-period.compo
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
+import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({
   selector: 'app-periods',
@@ -20,7 +21,8 @@ import { AuthService } from '../../account/services/auth.service';
     GridTableComponent,
     CommonModule,
     EditPeriodComponent,
-  ],
+    PageTitleComponent
+],
   templateUrl: './periods.component.html',
   styleUrl: './periods.component.css',
 })

@@ -1,0 +1,13 @@
+<div class="dropdown-container" style="position: relative; display: block">
+    <ul
+      *ngIf="showDrop"
+      class="dropdown-menu show"
+      style="position: absolute; top: 100%; right: 0; z-index: 1000; display: block;"
+    >
+      <li *ngFor="let option of options">
+        <a class="dropdown-item" href="javascript:;" (click)="runAction(option?.action, data)">
+          <i [class]="option.icon"></i> {{ option.label }}
+        </a>
+      </li>
+    </ul>
+  </div>

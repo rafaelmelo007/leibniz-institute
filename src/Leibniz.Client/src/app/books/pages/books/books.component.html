@@ -1,17 +1,12 @@
 <div class="container" style="padding: 10px; min-height: 350px">
-  <h3>
-    <i class="fa fa-book"></i> Books @if(count){
-    <span>({{ count }})</span>
-    }
-    <button
-      type="button"
-      class="btn btn-primary"
-      (click)="addBook()"
-      style="float: right"
-    >
-      New Book
-    </button>
-  </h3>
+  <app-page-title
+    title="Books"
+    addButtonLabel="New Book"
+    iconName="fa fa-book"
+    (addClick)="addBook()"
+  ></app-page-title>
+
+  <hr />
 
   <app-loading *ngIf="loading"></app-loading>
   <app-grid-table

@@ -12,6 +12,7 @@ import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
 import { Router } from '@angular/router';
+import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({
   selector: 'app-authors',
@@ -21,7 +22,8 @@ import { Router } from '@angular/router';
     GridTableComponent,
     CommonModule,
     EditAuthorComponent,
-  ],
+    PageTitleComponent
+],
   templateUrl: './authors.component.html',
   styleUrl: './authors.component.css',
 })

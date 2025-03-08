@@ -31,7 +31,7 @@ public class SearchLinksEndpoint : IEndpoint
             new List<long> { request.Id }, request.Primary, default, default, cancellationToken))
             .Where(x => x.Type == EntityType.Link).Select(x => x.Id).ToList();
 
-        var query = database.Links.AsQueryable();
+        var query = database.Links.AsNoTracking().AsQueryable();
         var rows = await query.Where(x => linkIds.Contains(x.LinkId))
             .OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
             .Skip(request.Index).Take(request.Limit).ToListAsync();

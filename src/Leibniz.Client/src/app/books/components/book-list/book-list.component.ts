@@ -1,20 +1,29 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { EditBookComponent } from '../edit-book/edit-book.component';
 import { Book } from '../../domain/book';
 import { filter, ReplaySubject, takeUntil } from 'rxjs';
 import { EntityType } from '../../../relationships/domain/entity-type';
 import { BooksStore } from '../../services/books.store';
 import { Router } from '@angular/router';
-import { LoadingComponent } from "../../../common/components/loading/loading.component";
 
 @Component({
   selector: 'app-book-list',
   standalone: true,
-  imports: [EditBookComponent, LoadingComponent],
+  imports: [EditBookComponent],
   templateUrl: './book-list.component.html',
-  styleUrl: './book-list.component.css'
+  styleUrl: './book-list.component.css',
 })
-export class BookListComponent implements OnDestroy, AfterViewInit {
+export class BookListComponent implements OnDestroy, OnInit, OnChanges {
   @ViewChild(EditBookComponent) editBook?: EditBookComponent;
   dataSource?: Book[];
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -24,7 +33,19 @@ export class BookListComponent implements OnDestroy, AfterViewInit {
   loading = true;
   @Output() selectBook = new EventEmitter();
 
-  constructor(private booksStore: BooksStore, private router: Router) {
+  constructor(private booksStore: BooksStore, private router: Router) {}
+
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['id']) {
+      this.loadData();
+    }
+  }
+
+  loadData(): void {
     this.loading = true;
     this.booksStore.primaryBooks$
       .pipe(
@@ -42,9 +63,7 @@ export class BookListComponent implements OnDestroy, AfterViewInit {
         this.count = books.count;
         this.loading = false;
       });
-  }
 
-  ngAfterViewInit(): void {
     if (!this.type || !this.id) return;
 
     this.booksStore.loadBooks(

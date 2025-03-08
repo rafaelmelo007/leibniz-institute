@@ -1,17 +1,12 @@
 <div class="container" style="padding: 10px; min-height: 350px">
-  <h3>
-    <i class="fa fa-comment"></i> Links @if(count){
-    <span>({{ count }})</span>
-    }
-    <button
-      type="button"
-      class="btn btn-primary"
-      (click)="addLink()"
-      style="float: right"
-    >
-      New Link
-    </button>
-  </h3>
+  <app-page-title
+    title="Links"
+    addButtonLabel="New Link"
+    iconName="fa fa-link"
+    (addClick)="addLink()"
+  ></app-page-title>
+
+  <hr />
 
   <app-loading *ngIf="loading"></app-loading>
   <app-grid-table

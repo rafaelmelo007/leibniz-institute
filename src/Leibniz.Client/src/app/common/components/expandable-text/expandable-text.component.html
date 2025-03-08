@@ -1,0 +1,9 @@
+<p [innerHTML]="encodeValue(getText())" style="display: inline;"></p>
+<button
+  *ngIf="text && text.length > maxLength"
+  (click)="toggleExpand()"
+  class="btn btn-outline-secondary"
+>
+  {{ expanded ? "See less" : "See more" }}
+</button>
+<br />

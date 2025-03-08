@@ -31,7 +31,7 @@ public class SearchAuthorsEndpoint : IEndpoint
             new List<long> { request.Id }, request.Primary, default, default, cancellationToken))
             .Where(x => x.Type == EntityType.Author).Select(x => x.Id).ToList();
 
-        var query = database.Authors.AsQueryable();
+        var query = database.Authors.AsNoTracking().AsQueryable();
         var rows = await query.Where(x => authorIds.Contains(x.AuthorId))
             .OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
             .Skip(request.Index).Take(request.Limit).ToListAsync();

@@ -1,10 +1,12 @@
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
+  OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { EntityType } from '../../../relationships/domain/entity-type';
@@ -21,16 +23,37 @@ import { Router } from '@angular/router';
   templateUrl: './authors-list.component.html',
   styleUrl: './authors-list.component.css',
 })
-export class AuthorsListComponent implements OnDestroy, AfterViewInit {
+export class AuthorsListComponent implements OnDestroy, OnInit, OnChanges {
   @ViewChild(EditAuthorComponent) editAuthor?: EditAuthorComponent;
   dataSource?: Author[];
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   @Input() type?: EntityType;
   @Input() id?: number;
   count?: number;
+  loading = true;
   @Output() selectAuthor = new EventEmitter();
 
-  constructor(private authorsStore: AuthorsStore, private router: Router) {
+  constructor(private authorsStore: AuthorsStore, private router: Router) {}
+
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['id']) {
+      this.loadData();
+    }
+  }
+
+  loadData(): void {
+    this.dataSource = [];
+    this.loading = true;
+
+    if (this.destroyed$) {
+      this.destroyed$.next(true);
+      this.destroyed$.complete();
+    }
+
     this.authorsStore.primaryAuthors$
       .pipe(
         filter((x) => x?.type == this.type && x?.id == this.id),
@@ -45,10 +68,9 @@ export class AuthorsListComponent implements OnDestroy, AfterViewInit {
         }
         this.dataSource = [...this.dataSource!, ...authors.data];
         this.count = authors.count;
+        this.loading = false;
       });
-  }
 
-  ngAfterViewInit(): void {
     if (!this.type || !this.id) return;
 
     this.authorsStore.loadAuthors(

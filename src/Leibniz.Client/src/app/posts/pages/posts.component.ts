@@ -14,19 +14,26 @@ import { AuthService } from '../../account/services/auth.service';
 import { InfiniteScrollComponent } from '../../common/components/infinite-scroll/infinite-scroll.component';
 import { EntityBadgeComponent } from '../../common/components/entity-badge/entity-badge.component';
 import { FormsModule } from '@angular/forms';
+import { ExpandableTextComponent } from '../../common/components/expandable-text/expandable-text.component';
+import { DropdownComponent } from '../../common/components/dropdown/dropdown.component';
+import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
+import utils from '../../common/services/utils';
+
 
 @Component({
   selector: 'app-posts',
   standalone: true,
   imports: [
     LoadingComponent,
-    GridTableComponent,
     CommonModule,
     FormsModule,
     EditPostComponent,
     InfiniteScrollComponent,
     EntityBadgeComponent,
-  ],
+    ExpandableTextComponent,
+    DropdownComponent,
+    PageTitleComponent
+],
   templateUrl: './posts.component.html',
   styleUrl: './posts.component.css',
 })
@@ -76,6 +83,13 @@ export class PostsPage implements OnDestroy {
   ];
 
   actions = [
+    {
+      label: 'Copy To Clipboard',
+      icon: 'fa fa-clipboard',
+      action: (data: Post) => {
+        utils.copyToClipboard(data.title + '\n' + data.content + '\n' + data.author);
+      },
+    },
     {
       label: 'Edit Post',
       icon: 'fa fa-edit',
@@ -203,10 +217,6 @@ export class PostsPage implements OnDestroy {
 
   editPostLink(postId: number): void {
     this.editPost?.editPost(postId);
-  }
-
-  encodeValue(value: string): string {
-    return value.replace(/\n/g, '<br />');
   }
 
   ngOnDestroy(): void {

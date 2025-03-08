@@ -12,6 +12,7 @@ import { MenuOption } from '../../domain/menu-option';
 export class DropdownComponent {
   label = input<string>();
   @Input() data: any;
+  @Input() color: string = '';
   options = input<MenuOption[]>();
   showDrop = false;
 

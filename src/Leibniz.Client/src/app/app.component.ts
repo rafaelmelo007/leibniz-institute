@@ -4,11 +4,12 @@ import { HeaderComponent } from './common/components/header/header.component';
 import { LoadingComponent } from './common/components/loading/loading.component';
 import { MessagesService } from './common/services/messages.service';
 import { AccountStore } from './account/services/account.store';
+import { BreakpointIndicatorComponent } from "./common/components/debug-display-mode/debug-display-mode.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, LoadingComponent],
+  imports: [RouterOutlet, HeaderComponent, LoadingComponent, BreakpointIndicatorComponent],
   providers: [MessagesService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
