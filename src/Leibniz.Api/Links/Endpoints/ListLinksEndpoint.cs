@@ -1,4 +1,6 @@
-﻿namespace Leibniz.Api.Links.Endpoints;
+﻿using Leibniz.Api.Relationships.Services;
+
+namespace Leibniz.Api.Links.Endpoints;
 public class ListLinksEndpoint : IEndpoint
 {
     // End-point Map
@@ -9,12 +11,14 @@ public class ListLinksEndpoint : IEndpoint
 
     // Request / Response
     public record ListLinksRequest(int Index, int Limit, string Query);
-    public record ListLinkRead(long LinkId, string? Name, string? Content, string? Url, string ImageFileName);
+    public record ListLinkRead(long LinkId, string? Name, string? Content, 
+        string? Url, string ImageFileName, IEnumerable<RelatedEntity> Refs);
 
     // Handler
     public static async Task<IResult> Handle(
         [FromServices] AcademyDbContext database,
         [FromServices] Validator validator,
+        [FromServices] IRelationshipService relationshipService,
         [FromServices] NotificationHandler notifications,
         [AsParameters] ListLinksRequest request,
         CancellationToken cancellationToken)
@@ -43,13 +47,23 @@ public class ListLinksEndpoint : IEndpoint
             .Where(x => x.EntityType == EntityType.Link && ids.Contains(x.EntityId))
             .ToDictionary(x => x.EntityId, x => x.ImageFileName);
 
+        var refs = await relationshipService.GetRelatedEntitiesAsync(EntityType.Link, ids, false, 
+            default, default, cancellationToken);
+
         var links = rows.Select(x => new ListLinkRead
         (
             LinkId: x.LinkId,
             Name: x.Name,
             Content: x.Content,
             Url: x.Url,
-            ImageFileName: images.ContainsKey(x.LinkId) ? images[x.LinkId] : default
+            ImageFileName: images.ContainsKey(x.LinkId) ? images[x.LinkId] : default,
+            Refs: refs.Where(x2 => x2.AssignedIds.Contains(x.LinkId))
+                    .Select(x2 => new RelatedEntity
+                    {
+                        Type = x2.Type,
+                        Id = x2.Id,
+                        Name = x2.Name
+                    }).ToList()
         )).ToList();
 
         return TypedResults.Ok(

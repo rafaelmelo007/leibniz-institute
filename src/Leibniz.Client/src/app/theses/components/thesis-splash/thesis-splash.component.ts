@@ -11,7 +11,7 @@ import { EditThesisComponent } from '../edit-thesis/edit-thesis.component';
 import { Thesis } from '../../domain/thesis';
 import { ThesesStore } from '../../services/theses.store';
 import { NewlineToBrPipe } from '../../../common/pipes/newline-to-br.pipe';
-import { ImageBoxComponent } from '../../../common/components/image-box/image-box.component';
+import { ImageBoxComponent } from '../../../shared/components/image-box/image-box.component';
 import { CommonModule } from '@angular/common';
 import { ReplaySubject, takeUntil } from 'rxjs';
 

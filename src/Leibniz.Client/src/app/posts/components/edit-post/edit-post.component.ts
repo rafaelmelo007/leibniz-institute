@@ -15,7 +15,7 @@ import { MenuOption } from '../../../common/domain/menu-option';
 import { EditReferencesComponent } from '../../../relationships/components/edit-references/edit-references.component';
 import { EditTabType } from '../../../relationships/domain/edit-tab-type';
 import { EditImageComponent } from '../../../images/components/edit-image/edit-image.component';
-import { MoveToComponent } from '../../../common/components/move-to/move-to.component';
+import { MoveToComponent } from '../../../shared/components/move-to/move-to.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { EntityType } from '../../../relationships/domain/entity-type';
 

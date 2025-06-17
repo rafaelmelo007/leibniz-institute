@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Topic } from '../../domain/topic';
 import { EditTopicComponent } from '../edit-topic/edit-topic.component';
 import { TopicsStore } from '../../services/topics.store';
-import { ImageBoxComponent } from '../../../common/components/image-box/image-box.component';
+import { ImageBoxComponent } from '../../../shared/components/image-box/image-box.component';
 import { NewlineToBrPipe } from '../../../common/pipes/newline-to-br.pipe';
 import { CommonModule } from '@angular/common';
 

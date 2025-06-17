@@ -12,7 +12,7 @@ import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
 import { AuthService } from '../../account/services/auth.service';
 import { InfiniteScrollComponent } from '../../common/components/infinite-scroll/infinite-scroll.component';
-import { EntityBadgeComponent } from '../../common/components/entity-badge/entity-badge.component';
+import { EntityBadgeComponent } from '../../shared/components/entity-badge/entity-badge.component';
 import { FormsModule } from '@angular/forms';
 import { ExpandableTextComponent } from '../../common/components/expandable-text/expandable-text.component';
 import { DropdownComponent } from '../../common/components/dropdown/dropdown.component';

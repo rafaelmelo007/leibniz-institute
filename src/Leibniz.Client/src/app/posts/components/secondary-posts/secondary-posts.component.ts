@@ -10,7 +10,7 @@ import { EntityType } from '../../../relationships/domain/entity-type';
 import { Post } from '../../domain/post';
 import { PostsStore } from '../../services/posts.store';
 import { EditPostComponent } from '../edit-post/edit-post.component';
-import { EntityBadgeComponent } from '../../../common/components/entity-badge/entity-badge.component';
+import { EntityBadgeComponent } from '../../../shared/components/entity-badge/entity-badge.component';
 import { CommonModule } from '@angular/common';
 import { InfiniteScrollComponent } from '../../../common/components/infinite-scroll/infinite-scroll.component';
 import { filter, ReplaySubject, takeUntil } from 'rxjs';

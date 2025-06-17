@@ -1,4 +1,6 @@
-﻿namespace Leibniz.Api.Books.Endpoints;
+﻿using System.Collections.Generic;
+
+namespace Leibniz.Api.Books.Endpoints;
 public class GetBooksEndpoint : IEndpoint
 {
     // End-point Map
@@ -36,13 +38,21 @@ public class GetBooksEndpoint : IEndpoint
         if (!string.IsNullOrEmpty(request.Query))
         {
             query = query.Where(x => x.Title.Contains(request.Query)
-                        || x.Content.Contains(request.Query)
                         || x.Author.Contains(request.Query));
         }
 
         var count = await query.CountAsync();
-        var rows = await query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
-            .Skip(request.Index).Take(request.Limit).ToListAsync();
+        IOrderedQueryable<Book> querySorted;
+        if (!string.IsNullOrEmpty(request.Query))
+        {
+            querySorted = query.OrderBy(x => x.Author.Contains(request.Query) ? 1 : 2).ThenBy(x => x.Title);
+        }
+        else
+        {
+            querySorted = query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc);
+        }
+
+        var rows = await querySorted.Skip(request.Index).Take(request.Limit).ToListAsync();
 
         var ids = rows.Select(x => x.BookId).ToList();
         var images = database.Images

@@ -15,6 +15,8 @@ import { BookDetailPage } from './books/pages/book-detail/book-detail.component'
 import { AuthorDetailPage } from './authors/pages/author-detail/author-detail.component';
 import { TopicDetailPage } from './topics/pages/topic-detail/topic-detail.component';
 import { ThesisDetailPage } from './theses/pages/thesis-detail/thesis-detail.component';
+import { DashboardComponent } from './dashboard/pages/dashboard/dashboard.component';
+import { TimesheetComponent } from './timesheet/pages/timesheet/timesheet.component';
 
 export const routes: Routes = [
   /* Feature: Account */
@@ -50,6 +52,12 @@ export const routes: Routes = [
 
   /* Feature: Links */
   { path: 'pages/links', component: LinksPage },
+
+  /* Feature: Dashboard */
+  { path: 'pages/dashboard', component: DashboardComponent },
+
+  /* Feature: Timesheet */
+  { path: 'pages/timesheet', component: TimesheetComponent },
 
   { path: '**', redirectTo: '/pages/account/login' },
 ];

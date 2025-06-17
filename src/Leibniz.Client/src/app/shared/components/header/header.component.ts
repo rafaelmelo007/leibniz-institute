@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { DropdownComponent } from '../../components/dropdown/dropdown.component';
 import { RouterLink, RouterModule } from '@angular/router';
 import { AccountStore } from '../../../account/services/account.store';
 import { Me } from '../../../account/domain/me';
 import { tap } from 'rxjs';
-import { MenuOption } from '../../domain/menu-option';
-import { MenuListComponent } from "../menu-list/menu-list.component";
+import { DropdownComponent } from '../../../common/components/dropdown/dropdown.component';
+import { MenuListComponent } from '../../../common/components/menu-list/menu-list.component';
+import { MenuOption } from '../../../common/domain/menu-option';
 
 @Component({
   selector: 'app-header',

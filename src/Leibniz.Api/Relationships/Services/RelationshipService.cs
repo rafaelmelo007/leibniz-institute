@@ -130,12 +130,12 @@ public class RelationshipService : IRelationshipService
     }
 
     public async Task<IEnumerable<RelatedEntity>> GetRelatedEntitiesAsync(
-    EntityType type,
-    List<long> ids,
-    bool onlyPrimary,
-    EntityType? filterType,
-    long? filterId,
-    CancellationToken cancellationToken)
+        EntityType type,
+        List<long> ids,
+        bool onlyPrimary,
+        EntityType? filterType,
+        long? filterId,
+        CancellationToken cancellationToken)
     {
         var query = _database.Relationships.Where(x =>
             ((x.EntityTypeA == type && ids.Contains(x.EntityIdA)) ||
@@ -186,7 +186,7 @@ public class RelationshipService : IRelationshipService
             });
         }
 
-        return result;
+        return result.ToList();
     }
 
 

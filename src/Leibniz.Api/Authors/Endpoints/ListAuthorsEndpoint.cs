@@ -29,12 +29,22 @@ public class ListAuthorsEndpoint : IEndpoint
         var query = database.Authors.AsNoTracking().AsQueryable();
         if (!string.IsNullOrEmpty(request.Query))
         {
-            query = query.Where(x => x.Name.Contains(request.Query) || x.Content.Contains(request.Query));
+            query = query.Where(x => x.Name.Contains(request.Query));
         }
 
         var count = await query.CountAsync();
-        var rows = await query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
-            .Skip(request.Index).Take(request.Limit).ToListAsync();
+
+        IOrderedQueryable<Author> querySorted;
+        if (!string.IsNullOrEmpty(request.Query))
+        {
+            querySorted = query.OrderBy(x => x.Name.Contains(request.Query) ? 1 : 2).ThenBy(x => x.Name);
+        }
+        else
+        {
+            querySorted = query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc);
+        }
+
+        var rows = await querySorted.Skip(request.Index).Take(request.Limit).ToListAsync();
         var ids = rows.Select(x => x.AuthorId).ToList();
 
         var images = database.Images
