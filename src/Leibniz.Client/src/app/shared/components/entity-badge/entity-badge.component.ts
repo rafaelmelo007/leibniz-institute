@@ -4,11 +4,10 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-entity-badge',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './entity-badge.component.html',
-  styleUrl: './entity-badge.component.css',
+    selector: 'app-entity-badge',
+    imports: [CommonModule],
+    templateUrl: './entity-badge.component.html',
+    styleUrl: './entity-badge.component.css'
 })
 export class EntityBadgeComponent implements OnInit {
   type = input<EntityType>();

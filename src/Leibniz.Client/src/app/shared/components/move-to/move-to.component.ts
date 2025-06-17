@@ -5,11 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { RelationshipsService } from '../../../relationships/services/relationships.service';
 
 @Component({
-  selector: 'app-move-to',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './move-to.component.html',
-  styleUrl: './move-to.component.css',
+    selector: 'app-move-to',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './move-to.component.html',
+    styleUrl: './move-to.component.css'
 })
 export class MoveToComponent implements AfterViewInit {
   @Input() type?: EntityType;

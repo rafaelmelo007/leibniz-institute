@@ -1,5 +1,4 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { LoadingComponent } from '../../common/components/loading/loading.component';
 import {
   Column,
   GridTableComponent,
@@ -14,17 +13,15 @@ import { AuthService } from '../../account/services/auth.service';
 import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({
-  selector: 'app-areas',
-  standalone: true,
-  imports: [
-    LoadingComponent,
-    GridTableComponent,
-    CommonModule,
-    EditAreaComponent,
-    PageTitleComponent
-],
-  templateUrl: './areas.component.html',
-  styleUrl: './areas.component.css',
+    selector: 'app-areas',
+    imports: [
+        GridTableComponent,
+        CommonModule,
+        EditAreaComponent,
+        PageTitleComponent
+    ],
+    templateUrl: './areas.component.html',
+    styleUrl: './areas.component.css'
 })
 export class AreasPage implements OnDestroy {
   @ViewChild(EditAreaComponent) editArea?: EditAreaComponent;

@@ -8,11 +8,10 @@ import { MenuListComponent } from '../../../common/components/menu-list/menu-lis
 import { MenuOption } from '../../../common/domain/menu-option';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [DropdownComponent, RouterLink, RouterModule, MenuListComponent],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
+    selector: 'app-header',
+    imports: [DropdownComponent, RouterLink, RouterModule, MenuListComponent],
+    templateUrl: './header.component.html',
+    styleUrl: './header.component.css'
 })
 export class HeaderComponent {
   menuList?: MenuOption[] = [

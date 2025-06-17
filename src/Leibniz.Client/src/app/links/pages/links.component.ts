@@ -14,17 +14,16 @@ import { AuthService } from '../../account/services/auth.service';
 import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({
-  selector: 'app-links',
-  standalone: true,
-  imports: [
-    LoadingComponent,
-    GridTableComponent,
-    CommonModule,
-    EditLinkComponent,
-    PageTitleComponent
-],
-  templateUrl: './links.component.html',
-  styleUrl: './links.component.css',
+    selector: 'app-links',
+    imports: [
+        LoadingComponent,
+        GridTableComponent,
+        CommonModule,
+        EditLinkComponent,
+        PageTitleComponent
+    ],
+    templateUrl: './links.component.html',
+    styleUrl: './links.component.css'
 })
 export class LinksPage implements OnDestroy {
   @ViewChild(EditLinkComponent) editLink?: EditLinkComponent;

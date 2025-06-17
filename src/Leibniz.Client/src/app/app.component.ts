@@ -5,12 +5,11 @@ import { AccountStore } from './account/services/account.store';
 import { HeaderComponent } from './shared/components/header/header.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet, HeaderComponent],
-  providers: [MessagesService],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+    selector: 'app-root',
+    imports: [RouterOutlet, HeaderComponent],
+    providers: [MessagesService],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.css'
 })
 export class AppComponent {
   showHeader = true;

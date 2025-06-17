@@ -15,17 +15,16 @@ import { Router } from '@angular/router';
 import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({
-  selector: 'app-topics',
-  standalone: true,
-  imports: [
-    LoadingComponent,
-    GridTableComponent,
-    CommonModule,
-    EditTopicComponent,
-    PageTitleComponent
-],
-  templateUrl: './topics.component.html',
-  styleUrl: './topics.component.css',
+    selector: 'app-topics',
+    imports: [
+        LoadingComponent,
+        GridTableComponent,
+        CommonModule,
+        EditTopicComponent,
+        PageTitleComponent
+    ],
+    templateUrl: './topics.component.html',
+    styleUrl: './topics.component.css'
 })
 export class TopicsPage implements OnDestroy {
   @ViewChild(EditTopicComponent) editTopic?: EditTopicComponent;

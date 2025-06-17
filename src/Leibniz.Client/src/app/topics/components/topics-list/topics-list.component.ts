@@ -17,11 +17,10 @@ import { TopicsStore } from '../../services/topics.store';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-topics-list',
-  standalone: true,
-  imports: [EditTopicComponent],
-  templateUrl: './topics-list.component.html',
-  styleUrl: './topics-list.component.css',
+    selector: 'app-topics-list',
+    imports: [EditTopicComponent],
+    templateUrl: './topics-list.component.html',
+    styleUrl: './topics-list.component.css'
 })
 export class TopicsListComponent implements OnDestroy, OnInit, OnChanges {
   @ViewChild(EditTopicComponent) editTopic?: EditTopicComponent;

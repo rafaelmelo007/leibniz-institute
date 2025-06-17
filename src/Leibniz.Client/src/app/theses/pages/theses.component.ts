@@ -15,17 +15,16 @@ import { Router } from '@angular/router';
 import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({
-  selector: 'app-theses',
-  standalone: true,
-  imports: [
-    LoadingComponent,
-    GridTableComponent,
-    CommonModule,
-    EditThesisComponent,
-    PageTitleComponent
-],
-  templateUrl: './theses.component.html',
-  styleUrl: './theses.component.css',
+    selector: 'app-theses',
+    imports: [
+        LoadingComponent,
+        GridTableComponent,
+        CommonModule,
+        EditThesisComponent,
+        PageTitleComponent
+    ],
+    templateUrl: './theses.component.html',
+    styleUrl: './theses.component.css'
 })
 export class ThesesPage implements OnDestroy {
   @ViewChild(EditThesisComponent) editThesis?: EditThesisComponent;

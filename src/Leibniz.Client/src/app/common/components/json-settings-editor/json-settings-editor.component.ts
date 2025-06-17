@@ -18,11 +18,10 @@ import {
 } from '@angular/forms';
 
 @Component({
-  selector: 'app-json-settings-editor',
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
-  templateUrl: './json-settings-editor.component.html',
-  styleUrl: './json-settings-editor.component.css',
+    selector: 'app-json-settings-editor',
+    imports: [FormsModule, ReactiveFormsModule, CommonModule],
+    templateUrl: './json-settings-editor.component.html',
+    styleUrl: './json-settings-editor.component.css'
 })
 export class JsonSettingsEditorComponent implements OnChanges, OnInit {
   @Input() jsonString: string | null | undefined = ''; // Input property to receive the JSON string

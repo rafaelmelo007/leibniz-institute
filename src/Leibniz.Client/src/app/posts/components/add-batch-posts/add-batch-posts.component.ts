@@ -12,16 +12,15 @@ import { CommonModule } from '@angular/common';
 import { FieldValidationErrorsComponent } from '../../../common/components/field-validation-errors/field-validation-errors.component';
 
 @Component({
-  selector: 'app-add-batch-posts',
-  standalone: true,
-  imports: [
-    DialogWindowComponent,
-    CommonModule,
-    ReactiveFormsModule,
-    FieldValidationErrorsComponent,
-  ],
-  templateUrl: './add-batch-posts.component.html',
-  styleUrl: './add-batch-posts.component.css',
+    selector: 'app-add-batch-posts',
+    imports: [
+        DialogWindowComponent,
+        CommonModule,
+        ReactiveFormsModule,
+        FieldValidationErrorsComponent,
+    ],
+    templateUrl: './add-batch-posts.component.html',
+    styleUrl: './add-batch-posts.component.css'
 })
 export class AddBatchPostsComponent {
   type?: EntityType;

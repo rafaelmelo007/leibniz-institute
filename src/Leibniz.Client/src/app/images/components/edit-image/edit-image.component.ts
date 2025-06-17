@@ -2,22 +2,19 @@ import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import { EntityType } from '../../../relationships/domain/entity-type';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FieldValidationErrorsComponent } from '../../../common/components/field-validation-errors/field-validation-errors.component';
 import { ImagesStore } from '../../services/images.store';
 import { AuthService } from '../../../account/services/auth.service';
 import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-edit-image',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    FieldValidationErrorsComponent,
-  ],
-  templateUrl: './edit-image.component.html',
-  styleUrl: './edit-image.component.css',
+    selector: 'app-edit-image',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+    ],
+    templateUrl: './edit-image.component.html',
+    styleUrl: './edit-image.component.css'
 })
 export class EditImageComponent implements AfterViewInit, OnDestroy {
   @Input() type?: EntityType;

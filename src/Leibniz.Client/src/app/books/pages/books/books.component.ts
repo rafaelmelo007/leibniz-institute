@@ -16,17 +16,16 @@ import { Router } from '@angular/router';
 import { PageTitleComponent } from "../../../common/components/page-title/page-title.component";
 
 @Component({
-  selector: 'app-books',
-  standalone: true,
-  imports: [
-    LoadingComponent,
-    GridTableComponent,
-    CommonModule,
-    EditBookComponent,
-    PageTitleComponent
-],
-  templateUrl: './books.component.html',
-  styleUrl: './books.component.css',
+    selector: 'app-books',
+    imports: [
+        LoadingComponent,
+        GridTableComponent,
+        CommonModule,
+        EditBookComponent,
+        PageTitleComponent
+    ],
+    templateUrl: './books.component.html',
+    styleUrl: './books.component.css'
 })
 export class BooksPage implements OnDestroy {
   @ViewChild(EditBookComponent) editBook?: EditBookComponent;

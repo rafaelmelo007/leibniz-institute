@@ -3,11 +3,10 @@ import { Component, HostListener, Input, input } from '@angular/core';
 import { MenuOption } from '../../domain/menu-option';
 
 @Component({
-  selector: 'app-dropdown',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './dropdown.component.html',
-  styleUrl: './dropdown.component.css',
+    selector: 'app-dropdown',
+    imports: [CommonModule],
+    templateUrl: './dropdown.component.html',
+    styleUrl: './dropdown.component.css'
 })
 export class DropdownComponent {
   label = input<string>();

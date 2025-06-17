@@ -10,11 +10,10 @@ import { LinksListComponent } from "../../../links/components/links-list/links-l
 import { ThesisSplashComponent } from "../../components/thesis-splash/thesis-splash.component";
 
 @Component({
-  selector: 'app-thesis-detail',
-  standalone: true,
-  imports: [PrimaryPostsComponent, SecondaryPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, ThesisSplashComponent],
-  templateUrl: './thesis-detail.component.html',
-  styleUrl: './thesis-detail.component.css'
+    selector: 'app-thesis-detail',
+    imports: [PrimaryPostsComponent, SecondaryPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, ThesisSplashComponent],
+    templateUrl: './thesis-detail.component.html',
+    styleUrl: './thesis-detail.component.css'
 })
 export class ThesisDetailPage {
   @ViewChild(SecondaryPostsComponent) SecondaryPostsComponent?: SecondaryPostsComponent;

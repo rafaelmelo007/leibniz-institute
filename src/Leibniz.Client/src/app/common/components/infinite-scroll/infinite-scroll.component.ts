@@ -8,11 +8,10 @@ import {
 } from '@angular/core';
 
 @Component({
-  selector: 'app-infinite-scroll',
-  standalone: true,
-  imports: [],
-  templateUrl: './infinite-scroll.component.html',
-  styleUrl: './infinite-scroll.component.css',
+    selector: 'app-infinite-scroll',
+    imports: [],
+    templateUrl: './infinite-scroll.component.html',
+    styleUrl: './infinite-scroll.component.css'
 })
 export class InfiniteScrollComponent implements AfterViewInit {
   @ViewChild('lastRow') lastRow!: ElementRef;

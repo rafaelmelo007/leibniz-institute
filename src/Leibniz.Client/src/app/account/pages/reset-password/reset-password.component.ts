@@ -12,11 +12,10 @@ import { AccountStore } from '../../services/account.store';
 import { ResetPasswordRequest } from '../../domain/reset-password-request';
 
 @Component({
-  selector: 'app-reset-password',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, FieldValidationErrorsComponent],
-  templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.css',
+    selector: 'app-reset-password',
+    imports: [ReactiveFormsModule, CommonModule, FieldValidationErrorsComponent],
+    templateUrl: './reset-password.component.html',
+    styleUrl: './reset-password.component.css'
 })
 export class ResetPasswordPage {
   resetForm = new FormGroup({

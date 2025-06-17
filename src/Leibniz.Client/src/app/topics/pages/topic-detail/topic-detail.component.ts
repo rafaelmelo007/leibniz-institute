@@ -10,11 +10,10 @@ import { LinksListComponent } from "../../../links/components/links-list/links-l
 import { TopicSplashComponent } from "../../components/topic-splash/topic-splash.component";
 
 @Component({
-  selector: 'app-topic-detail',
-  standalone: true,
-  imports: [PrimaryPostsComponent, SecondaryPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, TopicSplashComponent],
-  templateUrl: './topic-detail.component.html',
-  styleUrl: './topic-detail.component.css'
+    selector: 'app-topic-detail',
+    imports: [PrimaryPostsComponent, SecondaryPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, TopicSplashComponent],
+    templateUrl: './topic-detail.component.html',
+    styleUrl: './topic-detail.component.css'
 })
 export class TopicDetailPage {
   @ViewChild(SecondaryPostsComponent) SecondaryPostsComponent?: SecondaryPostsComponent;

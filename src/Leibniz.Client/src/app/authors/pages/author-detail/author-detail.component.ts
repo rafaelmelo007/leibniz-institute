@@ -11,11 +11,10 @@ import { AuthorSplashComponent } from "../../components/author-splash/author-spl
 import { BookListComponent } from "../../../books/components/book-list/book-list.component";
 
 @Component({
-  selector: 'app-author-detail',
-  standalone: true,
-  imports: [PrimaryPostsComponent, SecondaryPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, AuthorSplashComponent, BookListComponent],
-  templateUrl: './author-detail.component.html',
-  styleUrl: './author-detail.component.css'
+    selector: 'app-author-detail',
+    imports: [PrimaryPostsComponent, SecondaryPostsComponent, AuthorsListComponent, ThesisListComponent, TopicsListComponent, LinksListComponent, AuthorSplashComponent, BookListComponent],
+    templateUrl: './author-detail.component.html',
+    styleUrl: './author-detail.component.css'
 })
 export class AuthorDetailPage {
   @ViewChild(SecondaryPostsComponent) SecondaryPostsComponent?: SecondaryPostsComponent;

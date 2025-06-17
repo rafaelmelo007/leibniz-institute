@@ -21,21 +21,20 @@ import utils from '../../common/services/utils';
 
 
 @Component({
-  selector: 'app-posts',
-  standalone: true,
-  imports: [
-    LoadingComponent,
-    CommonModule,
-    FormsModule,
-    EditPostComponent,
-    InfiniteScrollComponent,
-    EntityBadgeComponent,
-    ExpandableTextComponent,
-    DropdownComponent,
-    PageTitleComponent
-],
-  templateUrl: './posts.component.html',
-  styleUrl: './posts.component.css',
+    selector: 'app-posts',
+    imports: [
+        LoadingComponent,
+        CommonModule,
+        FormsModule,
+        EditPostComponent,
+        InfiniteScrollComponent,
+        EntityBadgeComponent,
+        ExpandableTextComponent,
+        DropdownComponent,
+        PageTitleComponent
+    ],
+    templateUrl: './posts.component.html',
+    styleUrl: './posts.component.css'
 })
 export class PostsPage implements OnDestroy {
   @ViewChild(EditPostComponent) editPost?: EditPostComponent;

@@ -20,20 +20,19 @@ import { ReplaySubject, takeUntil } from 'rxjs';
 import { EntityType } from '../../../relationships/domain/entity-type';
 
 @Component({
-  selector: 'app-edit-post',
-  standalone: true,
-  imports: [
-    DialogWindowComponent,
-    CommonModule,
-    ReactiveFormsModule,
-    FieldValidationErrorsComponent,
-    TabsComponent,
-    EditReferencesComponent,
-    EditImageComponent,
-    MoveToComponent,
-  ],
-  templateUrl: './edit-Post.component.html',
-  styleUrl: './edit-Post.component.css',
+    selector: 'app-edit-post',
+    imports: [
+        DialogWindowComponent,
+        CommonModule,
+        ReactiveFormsModule,
+        FieldValidationErrorsComponent,
+        TabsComponent,
+        EditReferencesComponent,
+        EditImageComponent,
+        MoveToComponent,
+    ],
+    templateUrl: './edit-Post.component.html',
+    styleUrl: './edit-Post.component.css'
 })
 export class EditPostComponent implements OnDestroy {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;

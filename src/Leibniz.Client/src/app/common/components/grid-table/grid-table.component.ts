@@ -36,11 +36,10 @@ export interface Column {
 }
 
 @Component({
-  selector: 'app-grid-table',
-  standalone: true,
-  imports: [CommonModule, DropdownComponent, FormsModule],
-  templateUrl: './grid-table.component.html',
-  styleUrls: ['./grid-table.component.css'],
+    selector: 'app-grid-table',
+    imports: [CommonModule, DropdownComponent, FormsModule],
+    templateUrl: './grid-table.component.html',
+    styleUrls: ['./grid-table.component.css']
 })
 export class GridTableComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() dataSource?: any[];

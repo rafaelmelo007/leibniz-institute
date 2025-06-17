@@ -15,17 +15,16 @@ import { Router } from '@angular/router';
 import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({
-  selector: 'app-authors',
-  standalone: true,
-  imports: [
-    LoadingComponent,
-    GridTableComponent,
-    CommonModule,
-    EditAuthorComponent,
-    PageTitleComponent
-],
-  templateUrl: './authors.component.html',
-  styleUrl: './authors.component.css',
+    selector: 'app-authors',
+    imports: [
+        LoadingComponent,
+        GridTableComponent,
+        CommonModule,
+        EditAuthorComponent,
+        PageTitleComponent
+    ],
+    templateUrl: './authors.component.html',
+    styleUrl: './authors.component.css'
 })
 export class AuthorsPage implements OnDestroy {
   @ViewChild(EditAuthorComponent) editAuthor?: EditAuthorComponent;

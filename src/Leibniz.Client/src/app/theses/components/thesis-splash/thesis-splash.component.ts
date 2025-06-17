@@ -16,16 +16,15 @@ import { CommonModule } from '@angular/common';
 import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-thesis-splash',
-  standalone: true,
-  imports: [
-    CommonModule,
-    NewlineToBrPipe,
-    ImageBoxComponent,
-    EditThesisComponent,
-  ],
-  templateUrl: './thesis-splash.component.html',
-  styleUrl: './thesis-splash.component.css',
+    selector: 'app-thesis-splash',
+    imports: [
+        CommonModule,
+        NewlineToBrPipe,
+        ImageBoxComponent,
+        EditThesisComponent,
+    ],
+    templateUrl: './thesis-splash.component.html',
+    styleUrl: './thesis-splash.component.css'
 })
 export class ThesisSplashComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(EditThesisComponent) editThesis?: EditThesisComponent;

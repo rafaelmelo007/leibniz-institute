@@ -17,11 +17,10 @@ import { LinksStore } from '../../services/links.store';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-links-list',
-  standalone: true,
-  imports: [EditLinkComponent],
-  templateUrl: './links-list.component.html',
-  styleUrl: './links-list.component.css',
+    selector: 'app-links-list',
+    imports: [EditLinkComponent],
+    templateUrl: './links-list.component.html',
+    styleUrl: './links-list.component.css'
 })
 export class LinksListComponent implements OnDestroy, OnInit, OnChanges {
   @ViewChild(EditLinkComponent) editLink?: EditLinkComponent;

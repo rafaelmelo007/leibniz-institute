@@ -2,11 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MenuOption } from '../../domain/menu-option';
 
 @Component({
-  selector: 'app-tabs',
-  standalone: true,
-  imports: [],
-  templateUrl: './tabs.component.html',
-  styleUrl: './tabs.component.css',
+    selector: 'app-tabs',
+    imports: [],
+    templateUrl: './tabs.component.html',
+    styleUrl: './tabs.component.css'
 })
 export class TabsComponent implements OnInit {
   @Input() options?: MenuOption[];

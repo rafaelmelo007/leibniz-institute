@@ -17,11 +17,10 @@ import { BooksStore } from '../../services/books.store';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-book-list',
-  standalone: true,
-  imports: [EditBookComponent],
-  templateUrl: './book-list.component.html',
-  styleUrl: './book-list.component.css',
+    selector: 'app-book-list',
+    imports: [EditBookComponent],
+    templateUrl: './book-list.component.html',
+    styleUrl: './book-list.component.css'
 })
 export class BookListComponent implements OnDestroy, OnInit, OnChanges {
   @ViewChild(EditBookComponent) editBook?: EditBookComponent;

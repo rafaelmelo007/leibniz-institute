@@ -19,20 +19,19 @@ import { MoveToComponent } from '../../../shared/components/move-to/move-to.comp
 import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-edit-book',
-  standalone: true,
-  imports: [
-    DialogWindowComponent,
-    CommonModule,
-    ReactiveFormsModule,
-    FieldValidationErrorsComponent,
-    TabsComponent,
-    EditReferencesComponent,
-    EditImageComponent,
-    MoveToComponent,
-  ],
-  templateUrl: './edit-book.component.html',
-  styleUrl: './edit-book.component.css',
+    selector: 'app-edit-book',
+    imports: [
+        DialogWindowComponent,
+        CommonModule,
+        ReactiveFormsModule,
+        FieldValidationErrorsComponent,
+        TabsComponent,
+        EditReferencesComponent,
+        EditImageComponent,
+        MoveToComponent,
+    ],
+    templateUrl: './edit-book.component.html',
+    styleUrl: './edit-book.component.css'
 })
 export class EditBookComponent implements OnDestroy {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;

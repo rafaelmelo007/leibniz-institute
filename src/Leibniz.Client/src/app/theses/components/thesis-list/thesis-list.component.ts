@@ -17,11 +17,10 @@ import { ThesesStore } from '../../services/theses.store';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-thesis-list',
-  standalone: true,
-  imports: [EditThesisComponent],
-  templateUrl: './thesis-list.component.html',
-  styleUrl: './thesis-list.component.css',
+    selector: 'app-thesis-list',
+    imports: [EditThesisComponent],
+    templateUrl: './thesis-list.component.html',
+    styleUrl: './thesis-list.component.css'
 })
 export class ThesisListComponent implements OnDestroy, OnInit, OnChanges {
   @ViewChild(EditThesisComponent) editThesis?: EditThesisComponent;

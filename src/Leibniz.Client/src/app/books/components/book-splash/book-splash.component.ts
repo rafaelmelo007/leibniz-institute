@@ -21,19 +21,18 @@ import { AddBatchPostsComponent } from '../../../posts/components/add-batch-post
 import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-book-splash',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ImageBoxComponent,
-    NewlineToBrPipe,
-    EditBookComponent,
-    DropdownComponent,
-    EditPostComponent,
-    AddBatchPostsComponent,
-  ],
-  templateUrl: './book-splash.component.html',
-  styleUrl: './book-splash.component.css',
+    selector: 'app-book-splash',
+    imports: [
+        CommonModule,
+        ImageBoxComponent,
+        NewlineToBrPipe,
+        EditBookComponent,
+        DropdownComponent,
+        EditPostComponent,
+        AddBatchPostsComponent,
+    ],
+    templateUrl: './book-splash.component.html',
+    styleUrl: './book-splash.component.css'
 })
 export class BookSplashComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(EditBookComponent) editBook?: EditBookComponent;

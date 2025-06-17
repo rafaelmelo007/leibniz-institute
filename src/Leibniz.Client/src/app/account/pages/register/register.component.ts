@@ -11,11 +11,10 @@ import { Router } from '@angular/router';
 import { AccountStore } from '../../services/account.store';
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, FieldValidationErrorsComponent],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css',
+    selector: 'app-register',
+    imports: [ReactiveFormsModule, CommonModule, FieldValidationErrorsComponent],
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.css'
 })
 export class RegisterPage {
   registerForm = new FormGroup({

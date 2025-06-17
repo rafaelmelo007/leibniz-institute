@@ -14,17 +14,16 @@ import { AuthService } from '../../account/services/auth.service';
 import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({
-  selector: 'app-periods',
-  standalone: true,
-  imports: [
-    LoadingComponent,
-    GridTableComponent,
-    CommonModule,
-    EditPeriodComponent,
-    PageTitleComponent
-],
-  templateUrl: './periods.component.html',
-  styleUrl: './periods.component.css',
+    selector: 'app-periods',
+    imports: [
+        LoadingComponent,
+        GridTableComponent,
+        CommonModule,
+        EditPeriodComponent,
+        PageTitleComponent
+    ],
+    templateUrl: './periods.component.html',
+    styleUrl: './periods.component.css'
 })
 export class PeriodsPage implements OnDestroy {
   @ViewChild(EditPeriodComponent) editPeriod?: EditPeriodComponent;

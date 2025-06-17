@@ -17,11 +17,10 @@ import { AuthorsStore } from '../../services/authors.store';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-authors-list',
-  standalone: true,
-  imports: [EditAuthorComponent],
-  templateUrl: './authors-list.component.html',
-  styleUrl: './authors-list.component.css',
+    selector: 'app-authors-list',
+    imports: [EditAuthorComponent],
+    templateUrl: './authors-list.component.html',
+    styleUrl: './authors-list.component.css'
 })
 export class AuthorsListComponent implements OnDestroy, OnInit, OnChanges {
   @ViewChild(EditAuthorComponent) editAuthor?: EditAuthorComponent;

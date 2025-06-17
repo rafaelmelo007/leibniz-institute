@@ -7,11 +7,10 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-edit-references',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './edit-references.component.html',
-  styleUrl: './edit-references.component.css',
+    selector: 'app-edit-references',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './edit-references.component.html',
+    styleUrl: './edit-references.component.css'
 })
 export class EditReferencesComponent implements OnInit {
   @Input() type?: EntityType;

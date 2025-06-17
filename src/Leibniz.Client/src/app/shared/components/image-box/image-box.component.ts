@@ -5,11 +5,10 @@ import { ImagesStore } from '../../../images/services/images.store';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-image-box',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './image-box.component.html',
-  styleUrl: './image-box.component.css',
+    selector: 'app-image-box',
+    imports: [CommonModule],
+    templateUrl: './image-box.component.html',
+    styleUrl: './image-box.component.css'
 })
 export class ImageBoxComponent implements AfterViewInit {
   @Input() type?: EntityType;

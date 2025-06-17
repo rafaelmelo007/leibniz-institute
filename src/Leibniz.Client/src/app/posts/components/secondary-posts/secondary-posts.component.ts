@@ -18,17 +18,16 @@ import { DropdownComponent } from '../../../common/components/dropdown/dropdown.
 import utils from '../../../common/services/utils';
 
 @Component({
-  selector: 'app-secondary-posts',
-  standalone: true,
-  imports: [
-    EditPostComponent,
-    EntityBadgeComponent,
-    CommonModule,
-    InfiniteScrollComponent,
-    DropdownComponent,
-  ],
-  templateUrl: './secondary-posts.component.html',
-  styleUrl: './secondary-posts.component.css',
+    selector: 'app-secondary-posts',
+    imports: [
+        EditPostComponent,
+        EntityBadgeComponent,
+        CommonModule,
+        InfiniteScrollComponent,
+        DropdownComponent,
+    ],
+    templateUrl: './secondary-posts.component.html',
+    styleUrl: './secondary-posts.component.css'
 })
 export class SecondaryPostsComponent implements OnDestroy, OnChanges {
   @ViewChild(EditPostComponent) editPost?: EditPostComponent;

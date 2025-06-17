@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-dialog-window',
-  standalone: true,
-  imports: [],
-  templateUrl: './dialog-window.component.html',
-  styleUrl: './dialog-window.component.css',
+    selector: 'app-dialog-window',
+    imports: [],
+    templateUrl: './dialog-window.component.html',
+    styleUrl: './dialog-window.component.css'
 })
 export class DialogWindowComponent {
   @Input() title?: string;

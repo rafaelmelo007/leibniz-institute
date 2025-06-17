@@ -3,11 +3,10 @@ import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-field-validation-errors',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './field-validation-errors.component.html',
-  styleUrl: './field-validation-errors.component.css',
+    selector: 'app-field-validation-errors',
+    imports: [CommonModule],
+    templateUrl: './field-validation-errors.component.html',
+    styleUrl: './field-validation-errors.component.css'
 })
 export class FieldValidationErrorsComponent {
   @Input() control: AbstractControl | null = null;
