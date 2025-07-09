@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { EditThesisComponent } from '../components/edit-thesis/edit-thesis.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
-import { AuthService } from '../../account/services/auth.service';
+import { AuthService } from '../../user/services/auth.service';
 import { Router } from '@angular/router';
 import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 

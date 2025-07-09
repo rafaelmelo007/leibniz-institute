@@ -1,7 +1,6 @@
 import {
   Component,
   Input,
-  input,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -39,7 +38,7 @@ export class BookSplashComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(EditPostComponent) editPost?: EditPostComponent;
   @ViewChild(AddBatchPostsComponent) addBatchPosts?: AddBatchPostsComponent;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
-  @Input() bookId: number = 0;
+  @Input() bookId = 0;
   book?: Book | null;
   menuList?: MenuOption[] = [
     {

@@ -14,7 +14,7 @@ import { ErrorHandlerService } from '../../common/services/error-handler.service
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
 import { appSettings } from '../../../environments/environment';
-import { AuthService } from '../../account/services/auth.service';
+import { AuthService } from '../../user/services/auth.service';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 import { EntityType } from '../../relationships/domain/entity-type';
 
@@ -69,7 +69,7 @@ export class AuthorsStore {
     id: number,
     primary: boolean
   ): void {
-    var queryStringToken = this.authService.getQueryStringToken();
+    const queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.authorsService
       .loadAuthors(index, limit, type, id, primary)
@@ -80,8 +80,7 @@ export class AuthorsStore {
 
             author.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${author.imageFileName}~${queryStringToken}`;
           });
-          if(primary)
-          {
+          if (primary) {
             return this.primaryAuthorsSubject.next(res);
           }
           return this.secondaryAuthorsSubject.next(res);
@@ -96,7 +95,7 @@ export class AuthorsStore {
   }
 
   listAuthors(index: number, limit: number): void {
-    var queryStringToken = this.authService.getQueryStringToken();
+    const queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.authorsService
       .listAuthors(index, limit, this.query)

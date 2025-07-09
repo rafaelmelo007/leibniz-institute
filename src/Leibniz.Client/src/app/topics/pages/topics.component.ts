@@ -10,27 +10,27 @@ import { TopicsStore } from '../services/topics.store';
 import { EditTopicComponent } from '../components/edit-topic/edit-topic.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
-import { AuthService } from '../../account/services/auth.service';
+import { AuthService } from '../../user/services/auth.service';
 import { Router } from '@angular/router';
-import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
+import { PageTitleComponent } from '../../common/components/page-title/page-title.component';
 
 @Component({
-    selector: 'app-topics',
-    imports: [
-        LoadingComponent,
-        GridTableComponent,
-        CommonModule,
-        EditTopicComponent,
-        PageTitleComponent
-    ],
-    templateUrl: './topics.component.html',
-    styleUrl: './topics.component.css'
+  selector: 'app-topics',
+  imports: [
+    LoadingComponent,
+    GridTableComponent,
+    CommonModule,
+    EditTopicComponent,
+    PageTitleComponent,
+  ],
+  templateUrl: './topics.component.html',
+  styleUrl: './topics.component.css',
 })
 export class TopicsPage implements OnDestroy {
   @ViewChild(EditTopicComponent) editTopic?: EditTopicComponent;
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: Topic[];
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private destroyed$ = new ReplaySubject<boolean>(1);
 
   maxImageWidth = 120;
   maxImageHeight = 140;

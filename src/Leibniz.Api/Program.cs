@@ -7,7 +7,7 @@ using Leibniz.Api.Periods;
 using Leibniz.Api.Posts;
 using Leibniz.Api.Theses;
 using Leibniz.Api.Topics;
-using Leibniz.Api.Authentication;
+using Leibniz.Api.Users;
 using Leibniz.Api.Import;
 using Leibniz.Api.Areas;
 using Leibniz.Api.Images;
@@ -15,6 +15,7 @@ using Leibniz.Api.Relationships;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
+using Leibniz.Api.Charts;
 
 var builder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(probeForEnv: true, probeLevelsToSearch: 6));
@@ -111,6 +112,7 @@ app.MapThesesEndpoints();
 app.MapAuthorsEndpoints();
 app.MapTopicsEndpoints();
 app.MapAreasEndpoints();
+app.MapChartEndpoints();
 app.MapRelationshipsEndpoints();
 app.MapImageEndpoints();
 

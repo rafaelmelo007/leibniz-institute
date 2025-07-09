@@ -32,6 +32,7 @@ public class AcademyDbContext : DbContext
     public DbSet<Author> Authors { get; set; }
     public DbSet<Topic> Topics { get; set; }
     public DbSet<Area> Areas { get; set; }
+    public DbSet<Chart> Charts { get; set; }
     public DbSet<Relationship> Relationships { get; set; }
     public DbSet<Image> Images { get; set; }
     public DbSet<ForgotPassword> ForgotPasswords { get; set; }

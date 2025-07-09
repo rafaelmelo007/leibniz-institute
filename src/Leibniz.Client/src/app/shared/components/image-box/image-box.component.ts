@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
 import { EntityType } from '../../../relationships/domain/entity-type';
-import { AuthService } from '../../../account/services/auth.service';
+import { AuthService } from '../../../user/services/auth.service';
 import { ImagesStore } from '../../../images/services/images.store';
 import { CommonModule } from '@angular/common';
 

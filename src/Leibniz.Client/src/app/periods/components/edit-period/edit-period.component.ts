@@ -19,19 +19,19 @@ import { MoveToComponent } from '../../../shared/components/move-to/move-to.comp
 import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
-    selector: 'app-edit-period',
-    imports: [
-        FieldValidationErrorsComponent,
-        DialogWindowComponent,
-        CommonModule,
-        ReactiveFormsModule,
-        TabsComponent,
-        EditReferencesComponent,
-        EditImageComponent,
-        MoveToComponent,
-    ],
-    templateUrl: './edit-period.component.html',
-    styleUrl: './edit-period.component.css'
+  selector: 'app-edit-period',
+  imports: [
+    FieldValidationErrorsComponent,
+    DialogWindowComponent,
+    CommonModule,
+    ReactiveFormsModule,
+    TabsComponent,
+    EditReferencesComponent,
+    EditImageComponent,
+    MoveToComponent,
+  ],
+  templateUrl: './edit-period.component.html',
+  styleUrl: './edit-period.component.css',
 })
 export class EditPeriodComponent implements OnDestroy {
   @ViewChild(EditReferencesComponent) editReferences?: EditReferencesComponent;
@@ -39,7 +39,7 @@ export class EditPeriodComponent implements OnDestroy {
   periodId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private destroyed$ = new ReplaySubject<boolean>(1);
 
   editForm = new FormGroup({
     periodId: new FormControl(0, []),

@@ -10,7 +10,7 @@ import { PeriodsStore } from '../services/periods.store';
 import { EditPeriodComponent } from '../components/edit-period/edit-period.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
-import { AuthService } from '../../account/services/auth.service';
+import { AuthService } from '../../user/services/auth.service';
 import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({

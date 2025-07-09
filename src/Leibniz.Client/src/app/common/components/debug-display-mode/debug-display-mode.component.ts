@@ -19,7 +19,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
   ],
 })
 export class BreakpointIndicatorComponent implements OnInit, OnDestroy {
-  breakpoint: string = '';
+  breakpoint = '';
   private resizeListener: (() => void) | null = null;
 
   ngOnInit() {
@@ -32,7 +32,7 @@ export class BreakpointIndicatorComponent implements OnInit, OnDestroy {
     if (this.resizeListener) {
       window.removeEventListener('resize', this.resizeListener);
     }
-  } 
+  }
 
   private updateBreakpoint() {
     const width = window.innerWidth;

@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   Input,
   OnChanges,
@@ -17,14 +16,14 @@ import { DropdownComponent } from '../../../common/components/dropdown/dropdown.
 import utils from '../../../common/services/utils';
 
 @Component({
-    selector: 'app-primary-posts',
-    imports: [EditPostComponent, DropdownComponent],
-    templateUrl: './primary-posts.component.html',
-    styleUrl: './primary-posts.component.css'
+  selector: 'app-primary-posts',
+  imports: [EditPostComponent, DropdownComponent],
+  templateUrl: './primary-posts.component.html',
+  styleUrl: './primary-posts.component.css',
 })
 export class PrimaryPostsComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(EditPostComponent) editPost?: EditPostComponent;
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private destroyed$ = new ReplaySubject<boolean>(1);
 
   @Input() type?: EntityType;
   @Input() id?: number;

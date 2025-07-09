@@ -12,7 +12,7 @@ import { Book } from '../domain/book';
 import { ResultSet } from '../../common/domain/result-set';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { BookListItem } from '../domain/book-list-item';
-import { AuthService } from '../../account/services/auth.service';
+import { AuthService } from '../../user/services/auth.service';
 import { appSettings } from '../../../environments/environment';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
@@ -73,7 +73,7 @@ export class BooksStore {
     id: number,
     primary: boolean
   ): void {
-    var queryStringToken = this.authService.getQueryStringToken();
+    const queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.booksService
       .loadBooks(index, limit, type, id, primary)
@@ -99,7 +99,7 @@ export class BooksStore {
   }
 
   listBooks(index: number, limit: number): void {
-    var queryStringToken = this.authService.getQueryStringToken();
+    const queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.booksService
       .listBooks(index, limit, this.query)

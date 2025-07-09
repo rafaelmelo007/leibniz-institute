@@ -13,7 +13,7 @@ import { ResultSet } from '../../common/domain/result-set';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
-import { AuthService } from '../../account/services/auth.service';
+import { AuthService } from '../../user/services/auth.service';
 import { appSettings } from '../../../environments/environment';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 import { EntityType } from '../../relationships/domain/entity-type';
@@ -71,7 +71,7 @@ export class PostsStore {
     filterType?: EntityType,
     filterId?: number
   ): void {
-    var queryStringToken = this.authService.getQueryStringToken();
+    const queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.postsService
       .loadPosts(index, limit, type, id, primary, filterType, filterId)
@@ -98,7 +98,7 @@ export class PostsStore {
   }
 
   listPosts(index: number, limit: number): void {
-    var queryStringToken = this.authService.getQueryStringToken();
+    const queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.postsService
       .listPosts(index, limit, this.query)

@@ -68,6 +68,11 @@ public class RelationshipService : IRelationshipService
             var name = _database.Topics.Where(x => x.TopicId == id).Select(x => x.Name).FirstOrDefault();
             return name;
         }
+        if (source == EntityType.Chart)
+        {
+            var name = _database.Charts.Where(x => x.ChartId == id).Select(x => x.Name).FirstOrDefault();
+            return name;
+        }
         if (source == EntityType.Book)
         {
             var name = _database.Books.Where(x => x.BookId == id).Select(x => x.Title + " [" + x.Author + "]").FirstOrDefault();
@@ -310,6 +315,18 @@ public class RelationshipService : IRelationshipService
             await _database.SaveChangesAsync(cancellationToken);
             return row.TopicId;
         }
+
+        else if (toType == EntityType.Chart)
+        {
+            var row = new Chart
+            {
+                Name = entity.Name,
+                Content = entity.Content,
+            };
+            await _database.Charts.AddAsync(row);
+            await _database.SaveChangesAsync(cancellationToken);
+            return row.ChartId;
+        }
         return -1;
     }
 
@@ -401,6 +418,14 @@ public class RelationshipService : IRelationshipService
             entity.Content = row.Content;
             _database.Topics.Remove(row);
         }
+
+        else if (fromType == EntityType.Chart)
+        {
+            var row = await _database.Charts.FirstOrDefaultAsync(x => x.ChartId == id, cancellationToken);
+            entity.Name = row.Name;
+            entity.Content = row.Content;
+            _database.Charts.Remove(row);
+        }
         return entity;
     }
 
@@ -439,6 +464,11 @@ public class RelationshipService : IRelationshipService
         if (source == EntityType.Topic)
         {
             var id = _database.Topics.Single(x => x.Name == name).TopicId;
+            return id;
+        }
+        if (source == EntityType.Chart)
+        {
+            var id = _database.Charts.Single(x => x.Name == name).ChartId;
             return id;
         }
         if (source == EntityType.Book)

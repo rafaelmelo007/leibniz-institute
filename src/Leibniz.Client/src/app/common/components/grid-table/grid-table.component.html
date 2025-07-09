@@ -74,6 +74,7 @@
                 [src]="getFormattedValue(item[column.field], column)"
                 [style.maxHeight]="column.maxImageHeight + 'px'"
                 [style.maxWidth]="column.maxImageWidth + 'px'"
+                [alt]="item[column.field]"
               />
             </ng-container>
 

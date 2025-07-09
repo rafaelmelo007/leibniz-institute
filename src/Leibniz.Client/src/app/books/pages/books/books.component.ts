@@ -11,7 +11,7 @@ import { EditBookComponent } from '../../components/edit-book/edit-book.componen
 import { BookListItem } from '../../domain/book-list-item';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../../images/services/images.store';
-import { AuthService } from '../../../account/services/auth.service';
+import { AuthService } from '../../../user/services/auth.service';
 import { Router } from '@angular/router';
 import { PageTitleComponent } from "../../../common/components/page-title/page-title.component";
 
@@ -32,7 +32,7 @@ export class BooksPage implements OnDestroy {
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: BookListItem[];
   queryStringToken?: string | null;
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private destroyed$ = new ReplaySubject<boolean>(1);
 
   maxImageWidth = 120;
   maxImageHeight = 140;

@@ -18,21 +18,21 @@ import { DropdownComponent } from '../../../common/components/dropdown/dropdown.
 import utils from '../../../common/services/utils';
 
 @Component({
-    selector: 'app-secondary-posts',
-    imports: [
-        EditPostComponent,
-        EntityBadgeComponent,
-        CommonModule,
-        InfiniteScrollComponent,
-        DropdownComponent,
-    ],
-    templateUrl: './secondary-posts.component.html',
-    styleUrl: './secondary-posts.component.css'
+  selector: 'app-secondary-posts',
+  imports: [
+    EditPostComponent,
+    EntityBadgeComponent,
+    CommonModule,
+    InfiniteScrollComponent,
+    DropdownComponent,
+  ],
+  templateUrl: './secondary-posts.component.html',
+  styleUrl: './secondary-posts.component.css',
 })
 export class SecondaryPostsComponent implements OnDestroy, OnChanges {
   @ViewChild(EditPostComponent) editPost?: EditPostComponent;
   dataSource?: Post[];
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private destroyed$ = new ReplaySubject<boolean>(1);
   @Input() type?: EntityType;
   @Input() id?: number;
   @Input() filterType?: EntityType;

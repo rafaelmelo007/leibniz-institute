@@ -13,7 +13,7 @@ import { Topic } from '../domain/topic';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
-import { AuthService } from '../../account/services/auth.service';
+import { AuthService } from '../../user/services/auth.service';
 import { appSettings } from '../../../environments/environment';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 import { EntityType } from '../../relationships/domain/entity-type';
@@ -32,15 +32,19 @@ export class TopicsStore {
     this.changes$ = this.changeTrackerService.asObservable<Topic>();
   }
 
-  private primaryTopicsSubject = new BehaviorSubject<ResultSet<Topic> | null>(null);
+  private primaryTopicsSubject = new BehaviorSubject<ResultSet<Topic> | null>(
+    null
+  );
   primaryTopics$: Observable<ResultSet<Topic> | null> =
     this.primaryTopicsSubject.asObservable();
 
-    private secondaryTopicsSubject = new BehaviorSubject<ResultSet<Topic> | null>(null);
-    secondaryTopics$: Observable<ResultSet<Topic> | null> =
-      this.secondaryTopicsSubject.asObservable();
-  
-    private topicsSubject = new BehaviorSubject<ResultSet<Topic> | null>(null);
+  private secondaryTopicsSubject = new BehaviorSubject<ResultSet<Topic> | null>(
+    null
+  );
+  secondaryTopics$: Observable<ResultSet<Topic> | null> =
+    this.secondaryTopicsSubject.asObservable();
+
+  private topicsSubject = new BehaviorSubject<ResultSet<Topic> | null>(null);
   topics$: Observable<ResultSet<Topic> | null> =
     this.topicsSubject.asObservable();
 
@@ -89,7 +93,7 @@ export class TopicsStore {
   }
 
   listTopics(index: number, limit: number): void {
-    var queryStringToken = this.authService.getQueryStringToken();
+    const queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.topicsService
       .listTopics(index, limit, this._query)

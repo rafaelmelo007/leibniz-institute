@@ -1,0 +1,98 @@
+<div class="toolbar mb-2" *ngIf="editable">
+  <button class="btn btn-sm btn-primary me-2" (click)="showView('graph')">
+    🧠 Design View
+  </button>
+  <button class="btn btn-sm btn-secondary me-2" (click)="showView('json')">
+    📄 JSON View
+  </button>
+  <div class="dropdown d-inline me-2">
+    <button
+      class="btn btn-sm btn-secondary dropdown-toggle"
+      type="button"
+      id="addElementDropdown"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      ➕ Add Element
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="addElementDropdown">
+      <li>
+        <a class="dropdown-item" (click)="addElement('task', false)">📝 Task</a>
+      </li>
+      <li>
+        <a class="dropdown-item" (click)="addElement('note', false)">📄 Note</a>
+      </li>
+      <li>
+        <a class="dropdown-item" (click)="addElement('decision', false)"
+          >⚖️ Decision</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item" (click)="addElement('process', false)"
+          >🔄 Process</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item" (click)="addElement('input', false)"
+          >💾 Input</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item" (click)="addElement('output', false)"
+          >📤 Output</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item" (click)="addElement('task', true)"
+          >➕ Add Linked Task</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item" (click)="addElement('note', true)"
+          >➕ Add Linked Note</a
+        >
+      </li>
+    </ul>
+  </div>
+
+  <button class="btn btn-sm btn-outline-dark" (click)="downloadAsJPG()">
+    🖼️ Download JPG
+  </button>
+</div>
+
+<div class="row" style="height: 100%">
+  <div [class]="editable ? 'col-md-9' : 'col-md-12'">
+    <div
+      #networkContainer
+      class="network"
+      [style.display]="viewMode === 'graph' ? 'block' : 'none'"
+    ></div>
+    <textarea
+      #jsonTextArea
+      class="json-area"
+      [style.display]="viewMode === 'json' ? 'block' : 'none'"
+      [(ngModel)]="graphJson"
+    ></textarea>
+  </div>
+
+  <div class="col-md-3" *ngIf="editable">
+    <div class="card" *ngIf="selectedNode">
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="nodeLabel" class="form-label">Description</label>
+          <textarea
+            id="nodeLabel"
+            class="form-control"
+            rows="6"
+            style="resize: vertical"
+            [(ngModel)]="selectedNode.label"
+            (keyup)="updateNodeLabel()"
+          ></textarea>
+        </div>
+        <button class="btn btn-sm btn-danger" (click)="deleteSelectedNode()">
+          🗑️ Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

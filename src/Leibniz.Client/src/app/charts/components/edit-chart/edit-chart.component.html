@@ -1,0 +1,80 @@
+<app-dialog-window
+  *ngIf="showEdit"
+  primaryButtonLabel="Save Changes"
+  title="Edit Chart"
+  (closeDialog)="showEdit = false"
+  (submitDialog)="saveChart()"
+>
+  <ng-container>
+    <app-tabs [options]="getFilteredTabs()" />
+    <div
+      class="tab-content"
+      [style.display]="selectedTab === 'DETAIL' ? 'block' : 'none'"
+    >
+      <form [formGroup]="editForm">
+        <div class="row">
+          <div class="col">
+            <div
+              class="form-group"
+              style="width: 30%; display: inline-block; margin-right: 10px"
+            >
+              <label for="chartId" class="form-label mt-4">ChartId</label>
+              <input
+                class="form-control"
+                formControlName="chartId"
+                type="text"
+                placeholder="ChartId"
+              />
+              <app-field-validation-errors
+                [control]="editForm.get('chartId')"
+              ></app-field-validation-errors>
+            </div>
+            <div class="form-group" style="width: 60%; display: inline-block">
+              <label for="name" class="form-label mt-4">Name</label>
+              <input
+                class="form-control"
+                formControlName="name"
+                type="text"
+                placeholder="Name"
+              />
+              <app-field-validation-errors
+                [control]="editForm.get('name')"
+              ></app-field-validation-errors>
+            </div>
+            <div
+              class="form-group"
+              style="display: flex; flex-direction: column"
+            >
+              <hr />
+              <app-network
+                [editable]="true"
+                formControlName="content"
+                style="width: 1000px; height: 400px"
+              ></app-network>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div
+      class="tab-content"
+      [style.display]="selectedTab === 'REFERENCES' ? 'block' : 'none'"
+    >
+      <app-edit-references
+        [style.height]="'100%'"
+        [type]="'chart'"
+        [id]="chartId"
+      ></app-edit-references>
+    </div>
+    <div
+      class="tab-content"
+      [style.display]="selectedTab === 'MOVE_TO' ? 'block' : 'none'"
+    >
+      <app-move-to
+        [style.height]="'100%'"
+        [type]="'chart'"
+        [id]="chartId"
+      ></app-move-to>
+    </div>
+  </ng-container>
+</app-dialog-window>

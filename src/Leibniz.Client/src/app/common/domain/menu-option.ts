@@ -2,5 +2,5 @@ export class MenuOption {
   label?: string;
   icon?: string;
   selected?: boolean;
-  action?: (...args: any[]) => any;
+  action?: (...args: any[]) => any; // eslint-disable-line
 }

@@ -25,7 +25,7 @@ import { LinksListComponent } from "../../../links/components/links-list/links-l
 })
 export class BookDetailPage {
   @ViewChild(SecondaryPostsComponent) SecondaryPostsComponent?: SecondaryPostsComponent;
-  bookId: number = 0;
+  bookId = 0;
 
   constructor(private route: ActivatedRoute) {
     this.route.paramMap.subscribe((params) => {

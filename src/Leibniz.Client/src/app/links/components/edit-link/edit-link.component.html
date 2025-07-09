@@ -9,7 +9,7 @@
     <app-tabs [options]="getFilteredTabs()" />
     <div
       class="tab-content"
-      [style.display]="selectedTab == 'DETAIL' ? 'block' : 'none'"
+      [style.display]="selectedTab === 'DETAIL' ? 'block' : 'none'"
     >
       <form [formGroup]="editForm">
         <div class="row">
@@ -69,7 +69,7 @@
     </div>
     <div
       class="tab-content"
-      [style.display]="selectedTab == 'REFERENCES' ? 'block' : 'none'"
+      [style.display]="selectedTab === 'REFERENCES' ? 'block' : 'none'"
     >
       <app-edit-references
         [style.height]="'100%'"
@@ -79,7 +79,7 @@
     </div>
     <div
       class="tab-content"
-      [style.display]="selectedTab == 'IMAGE' ? 'block' : 'none'"
+      [style.display]="selectedTab === 'IMAGE' ? 'block' : 'none'"
     >
       <app-edit-image
         [style.height]="'100%'"
@@ -89,7 +89,7 @@
     </div>
     <div
       class="tab-content"
-      [style.display]="selectedTab == 'MOVE_TO' ? 'block' : 'none'"
+      [style.display]="selectedTab === 'MOVE_TO' ? 'block' : 'none'"
     >
       <app-move-to
         [style.height]="'100%'"

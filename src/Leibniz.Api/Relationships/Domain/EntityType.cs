@@ -27,6 +27,9 @@ public enum EntityType : short
     [Description("topic")]
     Topic = 8,
 
+    [Description("chart")]
+    Chart = 9,
+
     [Description("unknown")]
     Unknown = 99
 }

@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AppError } from '../domain/app-error';
-import { Router } from '@angular/router';
 import { MessagesService } from './messages.service';
 import { CookieService } from 'ngx-cookie-service';
 import {
   QUERY_STRING_TOKEN,
   USER_TOKEN,
-} from '../../account/services/auth.service';
+} from '../../user/services/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class ErrorHandlerService {
@@ -18,12 +17,11 @@ export class ErrorHandlerService {
     .pipe(filter((messages) => messages && messages.length > 0));
 
   constructor(
-    private router: Router,
     private messagesService: MessagesService,
     private cookieService: CookieService
   ) {}
 
-  onError(err: any) {
+  onError(err: any /* eslint-disable-line */) {
     const title = err.error?.length
       ? 'ValidationError'
       : err.statusText ?? err.error?.title;

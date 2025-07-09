@@ -8,15 +8,15 @@ import { ChangeType } from '../domain/change-type';
   providedIn: 'root',
 })
 export class ChangeTrackerService {
-  private changesSubject = new BehaviorSubject<ChangedEntity<any> | null>(null);
-  changes$: Observable<ChangedEntity<any> | null> =
+  private changesSubject = new BehaviorSubject<ChangedEntity<any> | null>(null); // eslint-disable-line
+  changes$: Observable<ChangedEntity<any> | null> = // eslint-disable-line
     this.changesSubject.asObservable();
 
   notify(
     entityType: EntityType,
     entityId: number,
     changeType: ChangeType,
-    data?: any
+    data?: any // eslint-disable-line
   ): void {
     this.changesSubject.next({
       ref: { type: entityType, id: entityId },

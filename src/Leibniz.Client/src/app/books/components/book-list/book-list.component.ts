@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
 export class BookListComponent implements OnDestroy, OnInit, OnChanges {
   @ViewChild(EditBookComponent) editBook?: EditBookComponent;
   dataSource?: Book[];
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private destroyed$ = new ReplaySubject<boolean>(1);
   @Input() type?: EntityType;
   @Input() id?: number;
   count?: number;

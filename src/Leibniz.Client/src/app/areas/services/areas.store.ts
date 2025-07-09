@@ -14,7 +14,7 @@ import { ErrorHandlerService } from '../../common/services/error-handler.service
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
 import { appSettings } from '../../../environments/environment';
-import { AuthService } from '../../account/services/auth.service';
+import { AuthService } from '../../user/services/auth.service';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 
 @Injectable({

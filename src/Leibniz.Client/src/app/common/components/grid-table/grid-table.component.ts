@@ -13,7 +13,6 @@ import {
 } from '@angular/core';
 import { DropdownComponent } from '../dropdown/dropdown.component';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MenuOption } from '../../domain/menu-option';
 
@@ -22,7 +21,7 @@ export interface Column {
   header: string;
   width: string;
   useHyperlink?: boolean;
-  action?: (...args: any[]) => any;
+  action?: (...args: any[]) => any; // eslint-disable-line
   badgeConditions?: Record<string, string>;
   useBadge?: boolean;
   textAlign?: 'left' | 'center' | 'right';
@@ -36,13 +35,13 @@ export interface Column {
 }
 
 @Component({
-    selector: 'app-grid-table',
-    imports: [CommonModule, DropdownComponent, FormsModule],
-    templateUrl: './grid-table.component.html',
-    styleUrls: ['./grid-table.component.css']
+  selector: 'app-grid-table',
+  imports: [CommonModule, DropdownComponent, FormsModule],
+  templateUrl: './grid-table.component.html',
+  styleUrls: ['./grid-table.component.css'],
 })
 export class GridTableComponent implements OnInit, OnChanges, AfterViewInit {
-  @Input() dataSource?: any[];
+  @Input() dataSource?: any[]; // eslint-disable-line
   @Input() actions?: MenuOption[];
   @Input() actionsLabel?: string;
   @Input() columns: Column[] = [];
@@ -148,7 +147,10 @@ export class GridTableComponent implements OnInit, OnChanges, AfterViewInit {
     return Array.from(uniqueValues);
   }
 
-  evaluateCondition(condition: string, value: any): boolean {
+  evaluateCondition(
+    condition: string,
+    value: any /* eslint-disable-line */
+  ): boolean {
     const sanitizedCondition = condition.replace(
       'value',
       JSON.stringify(value)
@@ -176,7 +178,7 @@ export class GridTableComponent implements OnInit, OnChanges, AfterViewInit {
     return value?.toString();
   }
 
-  getBadgeClass(value: any, column: Column): string {
+  getBadgeClass(value: any /* eslint-disable-line */, column: Column): string {
     if (!column.badgeConditions) return '';
 
     for (const [condition, badgeClass] of Object.entries(
@@ -194,7 +196,7 @@ export class GridTableComponent implements OnInit, OnChanges, AfterViewInit {
     return '';
   }
 
-  clickLink(row: any, column: Column): void {
+  clickLink(row: any /* eslint-disable-line */, column: Column): void {
     if (column.useHyperlink && column.action) {
       column.action(row);
     }

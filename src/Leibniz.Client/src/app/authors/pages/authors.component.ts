@@ -10,28 +10,28 @@ import { AuthorsStore } from '../services/authors.store';
 import { EditAuthorComponent } from '../components/edit-author/edit-author.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
-import { AuthService } from '../../account/services/auth.service';
+import { AuthService } from '../../user/services/auth.service';
 import { Router } from '@angular/router';
-import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
+import { PageTitleComponent } from '../../common/components/page-title/page-title.component';
 
 @Component({
-    selector: 'app-authors',
-    imports: [
-        LoadingComponent,
-        GridTableComponent,
-        CommonModule,
-        EditAuthorComponent,
-        PageTitleComponent
-    ],
-    templateUrl: './authors.component.html',
-    styleUrl: './authors.component.css'
+  selector: 'app-authors',
+  imports: [
+    LoadingComponent,
+    GridTableComponent,
+    CommonModule,
+    EditAuthorComponent,
+    PageTitleComponent,
+  ],
+  templateUrl: './authors.component.html',
+  styleUrl: './authors.component.css',
 })
 export class AuthorsPage implements OnDestroy {
   @ViewChild(EditAuthorComponent) editAuthor?: EditAuthorComponent;
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: Author[];
   queryStringToken: string | null;
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private destroyed$ = new ReplaySubject<boolean>(1);
 
   maxImageWidth = 120;
   maxImageHeight = 140;

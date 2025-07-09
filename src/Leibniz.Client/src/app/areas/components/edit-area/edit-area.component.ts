@@ -39,7 +39,7 @@ export class EditAreaComponent implements OnDestroy {
   areaId = 0;
   showEdit = false;
   selectedTab: EditTabType = 'DETAIL';
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private destroyed$ = new ReplaySubject<boolean>(1);
 
   editForm = new FormGroup({
     areaId: new FormControl(0, []),

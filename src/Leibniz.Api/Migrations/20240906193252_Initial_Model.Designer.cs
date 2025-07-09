@@ -68,7 +68,7 @@ namespace Leibniz.Api.Migrations
                     b.ToTable("Areas");
                 });
 
-            modelBuilder.Entity("Leibniz.Api.Authentication.Domain.User", b =>
+            modelBuilder.Entity("Leibniz.Api.Users.Domain.User", b =>
                 {
                     b.Property<long>("UserId")
                         .ValueGeneratedOnAdd()

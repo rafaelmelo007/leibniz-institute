@@ -1,21 +1,20 @@
-import { Component, HostListener, input, Input } from '@angular/core';
-import { MenuOption } from '../../domain/menu-option';
+import { Component, HostListener, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-menu-list',
-    imports: [CommonModule],
-    templateUrl: './menu-list.component.html',
-    styleUrl: './menu-list.component.css'
+  selector: 'app-menu-list',
+  imports: [CommonModule],
+  templateUrl: './menu-list.component.html',
+  styleUrl: './menu-list.component.css',
 })
 export class MenuListComponent {
-  @Input() data: any;
+  @Input() data: any; // eslint-disable-line
   @Input() color: string = '';
-  @Input() options: any[] | undefined = [];
+  @Input() options: any[] /* eslint-disable-line */ | undefined = [];
   showDrop = false;
-  clickedElement: any = null;
+  clickedElement: any = null; // eslint-disable-line
 
-  showMenu(element: any) {
+  showMenu(element: any /* eslint-disable-line */) {
     if (this.clickedElement == element) {
       this.showDrop = false;
       this.clickedElement = null;
@@ -25,7 +24,10 @@ export class MenuListComponent {
     this.clickedElement = element;
   }
 
-  runAction(fn: any, data: any): void {
+  runAction(
+    fn: any /* eslint-disable-line */,
+    data: any /* eslint-disable-line */
+  ): void {
     this.showDrop = false;
 
     if (!fn) return;

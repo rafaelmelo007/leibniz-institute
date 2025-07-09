@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { EditAreaComponent } from '../components/edit-area/edit-area.component';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ImagesStore } from '../../images/services/images.store';
-import { AuthService } from '../../account/services/auth.service';
+import { AuthService } from '../../user/services/auth.service';
 import { PageTitleComponent } from "../../common/components/page-title/page-title.component";
 
 @Component({
@@ -27,7 +27,7 @@ export class AreasPage implements OnDestroy {
   @ViewChild(EditAreaComponent) editArea?: EditAreaComponent;
   @ViewChild(GridTableComponent) grid?: GridTableComponent;
   dataSource?: Area[];
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private destroyed$ = new ReplaySubject<boolean>(1);
 
   maxImageWidth = 120;
   maxImageHeight = 140;

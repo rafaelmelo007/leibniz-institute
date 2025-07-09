@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs">
   @for (option of options; track $index) {
-  <li class="nav-item" (click)="setSection(option.label!)" style="text-align: center;">
+  <li class="nav-item" (click)="setSection(option.label!)" style="text-align: center;" tabindex="1">
     <a
       href="javascript:;"
       (click)="option?.action(option)"

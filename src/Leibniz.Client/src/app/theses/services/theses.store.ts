@@ -13,7 +13,7 @@ import { ThesesService } from './theses.service';
 import { ErrorHandlerService } from '../../common/services/error-handler.service';
 import { MessagesService } from '../../common/services/messages.service';
 import { ChangedEntity } from '../../common/domain/changed-entity';
-import { AuthService } from '../../account/services/auth.service';
+import { AuthService } from '../../user/services/auth.service';
 import { appSettings } from '../../../environments/environment';
 import { ChangeTrackerService } from '../../common/services/change-tracker.service';
 import { EntityType } from '../../relationships/domain/entity-type';
@@ -69,7 +69,7 @@ export class ThesesStore {
     id: number,
     primary: boolean
   ): void {
-    var queryStringToken = this.authService.getQueryStringToken();
+    const queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.thesesService
       .loadTheses(index, limit, type, id, primary)
@@ -80,8 +80,7 @@ export class ThesesStore {
 
             thesis.imageFileName = `${appSettings.baseUrl}/images/get-image?ImageFileName=${thesis.imageFileName}~${queryStringToken}`;
           });
-          if(primary)
-          {
+          if (primary) {
             return this.primaryThesesSubject.next(res);
           }
           return this.secondaryThesesSubject.next(res);
@@ -96,7 +95,7 @@ export class ThesesStore {
   }
 
   listTheses(index: number, limit: number): void {
-    var queryStringToken = this.authService.getQueryStringToken();
+    const queryStringToken = this.authService.getQueryStringToken();
     this.loadingSubject.next(true);
     this.thesesService
       .listTheses(index, limit, this.query)

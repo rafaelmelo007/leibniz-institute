@@ -18,14 +18,14 @@ import {
 } from '@angular/forms';
 
 @Component({
-    selector: 'app-json-settings-editor',
-    imports: [FormsModule, ReactiveFormsModule, CommonModule],
-    templateUrl: './json-settings-editor.component.html',
-    styleUrl: './json-settings-editor.component.css'
+  selector: 'app-json-settings-editor',
+  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  templateUrl: './json-settings-editor.component.html',
+  styleUrl: './json-settings-editor.component.css',
 })
 export class JsonSettingsEditorComponent implements OnChanges, OnInit {
   @Input() jsonString: string | null | undefined = ''; // Input property to receive the JSON string
-  @Output() settingsChange = new EventEmitter<any>(); // Output property to emit the updated settings
+  @Output() settingsChange = new EventEmitter<any>(); // eslint-disable-line
 
   settingsForm: FormGroup = new FormGroup({}); // Form group for dynamic controls
   displayedFields?: string[];
@@ -46,7 +46,7 @@ export class JsonSettingsEditorComponent implements OnChanges, OnInit {
   }
 
   parseJsonAndCreateFormControls(jsonString: string): void {
-    let jsonObject: any;
+    let jsonObject: any; // eslint-disable-line
 
     try {
       if (jsonString.startsWith('"') && jsonString.endsWith('"')) {

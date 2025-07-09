@@ -7,4 +7,5 @@ export type EntityType =
   | 'period'
   | 'thesis'
   | 'topic'
+  | 'chart'
   | 'unknown';

@@ -40,7 +40,7 @@ public class SearchBooksEndpoint : IEndpoint
 
         var ids = rows.Select(x => x.BookId).ToList();
         var images = database.Images
-            .Where(x => x.EntityType == EntityType.Topic && ids.Contains(x.EntityId))
+            .Where(x => x.EntityType == EntityType.Book && ids.Contains(x.EntityId))
             .ToDictionary(x => x.EntityId, x => x.ImageFileName);
         var topics = rows.Select(x => new SearchBookRead
         (

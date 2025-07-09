@@ -20,25 +20,25 @@ import { ExpandableTextComponent } from '../../../common/components/expandable-t
 import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
-    selector: 'app-author-splash',
-    imports: [
-        CommonModule,
-        ImageBoxComponent,
-        EditAuthorComponent,
-        AddBatchPostsComponent,
-        EditPostComponent,
-        DropdownComponent,
-        ExpandableTextComponent,
-    ],
-    templateUrl: './author-splash.component.html',
-    styleUrl: './author-splash.component.css'
+  selector: 'app-author-splash',
+  imports: [
+    CommonModule,
+    ImageBoxComponent,
+    EditAuthorComponent,
+    AddBatchPostsComponent,
+    EditPostComponent,
+    DropdownComponent,
+    ExpandableTextComponent,
+  ],
+  templateUrl: './author-splash.component.html',
+  styleUrl: './author-splash.component.css',
 })
 export class AuthorSplashComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(EditAuthorComponent) editAuthor?: EditAuthorComponent;
   @ViewChild(EditPostComponent) editPost?: EditPostComponent;
   @ViewChild(AddBatchPostsComponent) addBatchPosts?: AddBatchPostsComponent;
-  @Input() authorId: number = 0;
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  @Input() authorId = 0;
+  private destroyed$ = new ReplaySubject<boolean>(1);
   author?: Author | null;
   menuList?: MenuOption[] = [
     {

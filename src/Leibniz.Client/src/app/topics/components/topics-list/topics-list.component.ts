@@ -17,15 +17,15 @@ import { TopicsStore } from '../../services/topics.store';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-topics-list',
-    imports: [EditTopicComponent],
-    templateUrl: './topics-list.component.html',
-    styleUrl: './topics-list.component.css'
+  selector: 'app-topics-list',
+  imports: [EditTopicComponent],
+  templateUrl: './topics-list.component.html',
+  styleUrl: './topics-list.component.css',
 })
 export class TopicsListComponent implements OnDestroy, OnInit, OnChanges {
   @ViewChild(EditTopicComponent) editTopic?: EditTopicComponent;
   dataSource?: Topic[];
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private destroyed$ = new ReplaySubject<boolean>(1);
   @Input() type?: EntityType;
   @Input() id?: number;
   count?: number;

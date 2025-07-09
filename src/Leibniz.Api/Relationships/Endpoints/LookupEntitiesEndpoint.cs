@@ -53,6 +53,10 @@ public class LookupEntitiesEndpoint : IEndpoint
         {
             results = QueryTopics(database, request.Query);
         }
+        if (request.Type == EntityType.Chart)
+        {
+            results = QueryCharts(database, request.Query);
+        }
         if (request.Type == EntityType.Link)
         {
             results = QueryLinks(database, request.Query);
@@ -81,6 +85,14 @@ public class LookupEntitiesEndpoint : IEndpoint
     {
         var rows = database.Topics.Where(x => x.Name.Contains(query)).Take(MAX_RECORDS)
             .Select(x => new LookupEntitiesRead(EntityType.Topic, x.TopicId, x.Name))
+            .ToList();
+        return rows;
+    }
+
+    private static List<LookupEntitiesRead> QueryCharts(AcademyDbContext database, string query)
+    {
+        var rows = database.Charts.Where(x => x.Name.Contains(query)).Take(MAX_RECORDS)
+            .Select(x => new LookupEntitiesRead(EntityType.Chart, x.ChartId, x.Name))
             .ToList();
         return rows;
     }

@@ -2,15 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'app-expandable-text',
-    imports: [CommonModule],
-    templateUrl: './expandable-text.component.html',
-    styleUrls: ['./expandable-text.component.css']
+  selector: 'app-expandable-text',
+  imports: [CommonModule],
+  templateUrl: './expandable-text.component.html',
+  styleUrls: ['./expandable-text.component.css'],
 })
 export class ExpandableTextComponent {
-  @Input() text: string = '';
-  @Input() maxLength: number = 300;
-  expanded: boolean = false;
+  @Input() text = '';
+  @Input() maxLength = 300;
+  expanded = false;
 
   toggleExpand() {
     this.expanded = !this.expanded;

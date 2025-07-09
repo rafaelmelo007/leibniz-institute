@@ -6,8 +6,8 @@ global using Leibniz.Api.Common.Constants;
 global using Leibniz.Api.Data;
 global using Leibniz.Api.Data.Services;
 
-global using Leibniz.Api.Authentication.Domain;
-global using Leibniz.Api.Authentication.Services;
+global using Leibniz.Api.Users.Domain;
+global using Leibniz.Api.Users.Services;
 
 global using Leibniz.Api.Links.Domain;
 
@@ -24,6 +24,8 @@ global using Leibniz.Api.Authors.Domain;
 global using Leibniz.Api.Topics.Domain;
 
 global using Leibniz.Api.Areas.Domain;
+
+global using Leibniz.Api.Charts.Domain;
 
 global using Leibniz.Api.Images.Domain;
 global using Leibniz.Api.Images.Services;

@@ -7,10 +7,10 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
-    selector: 'app-edit-references',
-    imports: [CommonModule, FormsModule],
-    templateUrl: './edit-references.component.html',
-    styleUrl: './edit-references.component.css'
+  selector: 'app-edit-references',
+  imports: [CommonModule, FormsModule],
+  templateUrl: './edit-references.component.html',
+  styleUrl: './edit-references.component.css',
 })
 export class EditReferencesComponent implements OnInit {
   @Input() type?: EntityType;
@@ -70,7 +70,7 @@ export class EditReferencesComponent implements OnInit {
       this.searchSub.unsubscribe();
     }
     this.searchSub = this.relationshipsService
-      .lookupEntities(<EntityType>this.selectedType, this.itemName)
+      .lookupEntities(<EntityType>this.selectedType, this.itemName) // eslint-disable-line
       .subscribe((res) => {
         this.searchResults = res.data;
       });

@@ -1,4 +1,4 @@
-﻿using Leibniz.Api.Authentication;
+﻿using Leibniz.Api.Users;
 using Microsoft.Extensions.Options;
 
 namespace Leibniz.Api.Images.Endpoints;

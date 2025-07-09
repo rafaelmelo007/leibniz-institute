@@ -3,6 +3,7 @@
     <i [class]="iconName"></i> {{ title }}
   </div>
   <button
+    *ngIf="addButtonLabel"
     type="button"
     class="btn btn-primary"
     (click)="addClick.emit('clicked')"

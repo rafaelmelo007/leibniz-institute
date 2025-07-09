@@ -68,7 +68,7 @@ namespace Leibniz.Api.Migrations
                     b.ToTable("Areas");
                 });
 
-            modelBuilder.Entity("Leibniz.Api.Authentication.Domain.ForgotPassword", b =>
+            modelBuilder.Entity("Leibniz.Api.Users.Domain.ForgotPassword", b =>
                 {
                     b.Property<long>("ForgotPasswordId")
                         .ValueGeneratedOnAdd()
@@ -114,7 +114,7 @@ namespace Leibniz.Api.Migrations
                     b.ToTable("ForgotPasswords");
                 });
 
-            modelBuilder.Entity("Leibniz.Api.Authentication.Domain.User", b =>
+            modelBuilder.Entity("Leibniz.Api.Users.Domain.User", b =>
                 {
                     b.Property<long>("UserId")
                         .ValueGeneratedOnAdd()
