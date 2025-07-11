@@ -30,6 +30,9 @@ public enum EntityType : short
     [Description("chart")]
     Chart = 9,
 
+    [Description("node")]
+    Node = 10,
+
     [Description("unknown")]
     Unknown = 99
 }

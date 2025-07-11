@@ -18,6 +18,7 @@ import { ThesisDetailPage } from './theses/pages/thesis-detail/thesis-detail.com
 import { DashboardComponent } from './dashboard/pages/dashboard/dashboard.component';
 import { TimesheetComponent } from './timesheet/pages/timesheet/timesheet.component';
 import { ChartsComponent } from './charts/pages/charts/charts.component';
+import { NodesComponent } from './nodes/pages/nodes/nodes.component';
 
 export const routes: Routes = [
   /* Feature: User */
@@ -62,6 +63,9 @@ export const routes: Routes = [
 
   /* Feature: Timesheet */
   { path: 'pages/timesheet', component: TimesheetComponent },
+
+  /* Feature: Nodes */
+  { path: 'pages/nodes', component: NodesComponent },
 
   { path: '**', redirectTo: '/pages/user/login' },
 ];

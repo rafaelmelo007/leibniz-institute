@@ -86,7 +86,16 @@
             routerLink="/pages/charts"
             routerLinkActive="active"
           >
-            <i class="fa fa-map"></i> Charts
+            <i class="fa fa-tachometer"></i> Charts
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/pages/nodes"
+            routerLinkActive="active"
+          >
+            <i class="fa fa-map"></i> Map
           </a>
         </li>
         <li class="nav-item dropdown-container">
@@ -198,7 +207,12 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="javascript:;" style="text-align: center" (click)="settingsMenu.showMenu($event.target)">
+          <a
+            class="nav-link"
+            href="javascript:;"
+            style="text-align: center"
+            (click)="settingsMenu.showMenu($event.target)"
+          >
             <i class="fa fa-wrench"></i>
             <span>Account</span>
           </a>

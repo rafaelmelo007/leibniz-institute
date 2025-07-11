@@ -1,4 +1,6 @@
-﻿namespace Leibniz.Api.Data;
+﻿using Leibniz.Api.Nodes.Domain;
+
+namespace Leibniz.Api.Data;
 public class AcademyDbContext : DbContext
 {
     public readonly ICurrentUserService _currentUserService;
@@ -33,6 +35,7 @@ public class AcademyDbContext : DbContext
     public DbSet<Topic> Topics { get; set; }
     public DbSet<Area> Areas { get; set; }
     public DbSet<Chart> Charts { get; set; }
+    public DbSet<Node> Nodes { get; set; }
     public DbSet<Relationship> Relationships { get; set; }
     public DbSet<Image> Images { get; set; }
     public DbSet<ForgotPassword> ForgotPasswords { get; set; }

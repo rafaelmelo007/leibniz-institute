@@ -13,7 +13,7 @@
       data-bs-toggle="dropdown"
       aria-expanded="false"
     >
-      ➕ Add Element
+      ➕ Add
     </button>
     <ul class="dropdown-menu" aria-labelledby="addElementDropdown">
       <li>
@@ -42,18 +42,50 @@
           >📤 Output</a
         >
       </li>
+    </ul>
+  </div>
+
+  @if(selectedNode) {
+  <div class="dropdown d-inline me-2">
+    <button
+      class="btn btn-sm btn-secondary dropdown-toggle"
+      type="button"
+      id="addChildElementDropdown"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      ➕ Add Child
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="addChildElementDropdown">
       <li>
-        <a class="dropdown-item" (click)="addElement('task', true)"
-          >➕ Add Linked Task</a
+        <a class="dropdown-item" (click)="addElement('task', true)">📝 Task</a>
+      </li>
+      <li>
+        <a class="dropdown-item" (click)="addElement('note', true)">📄 Note</a>
+      </li>
+      <li>
+        <a class="dropdown-item" (click)="addElement('decision', true)"
+          >⚖️ Decision</a
         >
       </li>
       <li>
-        <a class="dropdown-item" (click)="addElement('note', true)"
-          >➕ Add Linked Note</a
+        <a class="dropdown-item" (click)="addElement('process', true)"
+          >🔄 Process</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item" (click)="addElement('input', true)"
+          >💾 Input</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item" (click)="addElement('output', true)"
+          >📤 Output</a
         >
       </li>
     </ul>
   </div>
+  }
 
   <button class="btn btn-sm btn-outline-dark" (click)="downloadAsJPG()">
     🖼️ Download JPG
@@ -61,7 +93,7 @@
 </div>
 
 <div class="row" style="height: 100%">
-  <div [class]="editable ? 'col-md-9' : 'col-md-12'">
+  <div [class]="editable && showEditForm ? 'col-md-9' : 'col-md-12'">
     <div
       #networkContainer
       class="network"
@@ -75,7 +107,7 @@
     ></textarea>
   </div>
 
-  <div class="col-md-3" *ngIf="editable">
+  <div class="col-md-3" *ngIf="editable && showEditForm">
     <div class="card" *ngIf="selectedNode">
       <div class="card-body">
         <div class="mb-3">

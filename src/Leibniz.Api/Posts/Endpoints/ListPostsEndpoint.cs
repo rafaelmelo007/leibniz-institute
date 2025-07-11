@@ -38,7 +38,7 @@ public class ListPostsEndpoint : IEndpoint
                 || x.Author.Contains(request.Query));
         }
         var count = await query.CountAsync();
-        var query2 = query.OrderByDescending(x => x.UpdateDateUtc ?? x.CreateDateUtc)
+        var query2 = query.OrderByDescending(x => x.PostId)
             .Skip(request.Index).Take(request.Limit);
 
         // DEBUG query

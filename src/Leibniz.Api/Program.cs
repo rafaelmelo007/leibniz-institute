@@ -16,6 +16,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
 using Leibniz.Api.Charts;
+using Leibniz.Api.Nodes;
 
 var builder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(probeForEnv: true, probeLevelsToSearch: 6));
@@ -113,13 +114,15 @@ app.MapAuthorsEndpoints();
 app.MapTopicsEndpoints();
 app.MapAreasEndpoints();
 app.MapChartEndpoints();
+app.MapNodeEndpoints();
 app.MapRelationshipsEndpoints();
 app.MapImageEndpoints();
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
     app.UseCors(builder =>
     {
         builder.AllowAnyOrigin()

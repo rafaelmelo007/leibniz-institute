@@ -8,4 +8,5 @@ export type EntityType =
   | 'thesis'
   | 'topic'
   | 'chart'
+  | 'node'
   | 'unknown';

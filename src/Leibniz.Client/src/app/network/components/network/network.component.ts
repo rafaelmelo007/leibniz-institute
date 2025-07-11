@@ -54,7 +54,12 @@ export class NetworkComponent implements AfterViewInit, ControlValueAccessor {
   edgesDS: any;
 
   @Input() editable: boolean = false;
+  @Input() showEditForm: boolean = true;
+  @Input() deleteEnabled: boolean = true;
   @Output() graphJsonChange = new EventEmitter<string>();
+  @Output() nodeClick = new EventEmitter<NetworkNode | null>();
+  @Output() nodeDoubleClick = new EventEmitter<NetworkNode | null>();
+  @Output() nodeDelete = new EventEmitter<NetworkNode>();
 
   constructor(private cdr: ChangeDetectorRef) {
     this.graphJsonChangeSubject.pipe(debounceTime(300)).subscribe(() => {
@@ -115,10 +120,21 @@ export class NetworkComponent implements AfterViewInit, ControlValueAccessor {
         this.selectedNode = null;
       }
       this.cdr.detectChanges();
+      this.nodeClick.emit(this.selectedNode);
+    });
+
+    this.network.on('doubleClick', (params: any) => {
+      let selectNode = null;
+      if (params.nodes.length > 0) {
+        const node = this.nodesDS.get(params.nodes[0]);
+        selectNode = this.nodes.find((x) => x.id === node.id) ?? null;
+      }
+      this.nodeDoubleClick.emit(selectNode);
     });
 
     this.network.on('dragEnd', (params: any) => {
       if (!params.nodes) return;
+
       params.nodes.forEach((nodeId: number) => {
         const pos = this.network.getPositions([nodeId])[nodeId];
         const index = this.nodes.findIndex((n) => n.id === nodeId);
@@ -129,7 +145,35 @@ export class NetworkComponent implements AfterViewInit, ControlValueAccessor {
       });
       this.graphJsonChangeSubject.next();
       this.cdr.detectChanges();
+
+      if (params.nodes.length > 0) {
+        const node = this.nodesDS.get(params.nodes[0]);
+        const nodeDragged = this.nodes.find((x) => x.id === node.id) ?? null;
+        this.nodeClick.emit(nodeDragged!);
+      }
     });
+  }
+
+  updateNodeId(id: number): void {
+    if (!this.selectedNode) return;
+    const index = this.nodes.findIndex((n) => n.id === this.selectedNode!.id);
+    if (index !== -1) {
+      this.nodes[index].id = id;
+      this.selectedNode.id = id;
+      this.nodesDS.update(this.nodes[index]);
+      this.graphJsonChangeSubject.next();
+    }
+  }
+
+  updateNodeLabelText(text: string): void {
+    if (!this.selectedNode) return;
+    const index = this.nodes.findIndex((n) => n.id === this.selectedNode!.id);
+    if (index !== -1) {
+      this.nodes[index].label = text;
+      this.selectedNode.label = text;
+      this.nodesDS.update(this.nodes[index]);
+      this.graphJsonChangeSubject.next();
+    }
   }
 
   updateNodeLabel(): void {
@@ -145,8 +189,8 @@ export class NetworkComponent implements AfterViewInit, ControlValueAccessor {
   addElement(type: string, linked: boolean = false): void {
     if (!this.editable) return;
 
-    const maxId = this.nodes.reduce((max, n) => Math.max(max, n.id), 0);
-    const id = maxId + 1;
+    const minId = this.nodes.reduce((min, n) => Math.min(min, n.id), 0);
+    const id = minId - 1;
 
     // Define propriedades básicas do novo nó
     let node: NetworkNode = {
@@ -215,12 +259,17 @@ export class NetworkComponent implements AfterViewInit, ControlValueAccessor {
   deleteSelectedNode(): void {
     if (!this.editable || !this.selectedNode) return;
 
+    const deletedNode = this.selectedNode;
     const nodeId = this.selectedNode.id;
-    this.nodes = this.nodes.filter((n) => n.id !== nodeId);
-    this.edges = this.edges.filter((e) => e.from !== nodeId && e.to !== nodeId);
+    this.nodes = this.nodes?.filter((n) => n.id !== nodeId);
+    this.edges = this.edges?.filter(
+      (e) => e.from !== nodeId && e.to !== nodeId
+    );
     this.selectedNode = null;
     this.redraw();
     this.graphJsonChangeSubject.next();
+
+    this.nodeDelete.emit(deletedNode);
   }
 
   showView(mode: 'graph' | 'json'): void {
@@ -236,10 +285,8 @@ export class NetworkComponent implements AfterViewInit, ControlValueAccessor {
     this._graphJson = value;
     try {
       const parsed = value ? JSON.parse(value) : { nodes: [], edges: [] };
-      if (parsed.nodes && parsed.edges) {
-        this.nodes = parsed.nodes;
-        this.edges = parsed.edges;
-      }
+      this.nodes = parsed.nodes;
+      this.edges = parsed.edges;
       if (this.initialized) {
         this.redraw();
       }
@@ -284,7 +331,7 @@ export class NetworkComponent implements AfterViewInit, ControlValueAccessor {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    if (!this.editable) return;
+    if (!this.editable || !this.deleteEnabled) return;
 
     if ((event.key === 'Delete' || event.key === 'Del') && this.selectedNode) {
       this.deleteSelectedNode();

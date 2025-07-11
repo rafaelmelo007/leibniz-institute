@@ -1,0 +1,78 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li
+      *ngFor="let node of breadcrumbs; let i = index"
+      class="breadcrumb-item"
+      [class.active]="i === breadcrumbs.length - 1"
+      [attr.aria-current]="i === breadcrumbs.length - 1 ? 'page' : null"
+    >
+      <a
+        *ngIf="i !== breadcrumbs.length - 1"
+        href="javascript:;"
+        (click)="navigateToBreadcrumb(i)"
+      >
+        {{ node.label }}
+      </a>
+      <span *ngIf="i === breadcrumbs.length - 1">{{ node.label }}</span>
+    </li>
+  </ol>
+</nav>
+<app-network
+  #chart
+  (nodeClick)="selectNode($event)"
+  (nodeDoubleClick)="createOrOpenChildNode($event)"
+  (nodeDelete)="deleteNode($event)"
+  [editable]="true"
+  [showEditForm]="false"
+  style="height: 450px"
+></app-network>
+
+<form [formGroup]="editNodeForm">
+  <div class="row">
+    <div class="col">
+      <div
+        class="form-group"
+        style="
+          width: 30%;
+          display: inline-block;
+          margin-right: 10px;
+          display: none;
+        "
+      >
+        <label for="nodeId" class="form-label mt-4">NodeId</label>
+        <input
+          class="form-control"
+          formControlName="nodeId"
+          type="text"
+          placeholder="NodeId"
+        />
+        <app-field-validation-errors
+          [control]="editNodeForm.get('nodeId')"
+        ></app-field-validation-errors>
+      </div>
+      <div class="form-group">
+        <label for="name" class="form-label mt-4">Description</label>
+        <textarea
+          class="form-control"
+          formControlName="name"
+          type="text"
+          placeholder="Name"
+          (keyup)="updateNodeLabel($event)"
+          (click)="enableDeleteNodeKey(false)"
+          (focus)="enableDeleteNodeKey(false)"
+          (blur)="enableDeleteNodeKey(true)"
+        ></textarea>
+        <app-field-validation-errors
+          [control]="editNodeForm.get('name')"
+        ></app-field-validation-errors>
+      </div>
+
+      <app-edit-references
+        [style.height]="'100%'"
+        [type]="'node'"
+        [id]="nodeId"
+        (changeList)="saveReferences()"
+      ></app-edit-references>
+    </div>
+  </div>
+</form>

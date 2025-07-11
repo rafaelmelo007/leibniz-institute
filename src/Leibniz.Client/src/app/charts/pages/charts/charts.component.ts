@@ -11,6 +11,9 @@ import { Chart } from '../../domain/chart';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { ChartsStore } from '../../services/charts.store';
 import { NetworkComponent } from '../../../network/components/network/network.component';
+import { InfiniteScrollComponent } from "../../../common/components/infinite-scroll/infinite-scroll.component";
+import { EntityBadgeComponent } from "../../../shared/components/entity-badge/entity-badge.component";
+import { DropdownComponent } from "../../../common/components/dropdown/dropdown.component";
 
 @Component({
   selector: 'app-charts',
@@ -20,7 +23,10 @@ import { NetworkComponent } from '../../../network/components/network/network.co
     LoadingComponent,
     EditChartComponent,
     NetworkComponent,
-  ],
+    InfiniteScrollComponent,
+    EntityBadgeComponent,
+    DropdownComponent
+],
   templateUrl: './charts.component.html',
   styleUrl: './charts.component.css',
 })
@@ -149,7 +155,11 @@ export class ChartsComponent implements OnDestroy {
   }
 
   deleteChart(chartId: number): void {
-    this.chartsStore.deleteChart(chartId);
+    if (
+      confirm('You are about to delete this chart. Do you want to continue?')
+    ) {
+      this.chartsStore.deleteChart(chartId);
+    }
   }
 
   ngOnDestroy(): void {

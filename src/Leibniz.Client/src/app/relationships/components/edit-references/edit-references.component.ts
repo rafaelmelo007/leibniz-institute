@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntityType } from '../../domain/entity-type';
 import { RelationshipsService } from '../../services/relationships.service';
 import { RelationshipListItem } from '../../domain/relationship-list-item';
@@ -18,6 +18,7 @@ export class EditReferencesComponent implements OnInit {
 
   @Input() addType?: EntityType;
   @Input() addId?: number;
+  @Output() changeList = new EventEmitter<boolean>();
 
   selectedType = '';
   itemName = '';
@@ -33,8 +34,18 @@ export class EditReferencesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
+    this.openReferences(this.type!, this.id!, this.addType, this.addId);
+  }
+
+  openReferences(
+    type: EntityType,
+    id: number,
+    addType?: EntityType,
+    addId?: number
+  ): void {
+    this.items = [];
     this.relationshipsService
-      .loadRelationships(this.type!, this.id!, this.addType, this.addId)
+      .loadRelationships(type, id, addType, addId)
       .subscribe((res) => {
         this.items = res.data;
         this.loading = false;
@@ -57,12 +68,15 @@ export class EditReferencesComponent implements OnInit {
     this.isPrimary = false;
 
     this.items?.push(item);
+
+    this.changeList.emit(true);
   }
 
   removeItem(item: RelationshipListItem): void {
     this.items = this.items?.filter(
       (x) => x.type !== item.type || x.id !== item.id
     );
+    this.changeList.emit(true);
   }
 
   searchItems(): void {

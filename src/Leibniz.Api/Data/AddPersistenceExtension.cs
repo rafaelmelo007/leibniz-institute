@@ -13,6 +13,7 @@ public static class AddPersistenceExtension
             services.AddDbContext<AcademyDbContext>(options =>
                 options
                 .UseSqlServer(dataConfiguration.ConnectionString, x => x.UseCompatibilityLevel(120))
+                .LogTo(Console.WriteLine, LogLevel.Information)
                 .EnableSensitiveDataLogging());
 
             // Run DB Migrations
